@@ -1,0 +1,656 @@
+<!DOCTYPE html><html lang="fr" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"inverse-primary":"#b8c4ff","on-error-container":"#93000a","surface-container-high":"#e6e8ee","primary-container":"#1e40af","on-primary":"#ffffff","on-secondary-fixed-variant":"#92002a","surface-tint":"#3755c3","surface-container-lowest":"#ffffff","on-background":"#191c20","tertiary":"#003c36","secondary-container":"#dc2c4f","outline-variant":"#c4c5d5","on-tertiary-fixed":"#00201d","on-surface-variant":"#444653","surface-container":"#eceef3","primary-fixed-dim":"#b8c4ff","primary-fixed":"#dde1ff","secondary":"#b90538","background":"#f8f9ff","surface-variant":"#e1e2e8","tertiary-container":"#00554e","surface-container-low":"#f2f3f9","on-primary-fixed":"#001453","error-container":"#ffdad6","on-tertiary":"#ffffff","on-secondary":"#ffffff","surface-dim":"#d8dadf","on-primary-container":"#a8b8ff","on-tertiary-container":"#5fcdbf","tertiary-fixed":"#89f5e7","outline":"#757684","tertiary-fixed-dim":"#6bd8cb","inverse-surface":"#2e3135","on-primary-fixed-variant":"#173bab","secondary-fixed":"#ffdadb","on-tertiary-fixed-variant":"#005049","primary":"#00288e","inverse-on-surface":"#eff0f6","surface-bright":"#f8f9ff","on-secondary-container":"#fffbff","error":"#ba1a1a","on-surface":"#191c20","on-error":"#ffffff","surface":"#f8f9ff","secondary-fixed-dim":"#ffb2b7","surface-container-highest":"#e1e2e8","on-secondary-fixed":"#40000d"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xs":"0.25rem","space-md":"1rem","space-lg":"1.75rem","space-xl":"3rem","margin":"3rem","margin-sm":"1.25rem","gutter-sm":"1rem","gutter":"1.5rem","space-sm":"0.5rem"},"fontFamily":{"body-md":["Plus Jakarta Sans"],"headline-md":["Space Grotesk"],"headline-lg-mobile":["Space Grotesk"],"display-xl":["Space Grotesk"],"headline-lg":["Space Grotesk"],"body-sm":["Plus Jakarta Sans"],"label-md":["Space Grotesk"],"headline-sm":["Space Grotesk"],"label-sm":["Space Grotesk"],"body-lg":["Plus Jakarta Sans"],"display-xl-mobile":["Space Grotesk"]},"fontSize":{"body-md":["15px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"headline-md":["28px",{"lineHeight":"36px","letterSpacing":"-0.015em","fontWeight":"500"}],"headline-lg-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"display-xl":["64px",{"lineHeight":"72px","letterSpacing":"-0.03em","fontWeight":"600"}],"headline-lg":["44px",{"lineHeight":"52px","letterSpacing":"-0.025em","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","letterSpacing":"0.005em","fontWeight":"400"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"headline-sm":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.06em","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","letterSpacing":"-0.005em","fontWeight":"400"}],"display-xl-mobile":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"600"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 inset-x-0 z-50 py-4 px-6">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 bg-surface-container-lowest/85 backdrop-blur-xl border border-surface-container-high/50 rounded-full px-6 py-2.5 shadow-[0_4px_20px_rgba(17,20,24,0.06)]">
+    <div class="flex items-center gap-3 shrink-0">
+      <a class="flex items-center gap-2.5" data-path="accueil" href="#">
+        <img alt="Logo KairoOS" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1XbqO-ArRJUy3UsQcL7vCikKBbtuh5mOu0z9HHCPrTdg9OxHXIzQ8priAg81923BiGYYzcDDzOriPpvn-MQC-RfRaEe6Tc8pz4cDMqxNGe94U1Efod1l6WBq7smw0Npl-_LU63XY4MAUBl35Prju-Zw7gSJ9MB7c__GVpcz0UGkpTAtMp3K76rU07bWHHX_jyPLzmmLmqCP0dM8AL5fd-KBz0tUJuoIeEYN5w0JTSm5KWXqi_f7kYoRA7ctIlpWNnvDyVIS82Idgg">
+        <span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">KairoOS</span>
+      </a>
+      <span class="px-2.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-medium">Alpha v0.1</span>
+    </div>
+    <nav class="hidden md:flex items-center gap-1 bg-surface-container-low p-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+      <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface px-3.5 py-1.5 rounded-full transition-colors" data-path="accueil" href="#">Accueil</a>
+      <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface px-3.5 py-1.5 rounded-full transition-colors" data-path="themes" href="#">Thèmes</a>
+      <a aria-current="page" class="transition-colors bg-primary-container text-on-primary font-medium rounded-full px-3.5 py-1.5" data-path="plugins" href="#">Plugins</a>
+      <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface px-3.5 py-1.5 rounded-full transition-colors" data-path="roadmap" href="#">Roadmap</a>
+    </nav>
+    <div class="flex items-center gap-3 shrink-0">
+      <div class="flex items-center rounded-full bg-surface-container-low p-1 font-label-sm text-label-sm">
+        <span class="px-2.5 py-0.5 rounded-full bg-surface-container-lowest text-on-surface font-semibold shadow-[0_1px_4px_rgba(0,0,0,0.04)]">🇫🇷 FR</span>
+        <span class="px-2.5 py-0.5 rounded-full text-on-surface-variant hover:text-on-surface cursor-pointer">🇬🇧 EN</span>
+      </div>
+      <a class="hidden sm:inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-surface-container font-label-md text-label-md text-on-surface hover:bg-surface-container-high hover:text-on-surface transition-colors" href="https://github.com" rel="noopener" target="_blank">
+        <span class="material-symbols-outlined text-[16px]">code</span>
+        <span class="">GitHub</span>
+      </a>
+      <a class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-on-surface font-label-md text-label-md text-surface hover:bg-inverse-surface hover:text-inverse-on-surface transition-all" data-path="telecharger" href="#">
+        <img alt="KairoOS" class="w-4 h-4 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1XbqO-ArRJUy3UsQcL7vCikKBbtuh5mOu0z9HHCPrTdg9OxHXIzQ8priAg81923BiGYYzcDDzOriPpvn-MQC-RfRaEe6Tc8pz4cDMqxNGe94U1Efod1l6WBq7smw0Npl-_LU63XY4MAUBl35Prju-Zw7gSJ9MB7c__GVpcz0UGkpTAtMp3K76rU07bWHHX_jyPLzmmLmqCP0dM8AL5fd-KBz0tUJuoIeEYN5w0JTSm5KWXqi_f7kYoRA7ctIlpWNnvDyVIS82Idgg">
+        <span class="">Télécharger</span>
+      </a>
+    </div>
+  </div>
+</header><main class="w-full pt-28 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- SECTION HERO EDITORIAL -->
+<section class="relative w-full overflow-hidden px-6 lg:px-12 py-16 lg:py-24 bg-surface">
+<!-- Ambient glowing backdrop circles -->
+<div class="absolute top-10 left-1/2 -translate-x-1/2 w-[720px] h-[360px] bg-gradient-to-br from-primary-fixed/30 via-tertiary-fixed/20 to-transparent blur-3xl pointer-events-none -z-10"></div>
+<div class="absolute -right-24 top-1/3 w-96 h-96 bg-secondary-fixed/15 blur-3xl pointer-events-none -z-10"></div>
+<div class="max-w-[1240px] mx-auto flex flex-col items-center text-center">
+<!-- Tag Pill / Architectural Badge -->
+<div class="inline-flex items-center gap-2.5 px-3.5 py-1 rounded-full bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.03)] border-0 mb-8">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-sm text-label-sm tracking-widest uppercase text-on-surface-variant font-semibold">
+          Écosystème &amp; Extensions · Architecture WebAssembly (WASM)
+        </span>
+</div>
+<!-- Main Title -->
+<h1 class="font-display-xl text-headline-lg-mobile md:text-display-xl text-on-surface font-semibold max-w-4xl tracking-tight leading-[1.08] mb-6">
+        Étendez votre arcade. Développez et publiez vos plugins.
+      </h1>
+<!-- Subtitle -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mb-10 leading-relaxed">
+        KairoOS intègre un runtime sandboxed sécurisé et ultra-rapide en Rust &amp; WebAssembly. Ajoutez des scrapers de métadonnées personnalisés, des pilotes de contrôleurs atypiques, ou connectez vos services de streaming et domotique sans jamais altérer le cœur du système.
+      </p>
+<!-- Technical Assurance Badges -->
+<div class="flex flex-wrap items-center justify-center gap-2.5 max-w-4xl mb-12">
+<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-tertiary">memory</span>
+          Isolation mémoire WASM
+        </span>
+<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">speed</span>
+          Zéro impact sur les 60 FPS
+        </span>
+<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary">merge_type</span>
+          Publication open source via GitHub PR
+        </span>
+<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">terminal</span>
+          API TypeScript &amp; Rust SDK
+        </span>
+</div>
+<!-- Primary & Secondary CTA Buttons -->
+<div class="flex flex-col sm:flex-row items-center gap-4">
+<a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-on-surface text-surface font-label-md text-label-md shadow-sm hover:bg-inverse-surface transition-all" href="#showcase-plugins">
+<span class="material-symbols-outlined text-[18px]">extension</span>
+          Parcourir les plugins
+        </a>
+<a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-[0_2px_8px_rgba(17,20,24,0.03)] hover:bg-surface-container transition-all" href="https://github.com" rel="noopener" target="_blank">
+<span class="material-symbols-outlined text-[18px]">code</span>
+          Publier mon plugin sur GitHub
+        </a>
+</div>
+</div>
+</section>
+<!-- SECTION SIMULATEUR / CONSOLE INTERACTIVE DE PLUGINS -->
+<section class="w-full px-6 lg:px-12 py-16 lg:py-20 bg-surface-container-low">
+  <div class="max-w-[1240px] mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+          Architecture &amp; Extensions
+        </div>
+        <h2 class="font-headline-lg text-headline-md md:text-headline-lg text-on-surface font-semibold tracking-tight">Capacités étendues du runtime</h2>
+      </div>
+      <p class="font-body-md text-body-md text-on-surface-variant max-w-lg">
+        Une modularité sans compromis. Développez des intégrations profondes avec le matériel d'arcade, les métadonnées de jeux, et l'affichage en surimpression sans ralentir l'OS.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="p-6 rounded-2xl bg-surface-container-lowest border border-surface-container-high/50 shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[26px]">photo_library</span>
+          </div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface font-medium">Scrapers</span>
+            <span class="font-label-sm text-label-sm text-tertiary font-semibold">Async I/O</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Médias &amp; Jaquettes</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Extraction automatisée des visuels 3D, vidéos WebM, et fiches de métadonnées avec hachage CRC32/SHA1 instantané.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+          <span class="">Latence : &lt; 2ms</span>
+          <span class="text-primary font-semibold">60 FPS vérifié</span>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-surface-container-lowest border border-surface-container-high/50 shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-secondary-container/10 text-secondary-container flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[26px]">sports_esports</span>
+          </div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface font-medium">Contrôleurs</span>
+            <span class="font-label-sm text-label-sm text-secondary font-semibold">WebHID / USB</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Drivers &amp; Micro-switch</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Prise en charge native des encodeurs Pac-Drive, Arduino et panneaux arcade sur mesure avec latence inférieure à 0.5ms.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+          <span class="">Polling : 1000 Hz</span>
+          <span class="text-secondary font-semibold">Zero input lag</span>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-surface-container-lowest border border-surface-container-high/50 shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-tertiary-container/10 text-tertiary flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[26px]">layers</span>
+          </div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface font-medium">Interface</span>
+            <span class="font-label-sm text-label-sm text-tertiary font-semibold">React 19 Canvas</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">HUDs &amp; Succès Rétro</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Incrustation graphique translucide, bannières RetroAchievements, animations réactives et widgets météo intégrés.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+          <span class="">Composants natifs</span>
+          <span class="text-tertiary font-semibold">Non intrusif</span>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-surface-container-lowest border border-surface-container-high/50 shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-[26px]">cloud_sync</span>
+          </div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface font-medium">Réseau</span>
+            <span class="font-label-sm text-label-sm text-primary font-semibold">AES-256</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Sync Décentralisée</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Synchronisation fluide des sauvegardes d'état via Nextcloud, WebDAV et stockage local sans dépendance à un cloud fermé.
+          </p>
+        </div>
+        <div class="mt-6 pt-4 border-t border-surface-container flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+          <span class="">Multi-appareils</span>
+          <span class="text-primary font-semibold">Chiffré local</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-6 rounded-2xl bg-surface-container-lowest border border-surface-container-high/50 shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-tertiary-fixed/20 text-tertiary flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[20px]">verified</span>
+        </div>
+        <div>
+          <h4 class="font-headline-sm text-[16px] text-on-surface font-semibold">Environnement sécurisé Wasmtime v20</h4>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Mémoire isolée à 64 MB par extension · Permissions accordées explicitement par l'utilisateur au premier démarrage.</p>
+        </div>
+      </div>
+      <a class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-container text-on-surface hover:bg-on-surface hover:text-surface font-label-md text-label-md transition-colors" href="#showcase-plugins">
+        <span class="">Découvrir les plugins</span>
+        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- SECTION 3 PILIERS TECHNIQUES -->
+<section class="w-full px-6 lg:px-12 py-16 lg:py-24 bg-surface">
+<div class="max-w-[1240px] mx-auto">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant font-semibold">Conçu pour les Développeurs</span>
+<h2 class="font-headline-lg text-headline-md md:text-headline-lg text-on-surface mt-2">Les piliers du SDK de Plugins</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-3">
+          Une isolation stricte sans sacrifier la performance graphique. Tout a été pensé pour que votre code tourne à la vitesse native.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Pillar 1 -->
+<div class="p-8 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined text-[28px]">shield_lock</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-3">
+              Sandbox WebAssembly ultra-sécurisée
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Vos plugins s'exécutent dans un runtime isolé Wasmtime. Aucun risque de crash pour KairoOS ou d'accès non autorisé aux disques et réseaux sans permission explicite.
+            </p>
+</div>
+<div class="mt-8 pt-6 border-t border-surface-container flex items-center gap-2 font-label-sm text-label-sm text-primary font-semibold">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+            Protection mémoire stricte
+          </div>
+</div>
+<!-- Pillar 2 -->
+<div class="p-8 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-6 text-secondary">
+<span class="material-symbols-outlined text-[28px]">integration_instructions</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-3">
+              SDK multi-langages (Rust, C++, AssemblyScript)
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Écrivez vos extensions dans votre langage favori compilable vers WebAssembly. Bénéficiez de liaisons typées auto-générées pour manipuler le système sans friction.
+            </p>
+</div>
+<div class="mt-8 pt-6 border-t border-surface-container flex items-center gap-2 font-label-sm text-label-sm text-secondary font-semibold">
+<span class="material-symbols-outlined text-[16px]">hub</span>
+            Bindings Rust &amp; TypeScript
+          </div>
+</div>
+<!-- Pillar 3 -->
+<div class="p-8 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-6 text-tertiary">
+<span class="material-symbols-outlined text-[28px]">webhook</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-3">
+              Événements &amp; Hooks du Frontend React 19
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Interceptez le lancement d'un jeu, injectez des HUD personnalisés ou déclenchez des lumières LED sur votre borne d'arcade physique via WebHID et Serial.
+            </p>
+</div>
+<div class="mt-8 pt-6 border-t border-surface-container flex items-center gap-2 font-label-sm text-label-sm text-tertiary font-semibold">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+            Interactions matérielles en direct
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION MANIFESTE & SPECIFICATION PLUGIN.JSON -->
+<section class="w-full px-6 lg:px-12 py-16 lg:py-20 bg-surface-container-low">
+<div class="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Left Editorial Column -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant font-semibold">Spécification Manifeste</span>
+<h2 class="font-headline-lg text-headline-md md:text-headline-lg text-on-surface font-semibold leading-tight">
+          Déclarez votre plugin en quelques lignes.
+        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Le fichier standard <code class="px-2 py-0.5 rounded bg-surface-container font-mono text-[13px] text-on-surface">plugin.json</code> spécifie l'identité, les privilèges matériels stricts accordés par l'utilisateur et les points d'entrée (hooks) exécutés au vol.
+        </p>
+<ul class="space-y-3 font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-tertiary text-[18px]">check_circle</span>
+            Permissions déclaratives transparentes (Serial, Réseau, HUD)
+          </li>
+<li class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-tertiary text-[18px]">check_circle</span>
+            Binaire <code class="text-primary font-mono text-xs">.wasm</code> pré-vérifié cryptographiquement
+          </li>
+<li class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-tertiary text-[18px]">check_circle</span>
+            Gestion de versions sémantique conforme à SemVer 2.0
+          </li>
+</ul>
+<div class="flex flex-wrap items-center gap-4 pt-4">
+<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-on-surface text-surface font-label-md text-label-md hover:bg-inverse-surface transition-all" href="#">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+            Consulter la documentation SDK
+          </a>
+<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container transition-all" href="https://github.com" rel="noopener" target="_blank">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+            Cloner le template (GitHub)
+          </a>
+</div>
+</div>
+<!-- Right Code Card -->
+<div class="lg:col-span-7">
+<div class="rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(17,20,24,0.08)] bg-inverse-surface text-inverse-on-surface border border-surface-container-highest/20">
+  <!-- Code Header with macOS control dots and status pill -->
+  <div class="flex items-center justify-between px-6 py-4 bg-inverse-surface/90 border-b border-surface-container-highest/20 backdrop-blur-md">
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full bg-error inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-secondary-fixed inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-tertiary-fixed inline-block"></span>
+      <span class="font-mono text-label-sm text-surface-dim font-medium ml-3">kairo-plugin.json</span>
+    </div>
+    <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-white/10 text-surface-dim uppercase tracking-wider font-medium">Standard v1.2</span>
+  </div>
+  <!-- Code syntax content -->
+  <div class="p-6 font-mono text-[13px] leading-relaxed overflow-x-auto bg-inverse-surface">
+    <pre class="text-surface-bright font-mono text-[13px] leading-relaxed"><code>{
+  <span class="text-primary-fixed-dim">"id"</span>: <span class="text-tertiary-fixed">"kairo-smart-leds"</span>,
+  <span class="text-primary-fixed-dim">"name"</span>: <span class="text-tertiary-fixed">"Pac-Drive &amp; Arduino RGB Arcade"</span>,
+  <span class="text-primary-fixed-dim">"version"</span>: <span class="text-tertiary-fixed">"1.2.0"</span>,
+  <span class="text-primary-fixed-dim">"author"</span>: <span class="text-tertiary-fixed">"ArcadeMaker99"</span>,
+  <span class="text-primary-fixed-dim">"entrypoint"</span>: <span class="text-tertiary-fixed">"build/plugin.wasm"</span>,
+  <span class="text-primary-fixed-dim">"permissions"</span>: [
+    <span class="text-secondary-fixed">"hardware.serial"</span>,
+    <span class="text-secondary-fixed">"events.game_launch"</span>
+  ],
+  <span class="text-primary-fixed-dim">"hooks"</span>: {
+    <span class="text-primary-fixed">"onGameStart"</span>: <span class="text-tertiary-fixed">"handle_game_start"</span>,
+    <span class="text-primary-fixed">"onScoreChange"</span>: <span class="text-tertiary-fixed">"flash_arcade_buttons"</span>
+  }
+}</code></pre>
+  </div>
+  <!-- Code card footer status bar -->
+  <div class="px-6 py-3 bg-inverse-surface/80 border-t border-surface-container-highest/20 flex items-center justify-between text-[11px] font-mono text-surface-dim">
+    <span class="flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span>
+      JSON Schema Validé (SemVer 2.0)
+    </span>
+    <span class="text-outline">UTF-8 · WASI Preview 1</span>
+  </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION SHOWCASE DES PLUGINS COMMUNAUTAIRES -->
+<section class="w-full px-6 lg:px-12 py-16 lg:py-24 bg-surface" id="showcase-plugins">
+<div class="max-w-[1240px] mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+<div>
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant font-semibold">Store &amp; Dépôt Communautaire</span>
+<h2 class="font-headline-lg text-headline-md md:text-headline-lg text-on-surface mt-1">Plugins les plus plébiscités</h2>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative">
+<input class="px-4 py-2 pl-9 rounded-full bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:ring-1 focus:ring-primary w-64" placeholder="Rechercher une extension..." type="text">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[16px]">search</span>
+</div>
+</div>
+</div>
+<!-- 4 Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 1 -->
+<div class="p-6 lg:p-8 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-4 mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[24px]">collections_bookmark</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">ScreenScraper Pro Multi-Lang</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">par <strong class="text-on-surface">@RomScraperTeam</strong></span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">star</span> 4.9
+              </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+              Récupération ultra-rapide des jaquettes 3D, fanarts et bandes-annonces WebM avec support complet des titres francophones et régionaux.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span> 1 420 installations
+            </span>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-on-surface hover:text-surface font-label-md text-label-md transition-colors" type="button">
+              Installer
+            </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="p-6 lg:p-8 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-4 mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/10 text-secondary-container flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[24px]">lightbulb</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Cabinet Smart RGB Lights</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">par <strong class="text-on-surface">@NeoCabMaker</strong></span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">star</span> 4.8
+              </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+              Synchronise les rubans LED WS2812B et boutons d'arcade aux couleurs de la palette dominante du jeu en cours d'exécution.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span> 890 installations
+            </span>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-on-surface hover:text-surface font-label-md text-label-md transition-colors" type="button">
+              Installer
+            </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="p-6 lg:p-8 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-4 mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container/10 text-primary-container flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[24px]">military_tech</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">RetroAchievements Live Overlay</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">par <strong class="text-on-surface">@CheevoHunter</strong></span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">star</span> 5.0
+              </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+              Affiche les notifications visuelles et sonores de succès rétro en temps réel au premier plan sans perturber le framerate.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span> 3 100 installations
+            </span>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-on-surface hover:text-surface font-label-md text-label-md transition-colors" type="button">
+              Installer
+            </button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="p-6 lg:p-8 rounded-xl bg-surface-container-lowest shadow-[0_2px_8px_rgba(17,20,24,0.025),0_8px_24px_rgba(17,20,24,0.04)] hover:shadow-[0_4px_12px_rgba(17,20,24,0.03),0_16px_40px_rgba(17,20,24,0.07)] transition-all flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-4 mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/10 text-tertiary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[24px]">cloud_sync</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Nextcloud &amp; WebDAV Save Sync</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">par <strong class="text-on-surface">@CloudRetro</strong></span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">star</span> 4.9
+              </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+              Sauvegardes automatiques partagées entre votre borne de salon, votre Steam Deck et votre ordinateur portable sans intermédiaire tiers.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-surface-container">
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span> 750 installations
+            </span>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-on-surface hover:text-surface font-label-md text-label-md transition-colors" type="button">
+              Installer
+            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION GUIDE PAS A PAS : COMMENT PUBLIER SON PLUGIN -->
+<section class="w-full px-6 lg:px-12 py-16 lg:py-24 bg-surface-container-low">
+<div class="max-w-[1240px] mx-auto">
+<div class="text-center max-w-2xl mx-auto mb-16">
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant font-semibold">Processus de Publication</span>
+<h2 class="font-headline-lg text-headline-md md:text-headline-lg text-on-surface mt-2">Comment publier votre propre plugin ?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-3">
+          De l'écriture du premier hook à la distribution mondiale auprès des utilisateurs KairoOS.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Step 1 -->
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div>
+<span class="font-mono font-bold text-headline-md text-primary/40 block mb-3">01</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Développez localement</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Clonez le modèle officiel <code class="text-on-surface font-mono text-[12px]">kairo-plugin-template</code> et écrivez vos fonctions en Rust ou TypeScript.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-surface-container font-label-sm text-label-sm text-on-surface-variant">
+            SDK v1.0 compatible
+          </div>
+</div>
+<!-- Step 2 -->
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div>
+<span class="font-mono font-bold text-headline-md text-primary/40 block mb-3">02</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Testez en direct</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Déposez votre build dans <code class="text-on-surface font-mono text-[12px]">~/.kairo/plugins/dev/</code> et testez avec le rechargement à chaud (Hot Reload).
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-surface-container font-label-sm text-label-sm text-on-surface-variant">
+            Logs terminal instantanés
+          </div>
+</div>
+<!-- Step 3 -->
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div>
+<span class="font-mono font-bold text-headline-md text-primary/40 block mb-3">03</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Soumettez une PR</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Ouvrez une Pull Request sur le dépôt du store KairoOS avec votre manifest vérifié et vos métadonnées complètes.
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-surface-container font-label-sm text-label-sm text-on-surface-variant">
+            Revue communautaire
+          </div>
+</div>
+<!-- Step 4 -->
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div>
+<span class="font-mono font-bold text-headline-md text-tertiary block mb-3">04</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Validation &amp; Déploiement</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Dès validation par la CI de sécurité sandboxée, votre extension devient téléchargeable en 1 clic par toute la communauté !
+            </p>
+</div>
+<div class="mt-6 pt-4 border-t border-surface-container font-label-sm text-label-sm text-tertiary font-semibold">
+            Disponible immédiatement
+          </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION GRAND BANNER GRADIENT CTA -->
+<section class="w-full px-6 lg:px-12 py-16 lg:py-24 bg-surface">
+<div class="max-w-[1240px] mx-auto">
+<div class="relative rounded-2xl overflow-hidden p-8 lg:p-16 bg-gradient-to-br from-primary-container via-primary to-inverse-surface text-on-primary shadow-xl">
+<!-- Ambient radial glow behind CTA -->
+<div class="absolute -right-20 -bottom-20 w-96 h-96 bg-tertiary-fixed/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 max-w-2xl flex flex-col gap-6">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md w-fit font-label-sm text-label-sm uppercase tracking-wider text-primary-fixed">
+            Open Source &amp; Développeurs
+          </div>
+<h2 class="font-headline-lg text-headline-md md:text-headline-lg font-semibold tracking-tight text-on-primary">
+            Vous avez développé une extension pour KairoOS ?
+          </h2>
+<p class="font-body-lg text-body-lg text-primary-fixed leading-relaxed">
+            Rejoignez l'écosystème open source. Soumettez votre plugin sur GitHub et rendez-le accessible à des milliers de passionnés de jeux vidéo et de bornes d'arcade.
+          </p>
+<div class="flex flex-wrap items-center gap-4 pt-4">
+<a class="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-md hover:bg-surface-container-low transition-all" href="https://github.com" rel="noopener" target="_blank">
+<span class="material-symbols-outlined text-[20px]">code</span>
+              Publier mon plugin sur GitHub
+            </a>
+<a class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-on-primary font-label-md text-label-md backdrop-blur-md transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+              Guide de démarrage Rust
+            </a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive JavaScript for Simulator Tabs & Live Actions -->
+<script>
+    (function() {
+      const tabs = document.querySelectorAll('.plugin-tab-btn');
+      const panels = {
+        scraper: document.getElementById('tab-content-scraper'),
+        driver: document.getElementById('tab-content-driver'),
+        overlay: document.getElementById('tab-content-overlay'),
+        cloud: document.getElementById('tab-content-cloud')
+      };
+
+      const terminal = document.getElementById('terminal-lines');
+
+      tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const target = this.getAttribute('data-tab');
+
+          // Reset buttons
+          tabs.forEach(b => {
+            b.classList.remove('bg-on-surface', 'text-surface');
+            b.classList.add('bg-surface', 'text-on-surface-variant');
+          });
+
+          // Activate clicked button
+          this.classList.remove('bg-surface', 'text-on-surface-variant');
+          this.classList.add('bg-on-surface', 'text-surface');
+
+          // Hide all panels
+          Object.values(panels).forEach(panel => {
+            if (panel) {
+              panel.classList.add('hidden');
+              panel.classList.remove('flex');
+            }
+          });
+
+          // Show targeted panel
+          if (panels[target]) {
+            panels[target].classList.remove('hidden');
+            panels[target].classList.add('flex');
+          }
+
+          // Append simulated WASM switch event in terminal
+          const now = new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random() * 90 + 10);
+          const p = document.createElement('p');
+          p.className = 'text-primary-fixed';
+          p.innerHTML = `<span class="text-outline">${now}</span> [kairo:runtime] Context switched to sandbox: <strong class="text-tertiary-fixed">plugin-${target}</strong>`;
+          terminal.appendChild(p);
+          terminal.scrollTop = terminal.scrollHeight;
+        });
+      });
+
+      // Simulation of live scan trigger
+      window.triggerSimulateScan = function() {
+        const now = new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random() * 90 + 10);
+        const p1 = document.createElement('p');
+        p1.className = 'text-secondary-fixed';
+        p1.innerHTML = `<span class="text-outline">${now}</span> [plugin:screenscraper-fr] Scanning directory for new ROM hashes...`;
+        terminal.appendChild(p1);
+
+        setTimeout(() => {
+          const p2 = document.createElement('p');
+          p2.className = 'text-tertiary-fixed';
+          p2.innerHTML = `<span class="text-outline">${now}</span> [plugin:screenscraper-fr] 100% matched across 3,420 entries (0 dropped frames).`;
+          terminal.appendChild(p2);
+          terminal.scrollTop = terminal.scrollHeight;
+        }, 350);
+      };
+    })();
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest mt-16 shadow-[0_-1px_12px_rgba(0,0,0,0.02)]"><div class="max-w-[1240px] mx-auto px-6 lg:px-12 py-16"><div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-surface-container"><div class="space-y-4 md:col-span-1"><div class="flex items-center gap-2.5"><img alt="Logo KairoOS" class="w-7 h-7 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1XbqO-ArRJUy3UsQcL7vCikKBbtuh5mOu0z9HHCPrTdg9OxHXIzQ8priAg81923BiGYYzcDDzOriPpvn-MQC-RfRaEe6Tc8pz4cDMqxNGe94U1Efod1l6WBq7smw0Npl-_LU63XY4MAUBl35Prju-Zw7gSJ9MB7c__GVpcz0UGkpTAtMp3K76rU07bWHHX_jyPLzmmLmqCP0dM8AL5fd-KBz0tUJuoIeEYN5w0JTSm5KWXqi_f7kYoRA7ctIlpWNnvDyVIS82Idgg"><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">KairoOS</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Système d'exploitation rétro-gaming nouvelle génération. Modulaire, léger, conçu pour l'élégance et la liberté.</p><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant font-medium"><span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>Licence Open Source MIT</div></div><div class="space-y-3"><h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface font-semibold">Navigation</h3><ul class="space-y-2.5 font-body-sm text-body-sm"><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="accueil" href="#">Accueil</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="themes" href="#">Thèmes</a></li><li class=""><a class="text-primary font-medium transition-colors" data-path="plugins" href="#">Plugins</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="roadmap" href="#">Roadmap</a></li></ul></div><div class="space-y-3"><h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface font-semibold">Ressources</h3><ul class="space-y-2.5 font-body-sm text-body-sm"><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="documentation" href="#">Documentation SDK</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="telecharger" href="#">Téléchargements OS</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" data-path="notes-de-version" href="#">Notes de version</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" href="https://github.com" rel="noopener" target="_blank">Spécifications WASM</a></li></ul></div><div class="space-y-3"><h3 class="font-label-md text-label-md uppercase tracking-wider text-on-surface font-semibold">Communauté</h3><ul class="space-y-2.5 font-body-sm text-body-sm"><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Discord KairoOS</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" href="https://github.com" rel="noopener" target="_blank">Dépôt GitHub</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Guide de contribution</a></li><li class=""><a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Galerie communautaire</a></li></ul></div></div><div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-on-surface-variant"><p class="">© 2026 KairoOS Project. Développé avec passion pour les passionnés d'arcade.</p><p class="flex items-center gap-1">Conçu pour le matériel rétro &amp; moderne · Open Source MIT</p></div></div></footer>
+
+</body></html>

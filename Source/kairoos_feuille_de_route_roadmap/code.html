@@ -1,0 +1,539 @@
+<!DOCTYPE html><html lang="fr" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary": "#ffffff", "on-surface-variant": "#444653", "surface": "#f8f9ff", "on-background": "#191c20", "primary-fixed-dim": "#b8c4ff", "on-error": "#ffffff", "secondary-fixed-dim": "#ffb2b7", "surface-variant": "#e1e2e8", "surface-container": "#eceef3", "on-secondary-fixed": "#40000d", "inverse-primary": "#b8c4ff", "on-tertiary": "#ffffff", "on-tertiary-fixed": "#00201d", "surface-dim": "#d8dadf", "tertiary-fixed": "#89f5e7", "outline-variant": "#c4c5d5", "surface-bright": "#f8f9ff", "surface-container-highest": "#e1e2e8", "tertiary-fixed-dim": "#6bd8cb", "on-secondary-fixed-variant": "#92002a", "on-surface": "#191c20", "on-secondary-container": "#fffbff", "surface-container-high": "#e6e8ee", "on-tertiary-container": "#5fcdbf", "primary-fixed": "#dde1ff", "secondary-container": "#dc2c4f", "outline": "#757684", "primary": "#00288e", "on-primary-fixed": "#001453", "error-container": "#ffdad6", "surface-container-low": "#f2f3f9", "secondary-fixed": "#ffdadb", "on-secondary": "#ffffff", "secondary": "#b90538", "primary-container": "#1e40af", "on-primary-container": "#a8b8ff", "error": "#ba1a1a", "inverse-on-surface": "#eff0f6", "on-error-container": "#93000a", "surface-container-lowest": "#ffffff", "surface-tint": "#3755c3", "on-tertiary-fixed-variant": "#005049", "background": "#f8f9ff", "on-primary-fixed-variant": "#173bab", "tertiary": "#003c36", "tertiary-container": "#00554e", "inverse-surface": "#2e3135" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-sm": "1.25rem", "margin": "3rem", "gutter": "1.5rem", "space-xs": "0.25rem", "space-lg": "1.75rem", "space-xl": "3rem", "gutter-sm": "1rem", "space-md": "1rem", "space-sm": "0.5rem" }, "fontFamily": { "body-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-md": ["Space Grotesk"], "body-sm": ["Plus Jakarta Sans"], "display-xl": ["Space Grotesk"], "headline-lg": ["Space Grotesk"], "headline-lg-mobile": ["Space Grotesk"], "label-md": ["Space Grotesk"], "label-sm": ["Space Grotesk"], "display-xl-mobile": ["Space Grotesk"], "headline-sm": ["Space Grotesk"] }, "fontSize": { "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }], "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "400" }], "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "500" }], "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "400" }], "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.03em", "fontWeight": "600" }], "headline-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.025em", "fontWeight": "600" }], "headline-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }], "display-xl-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }] } } } };</script></head><body class="bg-[#fafafa] font-body-md text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-primary-fixed selection:text-on-primary-fixed"><header class="fixed top-0 left-0 right-0 z-50 px-margin-sm lg:px-margin pt-4 pb-2 pointer-events-none"><div class="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto bg-surface-container-lowest/90 backdrop-blur-xl rounded-full px-4 py-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-surface-container-high/80"><div class="flex items-center gap-space-md min-w-0"><a class="flex items-center gap-space-sm flex-shrink-0" data-path="accueil" href="#"><div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center p-0.5 shadow-sm"><span class="material-symbols-outlined text-primary text-xl">sports_esports</span></div><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-bold">KairoOS</span></a><div class="hidden xl:inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high/80 text-on-surface-variant font-label-sm text-label-sm border border-surface-container-highest/60"><span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5 animate-pulse"></span>Alpha v0.1</div></div><nav class="hidden md:flex items-center p-1 rounded-full bg-surface-container-low/80 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] border border-surface-container-high/40"><a class="px-space-md py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all duration-150" data-path="accueil" href="#">Accueil</a><a class="px-space-md py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all duration-150" data-path="themes" href="#">Thèmes</a><a class="px-space-md py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all duration-150" data-path="plugins" href="#">Plugins</a><a aria-current="page" class="px-space-md py-1.5 rounded-full transition-all duration-150 bg-surface-container-lowest text-on-surface font-semibold shadow-sm" data-path="roadmap" href="#">Roadmap</a></nav><div class="flex items-center gap-space-sm sm:gap-space-md"><div class="flex items-center bg-surface-container-low/90 p-0.5 rounded-full font-label-sm text-label-sm text-on-surface-variant border border-surface-container-high/50"><button class="px-2.5 py-1 rounded-full bg-surface-container-lowest text-on-surface font-semibold shadow-sm flex items-center gap-1 transition-all" type="button"><span class="">🇫🇷</span><span class="">FR</span></button><button class="px-2.5 py-1 rounded-full text-on-surface-variant hover:text-on-surface flex items-center gap-1 transition-all" type="button"><span class="">🇬🇧</span><span class="">EN</span></button></div><a class="hidden sm:flex items-center gap-1.5 px-space-sm py-2 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="https://github.com" rel="noopener noreferrer" target="_blank"><span class="material-symbols-outlined text-base">code</span><span class="">GitHub</span></a><a class="inline-flex items-center justify-center px-space-md py-2.5 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-[0_2px_8px_rgba(0,40,142,0.25)] hover:bg-primary-container transition-all active:scale-95 gap-1.5 font-semibold" data-path="telecharger" href="#"><span class="material-symbols-outlined text-base">download</span><span class="">Télécharger</span></a></div></div></header><main class="w-full pt-20 bg-[#fafafa] flex-1"><div class="flex flex-col w-full">
+<!-- Top Ambient Glow -->
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[780px] h-[320px] bg-gradient-to-b from-primary-fixed/45 via-primary-fixed-dim/20 to-transparent blur-3xl pointer-events-none -z-10 rounded-full"></div>
+<!-- Hero / Header Section -->
+<section class="max-w-7xl mx-auto px-margin-sm lg:px-margin pt-space-xl pb-space-lg">
+<div class="flex flex-col items-center text-center max-w-3xl mx-auto space-y-space-md">
+<!-- Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-high shadow-sm">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+<span class="w-2 h-2 -ml-3.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface">DÉVELOPPEMENT TRANSPARENT</span>
+<span class="text-outline-variant text-xs">/</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-normal">PUBLIC ROADMAP</span>
+</div>
+<!-- Main Title -->
+<h1 class="font-display-xl text-display-xl tracking-tight text-on-surface">
+          Feuille de route &amp; Évolution du système.
+        </h1>
+<!-- Subtitle -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+          Une séparation claire et vérifiable entre ce qui est d'ores et déjà fonctionnel dans l'Alpha v0.1.0 et les jalons futurs développés publiquement au grand jour.
+        </p>
+<!-- Status Counters Pill Group -->
+<div class="pt-space-sm flex flex-wrap items-center justify-center gap-space-xs sm:gap-space-sm">
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-base text-tertiary-container" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm text-on-surface">v0.1.0 Alpha (Disponible)</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-base text-primary animate-spin" style="animation-duration: 4s;">sync</span>
+<span class="font-label-sm text-label-sm text-on-surface">Prochain jalon : v0.2.0 (En cours)</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-base text-on-surface-variant">verified_user</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Licence 100% MIT</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Interactive Filter & Visual Metric Row -->
+<section class="max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-md w-full">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-stretch">
+<!-- Metric Card 1: Completed Tasks -->
+<div class="md:col-span-4 p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">État du code</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">8/8 Prêts</span>
+</div>
+<div class="my-space-md flex items-baseline gap-space-xs">
+<span class="font-display-xl text-display-xl text-on-surface">100%</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Socle Alpha Windows</span>
+</div>
+<!-- Mini SVG Progress Sparkline -->
+<div class="w-full h-8 flex items-end">
+<svg class="w-full h-8 overflow-visible" fill="none" viewBox="0 0 200 30">
+<path class="text-primary" d="M0 24 Q 40 18, 80 12 T 140 6 T 200 2" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"></path>
+<circle class="fill-primary" cx="200" cy="2" r="3.5"></circle>
+</svg>
+</div>
+</div>
+<!-- Metric Card 2: Next Velocity -->
+<div class="md:col-span-4 p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Prochain Cycle</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">Q2 2025</span>
+</div>
+<div class="my-space-md flex items-baseline gap-space-xs">
+<span class="font-display-xl text-display-xl text-primary">v0.2.0</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Multimédia &amp; Scraper</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-2 overflow-hidden">
+<div class="bg-primary h-2 rounded-full w-2/3"></div>
+</div>
+</div>
+<!-- Metric Card 3: Philosophy / Build -->
+<div class="md:col-span-4 p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Empreinte Mémoire</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">Rust Core</span>
+</div>
+<div class="my-space-md flex items-baseline gap-space-xs">
+<span class="font-display-xl text-display-xl text-on-surface">&lt;45<span class="text-headline-md">Mo</span></span>
+<span class="font-body-md text-body-md text-on-surface-variant">RAM au repos</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Zéro Electron. Temps de boot sous la seconde sur SSD NVMe standard.
+        </p>
+</div>
+</div>
+</section>
+<!-- Main Timeline Sections -->
+<section class="max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-xl w-full">
+<div class="space-y-space-xl">
+<!-- ================= JALON 1 : v0.1.0 Alpha (DISPONIBLE) ================= -->
+<div class="relative bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm overflow-hidden">
+<!-- Top Status Bar Indicator -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-tertiary-fixed-dim"></div>
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-space-md mb-space-lg">
+<div class="space-y-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="px-3 py-1 rounded-full bg-surface-container-high font-label-md text-label-md text-on-surface uppercase tracking-wider">Jalon 01</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+                Stable &amp; Testé sur Windows
+              </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Actuel / Alpha Live</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+              v0.1.0 Alpha — Les Fondations
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+              Le cœur architectural prêt à l'emploi. Installez, pointez vos dossiers de jeux et lancez vos émulateurs favoris sans latence ni configuration fastidieuse.
+            </p>
+</div>
+<div class="flex-shrink-0 flex items-center gap-space-sm">
+<a class="inline-flex items-center gap-2 px-space-md py-2.5 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm hover:bg-primary-container transition-all" data-path="telecharger" href="#">
+<span class="material-symbols-outlined text-base">file_download</span>
+<span class="">Télécharger v0.1.0</span>
+</a>
+</div>
+</div>
+<!-- Bento Grid of Delivered Capabilities -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter-sm">
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">speed</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Cœur ultra-rapide Rust</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Architecture zéro-overhead conçue pour garantir 60 FPS constants sur l'UI.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">folder_zip</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Scanner de ROMs récursif</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Indexation multithreadée avec hachage SHA1/CRC32 et base SQLite locale autonome.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">sports_esports</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Contrôle 100% Manette</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Support natif XInput, DirectInput et encodeurs joystick arcade USB sans souris.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">fullscreen</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Kiosque plein écran sécurisé</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Verrouillage des raccourcis Windows (Touche Windows, Alt+Tab, fenêtres intrusives).</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">dataset</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Base SQLite embarquée</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Recherche instantanée et persistance locale de vos métadonnées sans serveur externe.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">hub</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Pont Tauri 2 / Rust</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Binaire ultra compact, isolation des privilèges système et communication sécurisée.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">devices</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Interface React 19 &amp; TS</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Composants réactifs légers avec typage strict et animations fluides pilotées par GPU.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">smartphone</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Kairo-Remote PWA</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Télécommande mobile locale via QR Code pour piloter la borne depuis son canapé.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm">check</span> Déployé
+            </span>
+</div>
+</div>
+</div>
+<!-- ================= JALON 2 : v0.2.0 (EN COURS — Q2 2025) ================= -->
+<div class="relative bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm overflow-hidden">
+<!-- Top Status Bar Indicator -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-primary"></div>
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-space-md mb-space-lg">
+<div class="space-y-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="px-3 py-1 rounded-full bg-surface-container-high font-label-md text-label-md text-on-surface uppercase tracking-wider">Jalon 02</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                En développement actif (Q2 2025)
+              </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Focus Actuel</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+              v0.2.0 — Expérience &amp; Multimédia
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+              Rendre chaque session spectaculaire : jaquettes 3D, vidéos de gameplay haute définition et surcouche d'accès rapide en jeu.
+            </p>
+</div>
+<div class="flex-shrink-0 flex items-center gap-space-xs">
+<div class="px-4 py-2 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface">
+              Progression globale : <span class="font-bold text-primary">68%</span>
+</div>
+</div>
+</div>
+<!-- Cards of Features in Development -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-sm">
+<div class="p-space-lg rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl">art_track</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">80% prêt</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Scraping Haute Résolution</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Récupération automatisée des boîtes 3D, logos transparents et résumés via ScreenScraper et TheGamesDB.</p>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-space-md">
+<div class="bg-primary h-1.5 rounded-full w-4/5"></div>
+</div>
+</div>
+<div class="p-space-lg rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl">movie</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">65% prêt</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Lecteur Vidéo Dédié MP4/WebM</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Aperçus vidéos instantanés au survol avec fondu sonore et accélération matérielle DirectX.</p>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-space-md">
+<div class="bg-primary h-1.5 rounded-full w-2/3"></div>
+</div>
+</div>
+<div class="p-space-lg rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl">layers</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">70% prêt</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Quick-Overlay In-Game</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Menu contextuel appelé via le bouton Guide ou raccourci combo (Save, Load, Mute, Quitter le jeu).</p>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-space-md">
+<div class="bg-primary h-1.5 rounded-full w-[70%]"></div>
+</div>
+</div>
+<div class="p-space-lg rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl">album</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">50% prêt</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Support Multi-Disques (.m3u)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Indexation groupée automatique pour PS1, Saturn et Dreamcast sans polluer la liste des titres.</p>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-space-md">
+<div class="bg-primary h-1.5 rounded-full w-1/2"></div>
+</div>
+</div>
+<div class="p-space-lg rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl">save</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">45% prêt</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Gestionnaire de Sauvegardes</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Visualisation des snapshots de save states par émulateur et restauration rapide par profil.</p>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-space-md">
+<div class="bg-primary h-1.5 rounded-full w-[45%]"></div>
+</div>
+</div>
+<div class="p-space-lg rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl">tune</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Planification</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Shaders CRT Dédiés</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sélection rapide de filtres d'écran cathodique légers directement intégrés à l'interface Kairo.</p>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 mt-space-md">
+<div class="bg-primary h-1.5 rounded-full w-1/4"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- ================= JALON 3 : v0.3.0 (PLANIFIÉ — Q3 2025) ================= -->
+<div class="relative bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-secondary"></div>
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-space-md mb-space-lg">
+<div class="space-y-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="px-3 py-1 rounded-full bg-surface-container-high font-label-md text-label-md text-on-surface uppercase tracking-wider">Jalon 03</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                Planifié (Q3 2025)
+              </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Étape Suivante</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+              v0.3.0 — Communauté &amp; Progression
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+              Transformer la session de jeu solitaire en un historique vivant avec succès rétro, synchronisation décentralisée et statistiques fines.
+            </p>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter-sm">
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-secondary">
+<span class="material-symbols-outlined text-xl">military_tech</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">RetroAchievements Natif</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Notifications toast in-game et vitrine de trophées directement sur les fiches de jeux.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">Spécifications prêtes</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-secondary">
+<span class="material-symbols-outlined text-xl">cloud_sync</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Cloud Sync Hybride</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sauvegardes synchronisées via WebDAV, Nextcloud ou dossier local partagé sur réseau LAN.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">Étude de protocole</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-secondary">
+<span class="material-symbols-outlined text-xl">query_stats</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Statistiques par Profil</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Compteur d'heures réelles passées en jeu, ratio de complétion et jeux les plus relancés.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">Planifié</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-secondary">
+<span class="material-symbols-outlined text-xl">attractions</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Attract Mode Dynamique</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Écran de veille interactif façon salon arcade défilant aléatoirement vos extraits de jeu.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant">Planifié</span>
+</div>
+</div>
+</div>
+<!-- ================= JALON 4 : v1.0.0 (VISION ÉCOSYSTÈME) ================= -->
+<div class="relative bg-surface-container-lowest rounded-xl p-space-lg lg:p-space-xl shadow-sm overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-tertiary"></div>
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-space-md mb-space-lg">
+<div class="space-y-space-xs">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="px-3 py-1 rounded-full bg-surface-container-high font-label-md text-label-md text-on-surface uppercase tracking-wider">Jalon 04</span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                Vision Écosystème
+              </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high font-label-sm text-label-sm text-on-surface-variant">Jalon Majeur</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+              v1.0.0 — La Plateforme Totale
+            </h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+              L'aboutissement d'un OS arcade complet, extensible par la communauté, hautement sécurisé pour les salons publics et internationalisé.
+            </p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter-sm">
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">storefront</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Store Thèmes &amp; Plugins</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Catalogue intégré vérifié pour installer des interfaces visuelles en un clic.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-outline">Recherche en amont</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">terminal</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Extensions WebAssembly</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Moteur de scripting sandboxed ultra-rapide pour étendre les scrapers et backends.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-outline">Architecture</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">lock_reset</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Mode Borne Publique</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Réinitialisation automatique des contrôles et de l'état du système après 3 min d'inactivité.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-outline">Architecture</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center mb-space-sm text-primary">
+<span class="material-symbols-outlined text-xl">translate</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface mb-1">Traduction Communautaire</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Support i18n natif : Français, Anglais, Espagnol, Japonais et Allemand au lancement.</p>
+</div>
+<span class="mt-space-sm inline-flex items-center gap-1 font-label-sm text-label-sm text-outline">Architecture</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Break / Technical Integrity / Philosophy -->
+<section class="max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-lg w-full">
+<div class="p-space-lg lg:p-space-xl rounded-xl bg-surface-container-low shadow-sm">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<div class="lg:col-span-7 space-y-space-sm">
+<span class="font-label-md text-label-md text-primary uppercase tracking-wider">Transparence &amp; Philosophie</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+            Pourquoi une feuille de route 100% publique ?
+          </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Le rétrogaming et la confection de bornes d'arcade personnelles méritent des outils pérennes, sans promesses fantaisistes ni fonctionnalités bloquées derrière un abonnement. KairoOS est et restera un projet libre gouverné par le code, documenté et contrôlable par chacun.
+          </p>
+<div class="pt-space-xs flex flex-wrap gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Zéro télémétrie masquée</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Licence MIT vérifiable</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">Compatibilité Windows 10 &amp; 11</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 grid grid-cols-1 gap-space-sm">
+<!-- Action Box 1 -->
+<a class="p-space-md rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md transition-all flex items-center justify-between group" href="https://github.com" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-xl">code</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Contribuer au code</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Stack Rust, Tauri 2 et React 19</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+<!-- Action Box 2 -->
+<a class="p-space-md rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md transition-all flex items-center justify-between group" href="https://github.com" rel="noopener noreferrer" target="_blank">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-xl">bug_report</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Signaler un bug</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ouvrir une Issue sur le repo officiel</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+<!-- Action Box 3 -->
+<a class="p-space-md rounded-lg bg-surface-container-lowest shadow-sm hover:shadow-md transition-all flex items-center justify-between group" href="#">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-xl">lightbulb</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Suggérer un système</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Demandes d'émulateurs &amp; cores</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Final Clean Call To Action -->
+<section class="max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-xl w-full"><div class="rounded-2xl bg-surface-container-lowest border border-surface-container-high/60 p-space-lg lg:p-space-xl shadow-sm text-center relative overflow-hidden flex flex-col items-center"><div class="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[520px] h-[520px] rounded-full bg-primary-fixed/20 blur-3xl pointer-events-none -z-10"></div><div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low border border-surface-container-high/60 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-sm"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>Prise en main immédiate</div><h2 class="font-display-xl-mobile sm:font-headline-lg text-display-xl-mobile sm:text-headline-lg text-on-surface tracking-tight max-w-2xl mb-space-xs font-bold">Prêt à transformer votre PC en borne d'arcade ?</h2><p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mb-space-lg">Téléchargez le paquet léger, branchez votre manette et profitez dès ce soir d'une interface d'arcade épurée, ultra-fluide et sans publicité.</p><div class="flex flex-col sm:flex-row items-center justify-center gap-space-sm w-full sm:w-auto z-10"><a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-space-xl py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-md hover:bg-primary-container transition-all active:scale-95 font-semibold" data-path="telecharger" href="#"><span class="material-symbols-outlined text-lg">download</span><span class="">Télécharger KairoOS v0.1.0</span></a><a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-space-lg py-3 rounded-full bg-surface-container-low border border-surface-container-high/80 text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container transition-all" href="https://github.com" rel="noopener noreferrer" target="_blank"><span class="material-symbols-outlined text-lg">star</span><span class="">Voir le code sur GitHub</span></a></div><div class="mt-space-md flex flex-wrap items-center justify-center gap-space-md text-on-surface-variant font-label-sm text-label-sm"><span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-base text-tertiary-container">check_circle</span> Compatible Windows 10 &amp; 11 (64-bit)</span><span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-base text-tertiary-container">check_circle</span> Aucun compte requis</span><span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-base text-tertiary-container">check_circle</span> 100% Gratuit &amp; Open Source</span></div></div></section>
+</div></main><footer class="w-full bg-surface-container-lowest border-t border-surface-container-high/60 shadow-[0_-1px_8px_rgba(0,0,0,0.02)] mt-space-xl"><div class="max-w-7xl mx-auto px-margin-sm lg:px-margin py-space-xl"><div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start"><div class="md:col-span-5 space-y-space-sm"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center p-0.5"><span class="material-symbols-outlined text-primary text-lg">sports_esports</span></div><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-bold">KairoOS</span><span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">Alpha</span></div><p class="font-body-md text-body-md text-on-surface-variant max-w-sm">Couche frontend d'arcade open source pour Windows. Transformez instantanément votre PC de salon en console de rétrogaming moderne, fluide et sans distraction.</p><div class="inline-flex items-center gap-space-xs pt-space-xs font-label-sm text-label-sm text-on-surface-variant"><span class="material-symbols-outlined text-sm text-tertiary-container">verified</span><span class="">Licence Open Source MIT</span></div></div><div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-gutter-sm sm:justify-end"><div class="space-y-space-xs"><p class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-semibold">Navigation</p><ul class="space-y-space-xs font-body-sm text-body-sm"><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" data-path="accueil" href="#">Accueil</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" data-path="themes" href="#">Thèmes</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" data-path="plugins" href="#">Plugins</a></li><li class="flex"><a class="text-primary font-semibold transition-colors" data-path="roadmap" href="#">Roadmap</a></li></ul></div><div class="space-y-space-xs"><p class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-semibold">Ressources</p><ul class="space-y-space-xs font-body-sm text-body-sm"><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Documentation</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Guide d'installation</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Émulateurs supportés</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">FAQ</a></li></ul></div><div class="space-y-space-xs"><p class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-semibold">Communauté</p><ul class="space-y-space-xs font-body-sm text-body-sm"><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="https://github.com" rel="noopener noreferrer" target="_blank">GitHub Source</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Changelog</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Rejoindre Discord</a></li><li class="flex"><a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Contribuer</a></li></ul></div></div></div><div class="mt-space-xl pt-space-md border-t border-surface-container-high/60 flex flex-col sm:flex-row items-center justify-between gap-space-sm font-body-sm text-body-sm text-on-surface-variant"><p class="">© 2026 KairoOS Project. Projet open source distribué sous licence MIT.</p><p class="font-label-sm text-label-sm">Conçu avec passion pour la communauté arcade et rétrogaming PC.</p></div></div></footer>
+
+</body></html>

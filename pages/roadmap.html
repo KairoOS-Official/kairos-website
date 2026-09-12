@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-fr="Feuille de Route & Roadmap — KairoOS" data-en="Roadmap & Releases — KairoOS">Feuille de Route & Roadmap — KairoOS</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#1e1b4b' },
+            coral: { 50: '#fff1f2', 100: '#ffe4e6', 500: '#f43f5e', 600: '#e11d48' },
+            canvas: '#FBFBF9',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'card': '0 20px 40px -15px rgba(0,0,0,0.05), 0 0 1px 1px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/components/navbar.js" defer></script>
+  <script src="../assets/js/components/footer.js" defer></script>
+  <script src="../assets/js/main.js" defer></script>
+  <script src="../assets/js/router.js" defer></script>
+  <script src="../assets/js/tracker.js" defer></script>
+  <script src="../assets/js/content-sync.js" defer></script>
+  <script src="../assets/js/admin-toolbar.js" defer></script>
+</head>
+<body class="bg-canvas text-body font-sans antialiased selection:bg-brand-500 selection:text-white relative bg-light-mesh min-h-screen">
+
+  <!-- NAVBAR UNIFIÉE -->
+  <kairo-navbar active="roadmap"></kairo-navbar>
+
+  <main class="pt-24 sm:pt-32 pb-24 overflow-hidden">
+    
+    <!-- 1. HERO SECTION ÉPURÉE APPLE -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 pt-4 pb-16 text-center">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs font-semibold mb-6 reveal">
+          <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+          <span data-en="DÉVELOPPEMENT TRANSPARENT & COMMUNAUTAIRE" data-fr="DÉVELOPPEMENT TRANSPARENT & COMMUNAUTAIRE">DÉVELOPPEMENT TRANSPARENT & COMMUNAUTAIRE</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-display font-extrabold text-heading tracking-tight leading-[1.12] mb-6 reveal delay-1">
+          <span data-en="Built in the open." data-fr="Bâtie au grand jour.">Bâtie au grand jour.</span><br>
+          <span class="bg-gradient-to-r from-brand-600 via-indigo-600 to-coral-500 bg-clip-text text-transparent" data-en="Crafted for eternity." data-fr="Pensée pour durer.">Pensée pour durer.</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-muted max-w-2xl mx-auto leading-relaxed mb-8 reveal delay-2" data-en="Follow the evolution of KairoOS release by release. From low-latency core stabilization to decentralized P2P netplay, explore the milestones and upcoming capabilities of the arcade layer." data-fr="Suivez l'évolution de KairoOS version après version. De la stabilisation du moteur natif au jeu en réseau P2P décentralisé, découvrez nos jalons et les livrables à venir.">
+          Suivez l'évolution de KairoOS version après version. De la stabilisation du moteur natif au jeu en réseau P2P décentralisé, découvrez nos jalons et les livrables à venir.
+        </p>
+
+        <!-- Stats instantanées -->
+        <div class="inline-flex flex-wrap items-center justify-center gap-4 text-xs font-mono text-slate-600 reveal delay-3">
+          <span class="px-3.5 py-2 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            <span>Alpha v0.1.0 En Ligne</span>
+          </span>
+          <span class="px-3.5 py-2 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-brand-600">code</span>
+            <span>94% Couverture Rust</span>
+          </span>
+          <span class="px-3.5 py-2 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-amber-500">schedule</span>
+            <span>Mises à jour bi-mensuelles</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CHRONOLOGIE DES JALONS MAJEURS (TIMELINE APPLE PROFONDE & DÉTAILLÉE) -->
+    <section class="max-w-5xl mx-auto px-4 sm:px-8 py-16">
+      <div class="space-y-12 relative before:absolute before:inset-0 before:left-6 md:before:left-1/2 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-brand-500 before:via-slate-200 before:to-slate-100">
+
+        <!-- JALON 1 : v0.1.0 ALPHA (ACTUELLE) -->
+        <div class="relative flex flex-col md:flex-row items-center gap-8 reveal">
+          <div class="md:w-1/2 flex justify-start md:justify-end">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500/80 shadow-card max-w-lg w-full">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-xs font-bold border border-emerald-200 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  DISPONIBLE MAINTENANT
+                </span>
+                <span class="text-xs font-mono text-slate-400">T3 2026</span>
+              </div>
+              <h3 class="text-2xl font-display font-bold text-heading mb-2">v0.1.0 Alpha — Les Fondations</h3>
+              <p class="text-xs sm:text-sm text-muted leading-relaxed mb-4">
+                Architecture native Tauri 2 & Rust 2024. Contrôle intégral à la manette (XInput & DirectInput), moteur kiosque Direct3D 12, indexation SQLite locale et compagnon smartphone PWA sans installation.
+              </p>
+              
+              <div class="space-y-2 mb-4">
+                <div class="flex items-center justify-between text-xs font-mono">
+                  <span class="text-slate-600">Avancement des livrables</span>
+                  <span class="text-emerald-600 font-bold">100% Terminé</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="w-full h-full bg-emerald-500 rounded-full"></div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-600">
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-emerald-500">check_circle</span>
+                  <span>Moteur Kiosque 60 FPS</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-emerald-500">check_circle</span>
+                  <span>XInput & DirectInput</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-emerald-500">check_circle</span>
+                  <span>Indexation SQLite 3</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-emerald-500">check_circle</span>
+                  <span>Compagnon Web Mobile</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-emerald-500 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">check</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 2 : v0.2.0 BÊTA (SCRAPER & MÉFADONNÉES) -->
+        <div class="relative flex flex-col md:flex-row-reverse items-center gap-8 reveal delay-1">
+          <div class="md:w-1/2 flex justify-start">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-brand-300 shadow-card max-w-lg w-full">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-brand-50 text-brand-700 font-mono text-xs font-bold border border-brand-200 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                  EN DÉVELOPPEMENT ACTIF
+                </span>
+                <span class="text-xs font-mono text-slate-400">T4 2026</span>
+              </div>
+              <h3 class="text-2xl font-display font-bold text-heading mb-2">v0.2.0 Bêta — Scraper & Métadonnées</h3>
+              <p class="text-xs sm:text-sm text-muted leading-relaxed mb-4">
+                Téléchargement multi-threadé asynchrone des jaquettes 3D, vidéos de gameplay haute définition, synopsis officiels et détection automatique des variantes régionales de ROMs.
+              </p>
+              
+              <div class="space-y-2 mb-4">
+                <div class="flex items-center justify-between text-xs font-mono">
+                  <span class="text-slate-600">Avancement des livrables</span>
+                  <span class="text-brand-600 font-bold">68% Finalisé</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="w-[68%] h-full bg-brand-600 rounded-full"></div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-600">
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-brand-600">check_circle</span>
+                  <span>Connecteur IGDB API</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-brand-600">check_circle</span>
+                  <span>Cache local images</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-slate-400">pending</span>
+                  <span>Lecteur vidéo MP4 60 FPS</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-slate-400">pending</span>
+                  <span>Gestion des doublons</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-brand-600 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">sync</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 3 : v0.3.0 NETPLAY ARCADE P2P -->
+        <div class="relative flex flex-col md:flex-row items-center gap-8 reveal delay-2">
+          <div class="md:w-1/2 flex justify-start md:justify-end">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle max-w-lg w-full">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-mono text-xs font-bold border border-indigo-100">
+                  PLANIFIÉ · PROCHAINE ÉTAPE
+                </span>
+                <span class="text-xs font-mono text-slate-400">T1 2027</span>
+              </div>
+              <h3 class="text-2xl font-display font-bold text-heading mb-2">v0.3.0 — Netplay Arcade P2P</h3>
+              <p class="text-xs sm:text-sm text-muted leading-relaxed mb-4">
+                Jouez à vos classiques arcade à deux joueurs à distance comme si vous étiez côte à côte devant la borne. Rollback netcode ultra-performant et invitations instantanées par code de salon.
+              </p>
+
+              <div class="space-y-2 mb-4">
+                <div class="flex items-center justify-between text-xs font-mono">
+                  <span class="text-slate-600">Phase d'architecture</span>
+                  <span class="text-indigo-600 font-bold">35% Défini</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="w-[35%] h-full bg-indigo-500 rounded-full"></div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-600">
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-indigo-500">bolt</span>
+                  <span>Rollback Netcode GGPO</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-indigo-500">wifi</span>
+                  <span>Salons P2P WebRTC</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-indigo-500 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">sports_esports</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 4 : v0.4.0 SHADERS CRT SONY TRINITRON -->
+        <div class="relative flex flex-col md:flex-row-reverse items-center gap-8 reveal delay-1">
+          <div class="md:w-1/2 flex justify-start">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle max-w-lg w-full">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-coral-50 text-coral-700 font-mono text-xs font-bold border border-coral-100">
+                  RECHERCHE & DÉVELOPPEMENT
+                </span>
+                <span class="text-xs font-mono text-slate-400">T2 2027</span>
+              </div>
+              <h3 class="text-2xl font-display font-bold text-heading mb-2">v0.4.0 — Pipeline Shaders CRT Pro</h3>
+              <p class="text-xs sm:text-sm text-muted leading-relaxed mb-4">
+                Émulation optique fidèle des tubes cathodiques Sony PVM & Trinitron 15kHz. Scanlines authentiques, masque d'ouverture, phosphore rémanent et compatibilité plein écran 120Hz/144Hz VRR.
+              </p>
+
+              <div class="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-600">
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-coral-500">tv</span>
+                  <span>Scanlines 15kHz PVM</span>
+                </div>
+                <div class="p-2 rounded-lg bg-slate-50 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-coral-500">blur_on</span>
+                  <span>Phosphor Bloom & Halos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-coral-500 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">display_settings</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 5 : v1.0.0 CONSOLE FINALE & ISO AUTONOME -->
+        <div class="relative flex flex-col md:flex-row items-center gap-8 reveal delay-2">
+          <div class="md:w-1/2 flex justify-start md:justify-end">
+            <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-float max-w-lg w-full">
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-3 py-1 rounded-full bg-brand-500/30 text-brand-300 font-mono text-xs font-bold border border-brand-400/30">
+                  VISION FINALE
+                </span>
+                <span class="text-xs font-mono text-slate-400">v1.0.0 Stable</span>
+              </div>
+              <h3 class="text-2xl font-display font-bold text-white mb-2">v1.0.0 — KairoOS Console Finale</h3>
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                Image ISO amorçable autonome prête pour clé USB. Démarrez directement sur KairoOS sans passer par l'environnement de bureau Windows, compatible PC salon, bornes bartop et consoles portables (Steam Deck / ROG Ally).
+              </p>
+              <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono text-brand-300">
+                <span>Distribution Libre Complète</span>
+                <span class="text-emerald-400 font-bold">Autonome & Rapide</span>
+              </div>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-slate-900 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">stars</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. VOTEZ POUR LES PROCHAINES FONCTIONNALITÉS (SECTION INTERACTIVE) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="bg-[#F5F5F7] rounded-[32px] p-8 sm:p-14 border border-slate-200/80 reveal">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">COMMUNAUTÉ & PRIORITÉS</span>
+          <h2 class="text-3xl font-display font-bold text-heading mt-4 mb-2" data-en="Vote for what comes next." data-fr="Votez pour les prochaines priorités.">Votez pour les prochaines priorités.</h2>
+          <p class="text-xs sm:text-sm text-muted" data-en="Click to express your interest in the features you want to see prioritized." data-fr="Cliquez sur les fonctionnalités pour voter et orienter les priorités des prochains sprints.">
+            Cliquez sur les fonctionnalités pour voter et orienter les priorités des prochains sprints.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="vote-grid">
+          
+          <div class="vote-card bg-white rounded-2xl p-5 border border-slate-200/80 shadow-subtle hover:border-brand-300 transition-all flex flex-col justify-between cursor-pointer group select-none" data-votes="342">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[20px]">sports_motorsports</span>
+              </div>
+              <h4 class="font-display font-bold text-sm text-heading mb-1">Volants & Pédaliers Arcade</h4>
+              <p class="text-xs text-muted leading-relaxed">Calibration automatique du retour de force (DirectDrive, Logitech, Fanatec) pour Daytona USA et Sega Rally.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-brand-600 vote-count">342 votes</span>
+              <button class="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold group-hover:bg-brand-600 transition-colors">Voter</button>
+            </div>
+          </div>
+
+          <div class="vote-card bg-white rounded-2xl p-5 border border-slate-200/80 shadow-subtle hover:border-brand-300 transition-all flex flex-col justify-between cursor-pointer group select-none" data-votes="289">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-rose-50 text-coral-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[20px]">translate</span>
+              </div>
+              <h4 class="font-display font-bold text-sm text-heading mb-1">Traduction OCR en Temps Réel</h4>
+              <p class="text-xs text-muted leading-relaxed">Traduction à la volée des textes de RPGs japonais non traduits directement via GPU sans ralentissement.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-brand-600 vote-count">289 votes</span>
+              <button class="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold group-hover:bg-brand-600 transition-colors">Voter</button>
+            </div>
+          </div>
+
+          <div class="vote-card bg-white rounded-2xl p-5 border border-slate-200/80 shadow-subtle hover:border-brand-300 transition-all flex flex-col justify-between cursor-pointer group select-none" data-votes="254">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[20px]">group_add</span>
+              </div>
+              <h4 class="font-display font-bold text-sm text-heading mb-1">Mode Tournoi Local</h4>
+              <p class="text-xs text-muted leading-relaxed">Arbre de tournoi automatique à double élimination généré sur l'écran pour les soirées Versus Fighting.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-brand-600 vote-count">254 votes</span>
+              <button class="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold group-hover:bg-brand-600 transition-colors">Voter</button>
+            </div>
+          </div>
+
+          <div class="vote-card bg-white rounded-2xl p-5 border border-slate-200/80 shadow-subtle hover:border-brand-300 transition-all flex flex-col justify-between cursor-pointer group select-none" data-votes="412">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[20px]">cloud_sync</span>
+              </div>
+              <h4 class="font-display font-bold text-sm text-heading mb-1">Synchro Steam Cloud & Emu</h4>
+              <p class="text-xs text-muted leading-relaxed">Unification des sauvegardes de jeux rétro dans votre espace Steam Cloud personnel chiffré.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-brand-600 vote-count">412 votes</span>
+              <button class="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold group-hover:bg-brand-600 transition-colors">Voter</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER UNIFIÉ -->
+  <kairo-footer></kairo-footer>
+
+  <script>
+    window.initRoadmapPage = function() {
+      // Gestion interactive des votes de la communauté
+      document.querySelectorAll('.vote-card').forEach(card => {
+        card.addEventListener('click', function() {
+          if (this.classList.contains('voted')) return;
+          this.classList.add('voted', 'border-brand-500', 'bg-brand-50/20');
+          let countEl = this.querySelector('.vote-count');
+          let current = parseInt(this.getAttribute('data-votes'), 10);
+          countEl.textContent = (current + 1) + ' votes';
+          let btn = this.querySelector('button');
+          if (btn) {
+            btn.textContent = '✓ Voté';
+            btn.classList.remove('bg-slate-900');
+            btn.classList.add('bg-emerald-600');
+          }
+          if (typeof window.showToast === 'function') {
+            window.showToast('Votre vote a été pris en compte !');
+          }
+        });
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', window.initRoadmapPage);
+    } else {
+      window.initRoadmapPage();
+    }
+  </script>
+
+</body>
+</html>

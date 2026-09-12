@@ -1,15 +1,14 @@
 <!DOCTYPE html><html class="scroll-smooth" lang="fr" style=""><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title data-fr="KairoOS — L'Arcade PC Réinventée" data-en="KairoOS — PC Arcade Reimagined">KairoOS — L'Arcade PC Réinventée</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script id="tailwind-config">
+<title>KairoOS — L'Arcade PC Réinventée</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400..600,0..1,-50..200" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
     tailwind.config = {
-      darkMode: "class",
       theme: {
         extend: {
           colors: {
@@ -32,98 +31,11 @@
             heading: '#0F172A',
             body: '#475569',
             muted: '#64748B',
-            "on-primary": "#ffffff",
-            "on-surface-variant": "#444653",
-            "on-background": "#191c20",
-            "primary-fixed-dim": "#b8c4ff",
-            "on-error": "#ffffff",
-            "secondary-fixed-dim": "#ffb2b7",
-            "surface-variant": "#e1e2e8",
-            "surface-container": "#eceef3",
-            "on-secondary-fixed": "#40000d",
-            "inverse-primary": "#b8c4ff",
-            "on-tertiary": "#ffffff",
-            "on-tertiary-fixed": "#00201d",
-            "surface-dim": "#d8dadf",
-            "tertiary-fixed": "#89f5e7",
-            "outline-variant": "#c4c5d5",
-            "surface-bright": "#f8f9ff",
-            "surface-container-highest": "#e1e2e8",
-            "tertiary-fixed-dim": "#6bd8cb",
-            "on-secondary-fixed-variant": "#92002a",
-            "on-surface": "#191c20",
-            "on-secondary-container": "#fffbff",
-            "surface-container-high": "#e6e8ee",
-            "on-tertiary-container": "#5fcdbf",
-            "primary-fixed": "#dde1ff",
-            "secondary-container": "#dc2c4f",
-            "outline": "#757684",
-            "primary": "#00288e",
-            "on-primary-fixed": "#001453",
-            "error-container": "#ffdad6",
-            "surface-container-low": "#f2f3f9",
-            "secondary-fixed": "#ffdadb",
-            "on-secondary": "#ffffff",
-            "secondary": "#b90538",
-            "primary-container": "#1e40af",
-            "on-primary-container": "#a8b8ff",
-            "error": "#ba1a1a",
-            "inverse-on-surface": "#eff0f6",
-            "on-error-container": "#93000a",
-            "surface-container-lowest": "#ffffff",
-            "surface-tint": "#3755c3",
-            "on-tertiary-fixed-variant": "#005049",
-            "background": "#f8f9ff",
-            "on-primary-fixed-variant": "#173bab",
-            "tertiary": "#003c36",
-            "tertiary-container": "#00554e",
-            "inverse-surface": "#2e3135"
-          },
-          borderRadius: {
-            "DEFAULT": "0.25rem",
-            "lg": "0.5rem",
-            "xl": "0.75rem",
-            "full": "9999px"
-          },
-          spacing: {
-            "margin-sm": "1.25rem",
-            "margin": "3rem",
-            "gutter": "1.5rem",
-            "space-xs": "0.25rem",
-            "space-lg": "1.75rem",
-            "space-xl": "3rem",
-            "gutter-sm": "1rem",
-            "space-md": "1rem",
-            "space-sm": "0.5rem"
           },
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'sans-serif'],
             display: ['Space Grotesk', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
-            "body-md": ["Plus Jakarta Sans", "sans-serif"],
-            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
-            "headline-md": ["Space Grotesk", "sans-serif"],
-            "body-sm": ["Plus Jakarta Sans", "sans-serif"],
-            "display-xl": ["Space Grotesk", "sans-serif"],
-            "headline-lg": ["Space Grotesk", "sans-serif"],
-            "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
-            "label-md": ["Space Grotesk", "sans-serif"],
-            "label-sm": ["Space Grotesk", "sans-serif"],
-            "display-xl-mobile": ["Space Grotesk", "sans-serif"],
-            "headline-sm": ["Space Grotesk", "sans-serif"]
-          },
-          fontSize: {
-            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }],
-            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "400" }],
-            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "500" }],
-            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0.005em", "fontWeight": "400" }],
-            "display-xl": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
-            "headline-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.025em", "fontWeight": "600" }],
-            "headline-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
-            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }],
-            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }],
-            "display-xl-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
-            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
           },
           boxShadow: {
             'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
@@ -132,11 +44,24 @@
           }
         }
       }
-    };
+    }
   </script>
-
 <style>
-    /* Ambiance lumineuse subtile façon Apple & Voiceflow */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .delay-1 { transition-delay: 100ms; }
+    .delay-2 { transition-delay: 200ms; }
+    .delay-3 { transition-delay: 300ms; }
+
+    /* Ambiance lumineuse subtile façon Voiceflow & Fora */
     .bg-light-mesh {
       background-image: 
         radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
@@ -148,301 +73,198 @@
     ::-webkit-scrollbar-track { background: #F1F5F9; }
     ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
   </style>
-  <link rel="stylesheet" href="assets/css/main.css">
-  <script src="assets/js/i18n.js"></script>
-  <script src="assets/js/components/navbar.js" defer></script>
-  <script src="assets/js/components/footer.js" defer></script>
-  <script src="assets/js/components/code-editor.js" defer></script>
-  <script src="assets/js/main.js" defer></script>
-  <script src="assets/js/kiosk-demo.js" defer></script>
-  <script src="assets/js/gamepad-visualizer.js" defer></script>
-  <script src="assets/js/router.js" defer></script>
-  <script src="assets/js/tracker.js" defer></script>
-  <script src="assets/js/content-sync.js" defer></script>
-  <script src="assets/js/admin-toolbar.js" defer></script>
 </head>
 <body class="bg-canvas text-body font-sans antialiased selection:bg-brand-500 selection:text-white relative bg-light-mesh min-h-screen">
 <!-- NAVIGATION FLOTTANTE VERRE BLANC -->
-  <kairo-navbar active="home"></kairo-navbar>
-<main class="pt-24 sm:pt-28">
+<header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
+<div class="h-16 w-full rounded-2xl bg-white/85 backdrop-blur-xl border border-black/5 shadow-subtle px-5 flex items-center justify-between gap-4">
+<!-- Brand & Logo -->
+<a class="flex items-center gap-3 group" href="#">
+<div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center p-1.5 shadow-sm group-hover:scale-105 transition-transform">
+<img alt="KairoOS Logo" class="w-full h-full object-contain filter invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSQaImWFvBHKXwSnziatYZ5Nv7U0avHr47Y9mFkIYTC3IIet-vqiRWazq_3Y2TUS91s-ac5b-TeQEvy2X6Jv7xr6qEPk1ShK0oWBtcIqI2Wcd5iHYO6pjwhrYyJIxifTT1k-DvZsm1cuTjrghJ1HNVLYmFd2n2t5t0ffwQz915COrEGbXNeFYTr9b3Np6V0j-5fiFsg-czMOzsmC-qcTql1mI0tNQcMR8m1n0TibKinQ4tpjlCC-0xd541mmZ_NvAVOCo">
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-display font-bold text-lg tracking-tight text-heading">Kairo<span class="text-brand-600">OS</span></span>
+<span class="font-mono text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">Alpha 0.1</span>
+</div>
+<span class="text-[11px] text-muted -mt-0.5 font-medium" data-en="Arcade Operating Layer" data-fr="Couche Arcade pour PC">Couche Arcade pour PC</span>
+</div>
+</a>
+<!-- Menu Items -->
+<nav class="hidden lg:flex items-center gap-1 bg-slate-100/60 p-1 rounded-xl border border-slate-200/50 text-sm font-medium"><a class="px-3.5 py-1.5 rounded-lg text-heading bg-white shadow-xs font-semibold transition-all" data-en="Home" data-fr="Accueil" href="#">Accueil</a><a class="px-3.5 py-1.5 rounded-lg text-slate-700 hover:text-heading hover:bg-white transition-all" data-en="Themes" data-fr="Thèmes" href="#themes">Thèmes</a><a class="px-3.5 py-1.5 rounded-lg text-slate-700 hover:text-heading hover:bg-white transition-all" data-en="Plugins" data-fr="Plugins" href="#plugins">Plugins</a><a class="px-3.5 py-1.5 rounded-lg text-slate-700 hover:text-heading hover:bg-white transition-all" data-en="Roadmap" data-fr="Roadmap" href="#">Roadmap</a></nav>
+<!-- Language Switcher & Call to Action -->
+<div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+<!-- Bilingual Switcher Interactif -->
+<div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-semibold shadow-xs">
+<button class="px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 bg-white text-heading shadow-xs font-bold" id="btn-fr">
+<span class="">🇫🇷</span>
+<span class="">FR</span>
+</button>
+<button class="px-2.5 py-1 rounded-lg hover:text-heading transition-all flex items-center gap-1 text-slate-500" id="btn-en">
+<span class="">🇬🇧</span>
+<span class="">EN</span>
+</button>
+</div>
+<a class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200/80 transition-all shadow-xs" href="https://github.com/KairoOS-Official/KairoOS" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[16px]">code</span>
+<span class="">GitHub</span>
+</a>
+<a class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-brand-600 transition-all shadow-subtle hover:scale-[1.02]" href="#download">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span class="" data-en="Download" data-fr="Télécharger">Télécharger</span>
+</a>
+</div>
+</div>
+</header>
+<main class="pt-28 sm:pt-36">
 <!-- HERO SECTION CLAIRE & PORTFOLIO VIVANT -->
-<section class="relative max-w-7xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6 pb-6 sm:pb-8 flex flex-col items-center justify-center text-center overflow-hidden" id="overview">
-  <div class="max-w-3xl mx-auto mb-6 reveal delay-1">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs font-semibold mb-4 shadow-xs">
-      <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
-      <span data-content-key="hero_badge" data-en="KAIRO-OS v0.1.0 ALPHA · 100% OPEN SOURCE (MIT)" data-fr="KAIRO-OS v0.1.0 ALPHA · 100% OPEN SOURCE (MIT)">KAIRO-OS v0.1.0 ALPHA · 100% OPEN SOURCE (MIT)</span>
-    </div>
-    <h1 class="text-3xl sm:text-5xl md:text-6xl font-display font-extrabold text-heading tracking-tight leading-[1.12] mb-4">
-      <span data-content-key="hero_title_line1" data-en="Your entire arcade." data-fr="Toute votre arcade.">Toute votre arcade.</span><br data-fr="Une interface épurée." data-en="A clean interface.">
-      <span data-content-key="hero_title_line2" class="bg-gradient-to-r from-brand-600 via-indigo-600 to-coral-500 bg-clip-text text-transparent" data-en="One singular interface." data-fr="Une interface épurée.">Une interface épurée.</span>
-    </h1>
-    <p data-content-key="hero_desc" class="text-sm sm:text-base md:text-lg text-muted font-normal leading-relaxed mb-6 max-w-2xl mx-auto" data-en="KairoOS transforms your Windows PC into a dedicated luxury arcade. Retro gems, native PC blockbusters, emulators and phone remote unified in an experience crafted for the gamepad." data-fr="KairoOS transforme votre PC Windows en une borne dédiée haut de gamme. Jeux rétro, blockbusters PC, émulateurs et contrôle distant réunis dans une expérience pensée exclusivement pour la manette.">KairoOS transforme votre PC Windows en une borne dédiée haut de gamme. Jeux rétro, blockbusters PC, émulateurs et contrôle distant réunis dans une expérience pensée exclusivement pour la manette.</p>
-    <div class="flex flex-wrap items-center justify-center gap-3">
-      <a class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 text-white font-semibold text-xs sm:text-sm hover:bg-brand-600 transition-all shadow-subtle hover:scale-105" href="#showcase-scroll-stage">
-        <span class="material-symbols-outlined text-[18px] text-brand-200">sports_esports</span>
-        <span data-en="Explore interactive demo" data-fr="Tester la démo interactive">Tester la démo interactive</span>
-      </a>
-      <a class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-heading font-semibold text-xs sm:text-sm hover:bg-slate-50 border border-slate-200/90 transition-all shadow-subtle" href="https://github.com/KairoOS-Official/KairoOS" rel="noopener noreferrer" target="_blank">
-        <span class="material-symbols-outlined text-[16px] text-amber-500">star</span>
-        <span data-en="Star on GitHub" data-fr="Star sur GitHub">Star sur GitHub</span>
-      </a>
-    </div>
-    <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 text-xs font-mono text-slate-500">
-      <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-emerald-600">check_circle</span> <span data-en="Windows 10 / 11 64-bit" data-fr="Windows 10 / 11 64-bit">Windows 10 / 11 64-bit</span></span>
-      <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-emerald-600">check_circle</span> <span data-en="Zero bloat &amp; setup" data-fr="Zéro configuration requise">Zéro configuration requise</span></span>
-      <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-emerald-600">check_circle</span> <span data-en="100% Gamepad navigation" data-fr="100% Contrôlable à la manette">100% Contrôlable à la manette</span></span>
-    </div>
-  </div>
+<section class="relative max-w-7xl mx-auto px-4 sm:px-8 pt-8 pb-16 overflow-hidden" id="overview">
+<div class="text-center max-w-3xl mx-auto mb-12 reveal active">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs font-semibold mb-6 shadow-xs">
+<span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+<span class="" data-en="KAIRO-OS v0.1.0 ALPHA · 100% OPEN SOURCE (MIT)" data-fr="KAIRO-OS v0.1.0 ALPHA · 100% OPEN SOURCE (MIT)">KAIRO-OS v0.1.0 ALPHA · 100% OPEN SOURCE (MIT)</span>
+</div>
+<h1 class="text-4xl sm:text-6xl font-display font-extrabold text-heading tracking-tight leading-[1.12] mb-6">
+<span class="" data-en="Your entire arcade." data-fr="Toute votre arcade.">Toute votre arcade.</span><br>
+<span class="bg-gradient-to-r from-brand-600 via-indigo-600 to-coral-500 bg-clip-text text-transparent" data-en="One singular interface." data-fr="Une interface épurée.">Une interface épurée.</span>
+</h1>
+<p class="text-lg sm:text-xl text-muted font-normal leading-relaxed mb-8 max-w-2xl mx-auto" data-en="KairoOS transforms your Windows PC into a dedicated luxury arcade. Retro gems, native PC blockbusters, emulators and phone remote unified in an experience crafted for the gamepad." data-fr="KairoOS transforme votre PC Windows en une borne dédiée haut de gamme. Jeux rétro, blockbusters PC, émulateurs et contrôle distant réunis dans une expérience pensée exclusivement pour la manette.">KairoOS transforme votre PC Windows en une borne dédiée haut de gamme. Jeux rétro, blockbusters PC, émulateurs et contrôle distant réunis dans une expérience pensée exclusivement pour la manette.</p>
+<div class="flex flex-wrap items-center justify-center gap-3.5">
+<a class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-brand-600 transition-all shadow-subtle hover:scale-105" href="#kiosk-interactive">
+<span class="material-symbols-outlined text-[20px] text-brand-200">sports_esports</span>
+<span class="" data-en="Explore interactive demo" data-fr="Tester la démo interactive">Tester la démo interactive</span>
+</a>
+<a class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-heading font-semibold text-sm hover:bg-slate-50 border border-slate-200/90 transition-all shadow-subtle" href="https://github.com/KairoOS-Official/KairoOS" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-[18px] text-amber-500">star</span>
+<span class="" data-en="Star on GitHub" data-fr="Star sur GitHub">Star sur GitHub</span>
+</a>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-6 mt-8 text-xs font-mono text-slate-500">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span> <span class="" data-en="Windows 10 / 11 64-bit" data-fr="Windows 10 / 11 64-bit">Windows 10 / 11 64-bit</span></span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span> <span class="" data-en="Zero bloat &amp; setup" data-fr="Zéro configuration requise">Zéro configuration requise</span></span>
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span> <span class="" data-en="100% Gamepad navigation" data-fr="100% Contrôlable à la manette">100% Contrôlable à la manette</span></span>
+</div>
+</div>
+<!-- SHOWCASE INTERACTIF DU PRODUIT (STYLE FORA & VOICEFLOW) -->
+<div class="reveal delay-1 w-full bg-white rounded-3xl p-3 sm:p-5 border border-slate-200/80 shadow-card relative overflow-hidden active" id="kiosk-interactive">
+<!-- Header de la fenêtre Arcade -->
+<div class="flex items-center justify-between px-4 py-3 bg-slate-50 rounded-2xl border border-slate-200/60 mb-3 text-xs">
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-rose-400 inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>
+</div>
+<span class="h-3 w-px bg-slate-300 mx-2"></span>
+<span class="font-mono font-bold text-slate-800 tracking-wide">KAIRO<span class="text-brand-600">OS</span> v0.1.0</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-mono font-semibold border border-emerald-200" data-en="KIOSK ACTIVE" data-fr="KIOSQUE EN LIGNE">KIOSQUE EN LIGNE</span>
+</div>
+<div class="hidden sm:flex items-center gap-4 text-slate-500 font-mono text-[11px]">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> 60.0 FPS · DIRECTX 12</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-brand-600">gamepad</span> XINPUT #1</span>
+<span class="font-semibold text-slate-800">21:42</span>
+</div>
+</div>
+<!-- Écran de jeu interactif émulé -->
+<div class="relative w-full rounded-2xl overflow-hidden bg-slate-950 text-white min-h-[460px] sm:min-h-[520px] flex flex-col justify-between p-6 sm:p-10 shadow-inner">
+<!-- Image de fond dynamique -->
+<div class="absolute inset-0 bg-cover bg-center transition-all duration-500 opacity-40 scale-105" id="kiosk-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByrZy06tqHJTgV8fAiab636elmeTzX4AnXnIMP_c0FtYxJKRtvYN4zJ-UfPBXlPCQnn6qo0LxN7DGOrKok-0wT0Mj1d_LbGuBNbTXt9mDCJ3umMo3a7mMMS9Pi_mRI6Wg-ftkElWccHjQ47j5PR6WPf50-8onHdaZP75JmhKdLv3SEChcmie7JZ3VSzUSYDzjD8M8YYT2rvGGh5DhHXVFG_Tbw24d2W5wzvUex78N78KuyYffBCw12Jg');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/20"></div>
+<!-- Badges hauts -->
+<div class="relative z-10 flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="px-3 py-1 bg-brand-500 text-white font-mono text-[11px] font-bold rounded-lg uppercase tracking-wider" id="game-tag">PC NATIVE / STEAM</span>
+<span class="px-3 py-1 bg-white/10 backdrop-blur-md text-slate-300 font-mono text-[11px] rounded-lg">4K 120Hz HDR</span>
+<span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono text-[11px] rounded-lg" data-en="Ready to play" data-fr="Prêt à jouer">Prêt à jouer</span>
+</div>
+<div class="flex items-center gap-2 font-mono text-xs text-slate-300 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+<span class="px-1.5 py-0.5 rounded bg-white/20 text-white font-bold text-[10px]">LB</span>
+<span class="" data-en="SYSTEMS" data-fr="CATÉGORIES">CATÉGORIES</span>
+<span class="px-1.5 py-0.5 rounded bg-white/20 text-white font-bold text-[10px]">RB</span>
+</div>
+</div>
+<!-- Titre & Description du jeu sélectionné -->
+<div class="relative z-10 max-w-2xl my-4">
+<h2 class="text-3xl sm:text-5xl font-display font-extrabold uppercase tracking-tight text-white mb-2 drop-shadow-md" id="game-title">
+              CYBERPUNK 2077
+            </h2>
+<div class="flex flex-wrap items-center gap-3 text-xs font-mono text-slate-300 mb-3">
+<span class="text-amber-400 font-bold">★ 9.5 / 10</span>
+<span class="">·</span>
+<span class="" id="game-genre">ACTION RPG · MONDE OUVERT</span>
+<span class="">·</span>
+<span class="text-brand-300" data-en="PLAYTIME : 48H" data-fr="TEMPS DE JEU : 48H">TEMPS DE JEU : 48H</span>
+</div>
+<p class="text-sm sm:text-base text-slate-300 line-clamp-2 leading-relaxed" id="game-desc">Night City, mégalopole futuriste obsédée par le pouvoir et la cybernétique. Incarnez V, mercenaire en quête d'un implant conférant l'immortalité.</p>
+</div>
+<!-- Rayonnage interactif des jaquettes de jeux (Clickable) -->
+<div class="relative z-10">
+<div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+<span class="" data-en="Quick Shelf (Click a game cover)" data-fr="Rayonnage rapide (Cliquez sur une jaquette)">Rayonnage rapide (Cliquez sur une jaquette)</span>
+<span class="text-brand-400 font-semibold" data-en="1,428 titles indexed" data-fr="1 428 jeux indexés">1 428 jeux indexés</span>
+</div>
+<div class="flex items-end gap-3.5 overflow-x-auto pb-2 pt-2 scrollbar-none" id="shelf">
+<!-- Jeu 1 -->
+<div class="game-card shrink-0 w-32 sm:w-40 rounded-xl bg-white/10 p-2 cursor-pointer transition-all border-2 border-brand-400 transform -translate-y-2 shadow-2xl backdrop-blur-md" data-bg="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" data-desc-en="Night City, a neon megalopolis obsessed with cyberware and vanity. Take on the role of V in search of an implant granting immortality." data-desc-fr="Night City, mégalopole futuriste obsédée par le pouvoir et la cybernétique. Incarnez V, mercenaire en quête d'un implant conférant l'immortalité." data-genre="ACTION RPG · MONDE OUVERT" data-tag="PC NATIVE / STEAM" data-title="CYBERPUNK 2077">
+<div class="aspect-[3/4] w-full rounded-lg overflow-hidden relative mb-2 bg-slate-800">
+<img alt="Cyberpunk" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjBq_XNrep__xjjpXb-zhAwwJSqqDawnYGWCAc18fUWTXAW61OjOB8JWuMIbL3R3hZxdmQkQb2ZQdAlpp04ldXQCSYGdKk253f_OQ3b26Vs--aPlZ5WyYUKsCIHf5JO3I2j7fZu2XB-set0aON9_0zQMCfkyAfscgrnZscpjgd9BJneHKy7UAOxg-JJ-l3PYN7fPHn_R618ieThl39lEiRLPKjVTfoLT2yXkZeN2nNuKuaAvzVEUrsqw">
+<span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded bg-brand-600 text-white font-mono text-[9px] font-bold">ACTIF</span>
+</div>
+<div class="font-bold text-xs truncate text-white">Cyberpunk 2077</div>
+<div class="text-[10px] font-mono text-brand-300">PC Direct</div>
+</div>
+<!-- Jeu 2 -->
+<div class="game-card shrink-0 w-28 sm:w-36 rounded-xl bg-white/5 hover:bg-white/15 p-2 cursor-pointer transition-all border border-white/10 opacity-80 hover:opacity-100 backdrop-blur-md" data-bg="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" data-desc-en="The pinnacle of fighting action. Tuned with sub-millisecond input lag for tournament precision." data-desc-fr="Le summum du combat arcade moderne. Mesuré avec une latence d'entrée inférieure à 1 milliseconde." data-genre="JEU DE COMBAT · VERSUS" data-tag="ARCADE / PC STEAM" data-title="STREET FIGHTER 6">
+<div class="aspect-[3/4] w-full rounded-lg overflow-hidden relative mb-2 bg-slate-800">
+<img alt="Street Fighter" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMG8JqhUteZJ946xg0mPPNvdNGsgVEIYjxewcA303Md2Jtfwl7rxl4_VX5uPKJ7PjxJSd4yJZDOtMh-fxl4yGQNcgy3IY3zY5e1bWmdSj_i1jItaIBPQ0chxHSfsrcM4o3ANdKD-TAHLyON632MdrdOiclYBE8Itt31SeoAWM9Oui6y2KzQPxhdgSAmNH8kW5RwHDz5xDyAmKja0G-Zz0wNYVqfI8rzarJ0WvyIJOOeQWJ5TXFqVB-Vg">
+</div>
+<div class="font-bold text-xs truncate text-white">Street Fighter 6</div>
+<div class="text-[10px] font-mono text-slate-400">Capcom Arcade</div>
+</div>
+<!-- Jeu 3 -->
+<div class="game-card shrink-0 w-28 sm:w-36 rounded-xl bg-white/5 hover:bg-white/15 p-2 cursor-pointer transition-all border border-white/10 opacity-80 hover:opacity-100 backdrop-blur-md" data-bg="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" data-desc-en="The legendary 16-bit time-travel masterpiece rendered with authentic CRT phosphor scanlines." data-desc-fr="Le monument 16-bit sublimé avec filtres shaders CRT phosphoriques authentiques." data-genre="JRPG · VOYAGE TEMPOREL" data-tag="SNES / RETROARCH" data-title="CHRONO TRIGGER">
+<div class="aspect-[3/4] w-full rounded-lg overflow-hidden relative mb-2 bg-slate-800">
+<img alt="Chrono Trigger" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQC0jqTacZFttBKayVdKtu496aWXEw48WmF94xdY5crfP78d5Y_4mTq3HwX7Wgy12VZwH-ja111pOcJVqTg1G2uHMGntOBu_HPcKDFzng--9Jj72PPLZOoPnvdAN3S8Qc8h_Fjyt0oQFDsL2mKGxiMPtqyDbBjP55uZCQHl3yNlDC9-5jqNRdRtX4xBNpc3sDzKnhvjLmNmDl-zQTvYy1LOIble1m78BKS9GZaBBSApg8h_BJxAGO83A">
+</div>
+<div class="font-bold text-xs truncate text-white">Chrono Trigger</div>
+<div class="text-[10px] font-mono text-slate-400">SNES 16-Bit</div>
+</div>
+<!-- Jeu 4 -->
+<div class="game-card shrink-0 w-28 sm:w-36 rounded-xl bg-white/5 hover:bg-white/15 p-2 cursor-pointer transition-all border border-white/10 opacity-80 hover:opacity-100 backdrop-blur-md" data-bg="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" data-desc-en="Atmospheric exploration on Tallon IV rendered at 4K 60 FPS locked via Dolphin Vulkan engine." data-desc-fr="Exploration de Tallon IV en 4K 60 FPS verrouillés via le moteur Vulkan haute performance de Dolphin." data-genre="AVENTURE · FPS SOLITAIRE" data-tag="GAMECUBE / DOLPHIN" data-title="METROID PRIME">
+<div class="aspect-[3/4] w-full rounded-lg overflow-hidden relative mb-2 bg-slate-800">
+<img alt="Metroid Prime" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCArEdCmX2R0V3GDLt43BL7JPfkSL_mUTWTlt3WBcRgGY3A0_ttpsO-l9UaaRu9TQ7lpqOlGi5qDVdlHVT4ceaMnnxP46iXeRxvuZwck5xJ7CGNh2qaSQR1AlU8kPENaCsSTm4CPSiqPCsN6iTmsflh8HorcaF69hBsCAuG0DMrgPYhnVyXFhvhtnvdB1DBoenQDarU0GNUvtyg79CYckI1DfU0t1HJzy3TaK1b3PzlmRGBx-5NKQgvsA">
+</div>
+<div class="font-bold text-xs truncate text-white">Metroid Prime</div>
+<div class="text-[10px] font-mono text-slate-400">GameCube Core</div>
+</div>
+<!-- Jeu 5 -->
+<div class="game-card shrink-0 w-28 sm:w-36 rounded-xl bg-white/5 hover:bg-white/15 p-2 cursor-pointer transition-all border border-white/10 opacity-80 hover:opacity-100 backdrop-blur-md" data-bg="https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" data-desc-en="The PlayStation 1 titan enhanced with PGXP precision geometry and wobble-free polygons." data-desc-fr="Le roi du combat PlayStation 1 sublimé avec correction géométrique PGXP sans scintillement." data-genre="COMBAT 3D · PLAYSTATION" data-tag="PS1 / DUCKSTATION" data-title="TEKKEN 3">
+<div class="aspect-[3/4] w-full rounded-lg overflow-hidden relative mb-2 bg-slate-800">
+<img alt="Tekken 3" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUpYAeAlHNIYx0P9BnC38GGGV6L6BK5EW0mKZx3pGZnijXBw78_Z9b0YrfR53rzcu4fDoay5zXmmkvUv-9KqDcFYqSklSa8rddmBu4zSOCAyw5LdIRbZRZ-xkG_8ieNuVvRXZjemFrAgtBTTKeIK3Q-6EDZiQG7QS0r9Qk4IGQfIw4sYW0L4t8xlHzmk7rJvOw2rpEFjesL8viBSn2GEhxRdSB_FhIEfqOAjB_okhFmMhRxwjFpNRprQ">
+</div>
+<div class="font-bold text-xs truncate text-white">Tekken 3</div>
+<div class="text-[10px] font-mono text-slate-400">PlayStation 1</div>
+</div>
+</div>
+<!-- Barre de statut manette en bas de l'écran -->
+<div class="flex flex-wrap items-center justify-between gap-3 pt-3 mt-2 border-t border-white/10 text-[11px] font-mono">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="w-4 h-4 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-[9px]">A</span> <span class="" data-en="Launch" data-fr="Lancer">Lancer</span></span>
+<span class="flex items-center gap-1"><span class="w-4 h-4 rounded-full bg-rose-500 text-white font-bold flex items-center justify-center text-[9px]">B</span> <span class="" data-en="Back" data-fr="Retour">Retour</span></span>
+<span class="flex items-center gap-1"><span class="w-4 h-4 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-[9px]">X</span> <span class="" data-en="Favorite" data-fr="Favoris">Favoris</span></span>
+</div>
+<div class="text-slate-400">
+<span class="text-white font-semibold">START + SELECT :</span> <span class="" data-en="Close game &amp; return to Kairo" data-fr="Fermer le jeu et revenir à Kairo">Fermer le jeu et revenir à Kairo</span>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
-
-<!-- SHOWCASE SCROLL-STAGE : EFFET SCROLL ZOOM ET FENÊTRE MAC OS HAUT DE GAMME (APPLE PRO FULLSCREEN) -->
-<section id="showcase-scroll-stage" class="relative w-full overflow-visible" style="height: 320vh;">
-  <div id="showcase-sticky-container" class="sticky top-0 w-full h-screen flex items-center justify-center overflow-hidden pointer-events-none">
-    <div id="kiosk-interactive" class="showcase-mac-window pointer-events-auto flex flex-col bg-slate-950/95 backdrop-blur-2xl overflow-hidden will-change-transform origin-center border border-slate-700/60 shadow-[0_25px_80px_rgba(0,0,0,0.55)]">
-      <!-- Header de la fenêtre macOS Sequoia -->
-      <div class="h-12 shrink-0 flex items-center justify-between px-4 sm:px-6 bg-slate-900/90 border-b border-white/10 select-none backdrop-blur-md">
-        <!-- Boutons Traffic Lights style macOS (Interactifs) -->
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-2" title="Contrôles macOS">
-            <button id="mac-btn-close" type="button" aria-label="Fermer / Retour au haut" class="mac-traffic-dot w-3.5 h-3.5 rounded-full bg-[#ff5f56] border border-[#e0443e] flex items-center justify-center transition-all hover:scale-125 cursor-pointer shadow-sm group focus:outline-none" title="Fermer / Revenir en haut de page">
-              <span class="opacity-0 group-hover:opacity-100 text-[9px] leading-none text-black/80 font-bold select-none">×</span>
-            </button>
-            <button id="mac-btn-zoom" type="button" aria-label="Zoom Plein Écran" class="mac-traffic-dot w-3.5 h-3.5 rounded-full bg-[#ffbd2e] border border-[#dea123] flex items-center justify-center transition-all hover:scale-125 cursor-pointer shadow-sm group focus:outline-none" title="Agrandir en plein écran (Glisser vers la démo)">
-              <span class="opacity-0 group-hover:opacity-100 text-[9px] leading-none text-black/80 font-bold select-none">−</span>
-            </button>
-            <button id="mac-btn-fullscreen" type="button" aria-label="Basculer Plein Écran" class="mac-traffic-dot w-3.5 h-3.5 rounded-full bg-[#27c93f] border border-[#1aab29] flex items-center justify-center transition-all hover:scale-125 cursor-pointer shadow-sm group focus:outline-none" title="Plein écran">
-              <span class="opacity-0 group-hover:opacity-100 text-[8px] leading-none text-black/80 font-bold select-none">+</span>
-            </button>
-          </div>
-          <span class="hidden sm:inline-block h-3.5 w-px bg-white/15 mx-1"></span>
-          <span class="font-mono font-bold text-xs text-slate-200 tracking-wide">KAIRO<span class="text-brand-400">OS</span></span>
-        </div>
-
-        <!-- Pilule centrale de titre macOS -->
-        <div class="flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-xs font-mono text-slate-300 shadow-inner">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-medium text-[11px] tracking-wide" data-en="Kiosk Engine · Direct3D 12" data-fr="Moteur Kiosque · Direct3D 12">Moteur Kiosque · Direct3D 12</span>
-        </div>
-
-        <!-- Télémétrie et statut discrets -->
-        <div class="flex items-center gap-3 font-mono text-[11px] text-slate-400">
-          <span class="hidden sm:flex items-center gap-1.5 text-emerald-400 font-semibold">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 60 FPS
-          </span>
-          <span class="hidden md:inline text-slate-600">·</span>
-          <span class="hidden md:flex items-center gap-1 text-slate-300">
-            <span class="material-symbols-outlined text-[15px] text-brand-400">gamepad</span> XInput #1
-          </span>
-          <span class="text-slate-200 font-semibold text-xs ml-1">21:42</span>
-        </div>
-      </div>
-
-      <!-- Écran de jeu interactif émulé (Plein Écran Flexible) -->
-      <div id="kiosk-stage-screen" class="flex-1 relative w-full overflow-hidden bg-slate-950 text-white flex flex-col justify-between p-5 sm:p-8 md:p-10 lg:p-12 shadow-inner select-none cursor-grab active:cursor-grabbing">
-        <!-- Boutons Flottants Précédent / Suivant (Accessibles en plein écran et sur desktop/mobile) -->
-        <button id="btn-float-prev" type="button" aria-label="Jeu précédent" class="absolute left-2.5 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/80 hover:bg-brand-600 active:scale-95 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all opacity-80 hover:opacity-100 cursor-pointer group" title="Jeu précédent (← ou glisser)">
-          <span class="material-symbols-outlined text-[20px] sm:text-[24px] group-hover:-translate-x-0.5 transition-transform">arrow_back_ios_new</span>
-        </button>
-        <button id="btn-float-next" type="button" aria-label="Jeu suivant" class="absolute right-2.5 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/80 hover:bg-brand-600 active:scale-95 border border-white/20 backdrop-blur-xl text-white flex items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all opacity-80 hover:opacity-100 cursor-pointer group" title="Jeu suivant (→ ou glisser)">
-          <span class="material-symbols-outlined text-[20px] sm:text-[24px] group-hover:translate-x-0.5 transition-transform">arrow_forward_ios</span>
-        </button>
-
-        <!-- Image de fond dynamique -->
-        <div class="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-40 scale-105" id="kiosk-bg" style="background-image: url('assets/img/wallpapers/bg-mario.jpg');"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/25"></div>
-
-        <!-- Tag système actif épuré -->
-        <div class="relative z-10 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="px-3 py-1 bg-brand-500 text-white font-mono text-[11px] font-bold rounded-lg uppercase tracking-wider shadow-sm backdrop-blur-md" id="game-tag">ARCADE / SNES EMULATED</span>
-            <span class="hidden sm:inline-block px-2.5 py-0.5 rounded bg-white/10 text-slate-300 font-mono text-[10px] tracking-wide" data-en="4K 120Hz HDR" data-fr="4K 120Hz HDR">4K 120Hz HDR</span>
-          </div>
-          <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono text-[11px]">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            Prêt à jouer
-          </span>
-        </div>
-
-        <!-- Titre & Description du jeu sélectionné -->
-        <div class="relative z-10 max-w-3xl my-auto py-2 sm:py-4">
-          <h2 class="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-extrabold uppercase tracking-tight text-white mb-2.5 drop-shadow-md transition-all" id="game-title">
-            SUPER MARIO WORLD
-          </h2>
-          <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs font-mono text-slate-300 mb-3">
-            <span class="text-amber-400 font-bold flex items-center gap-1">★ 9.5</span>
-            <span class="text-slate-500">·</span>
-            <span class="text-slate-300 font-medium" id="game-genre">PLATEFORME 2D · NINTENDO ARCADE</span>
-            <span class="text-slate-500">·</span>
-            <span class="text-brand-300 font-semibold" data-en="48H PLAYED" data-fr="48H DE JEU">48H DE JEU</span>
-          </div>
-          <p class="text-sm sm:text-base lg:text-lg text-slate-300 line-clamp-2 sm:line-clamp-3 leading-relaxed max-w-2xl transition-all" id="game-desc">
-            Le monument intemporel de Shigeru Miyamoto. Traversez Dinosaur Land aux côtés de Yoshi avec une précision de contrôle au pixel près et 96 sorties secrètes.
-          </p>
-        </div>
-
-        <!-- Rayonnage interactif des jaquettes de jeux (Clickable & Glissable) -->
-        <div class="relative z-10 pt-2">
-          <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-2">
-            <div class="flex items-center gap-2">
-              <span data-en="Scroll down to browse arcade classics" data-fr="Défilez vers le bas pour explorer l'arcade">Défilez vers le bas pour explorer l'arcade</span>
-              <span class="text-brand-400 font-semibold font-mono text-xs px-2.5 py-0.5 rounded-full bg-brand-950/70 border border-brand-500/30" id="kiosk-counter">1 / 8</span>
-            </div>
-            <!-- Boutons de changement de jeu -->
-            <div class="flex items-center gap-1.5">
-              <button id="btn-prev-game" type="button" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 text-white border border-white/15 transition-all flex items-center gap-1 text-xs font-mono group cursor-pointer" title="Jeu précédent">
-                <span class="material-symbols-outlined text-[16px] group-hover:-translate-x-0.5 transition-transform">chevron_left</span>
-                <span class="hidden sm:inline" data-fr="Précédent" data-en="Prev">Précédent</span>
-              </button>
-              <button id="btn-next-game" type="button" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 text-white border border-white/15 transition-all flex items-center gap-1 text-xs font-mono group cursor-pointer" title="Jeu suivant">
-                <span class="hidden sm:inline" data-fr="Suivant" data-en="Next">Suivant</span>
-                <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform">chevron_right</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="flex items-end gap-3 sm:gap-4 overflow-x-auto pb-4 pt-4 px-2 pr-28 sm:pr-48 scrollbar-none w-full" id="shelf">
-            <!-- Jeu 1 : Super Mario World -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border-2 border-brand-400 bg-white/15 scale-110 sm:scale-115 -translate-y-3 shadow-[0_20px_45px_rgba(99,102,241,0.45)] z-20 opacity-100 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-mario.jpg" 
-                 data-desc-en="Shigeru Miyamoto's timeless masterpiece. Journey across Dinosaur Land with Yoshi, featuring pixel-perfect controls and 96 secret exits." 
-                 data-desc-fr="Le monument intemporel de Shigeru Miyamoto. Traversez Dinosaur Land aux côtés de Yoshi avec une précision de contrôle au pixel près et 96 sorties secrètes." 
-                 data-genre="PLATEFORME 2D · NINTENDO ARCADE" 
-                 data-tag="ARCADE / SNES EMULATED" 
-                 data-title="SUPER MARIO WORLD">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Super Mario World" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/mario.png">
-                <span class="active-badge absolute top-1.5 left-1.5 px-2 py-0.5 rounded bg-brand-600 text-white font-mono text-[9px] font-bold shadow-md tracking-wider">ACTIF</span>
-              </div>
-              <div class="card-title font-bold text-xs sm:text-sm truncate text-white transition-all scale-105 origin-left">Super Mario World</div>
-              <div class="card-sub text-[10px] font-mono text-brand-300 font-semibold transition-all">Nintendo SNES</div>
-            </div>
-
-            <!-- Jeu 2 : Tekken 3 -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border border-white/10 bg-white/5 opacity-65 scale-100 translate-y-0 z-10 hover:opacity-90 hover:scale-105 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-tekken.jpg" 
-                 data-desc-en="The legendary 3D arcade fighting titan locked at 60 FPS. Master Jin Kazama, Hwoarang and Eddy Gordo with sub-frame input responsiveness." 
-                 data-desc-fr="Le titan du combat 3D arcade sublimé en 60 FPS verrouillés. Jin Kazama, Hwoarang et Eddy Gordo s'affrontent avec un timing d'entrée ultra-réactif." 
-                 data-genre="COMBAT 3D · TOURNAMENT" 
-                 data-tag="ARCADE NAMCO / PS1" 
-                 data-title="TEKKEN 3">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Tekken 3" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/tekken3.png">
-              </div>
-              <div class="card-title font-semibold text-[10px] sm:text-[11px] truncate text-slate-400 transition-all">Tekken 3</div>
-              <div class="card-sub text-[9px] font-mono text-slate-500 transition-all">Namco Arcade</div>
-            </div>
-
-            <!-- Jeu 3 : Street Fighter II -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border border-white/10 bg-white/5 opacity-65 scale-100 translate-y-0 z-10 hover:opacity-90 hover:scale-105 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-streetfighter.jpg" 
-                 data-desc-en="The quintessential arcade cabinet that defined fighting games. Unleash crushing Hadoukens and frame-perfect Shoryukens in fierce 2-player matches." 
-                 data-desc-fr="La borne d'arcade originelle qui a défini le genre. Hadoukens dévastateurs, Shoryukens millimétrés et duels multijoueur légendaires à 2 manettes." 
-                 data-genre="VERSUS FIGHTING · CLASSIQUE" 
-                 data-tag="CAPCOM CPS-1 ARCADE" 
-                 data-title="STREET FIGHTER II'">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Street Fighter II" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/streetfighter2.jpg">
-              </div>
-              <div class="card-title font-semibold text-[10px] sm:text-[11px] truncate text-slate-400 transition-all">Street Fighter II'</div>
-              <div class="card-sub text-[9px] font-mono text-slate-500 transition-all">Capcom CPS</div>
-            </div>
-
-            <!-- Jeu 4 : Tetris Grand Master -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border border-white/10 bg-white/5 opacity-65 scale-100 translate-y-0 z-10 hover:opacity-90 hover:scale-105 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-tetris.jpg" 
-                 data-desc-en="The absolute zenith of competitive arcade puzzle action. Tame 20G instant gravity, rotation locks, and ascend to Grand Master rank." 
-                 data-desc-fr="L'apogée du puzzle game arcade. Gravité supersonique 20G, gestion instantanée de la file d'attente et quête du rang suprême Grand Master." 
-                 data-genre="PUZZLE RAPIDE · COMPÉTITION" 
-                 data-tag="SEGA NAOMI / ARCADE" 
-                 data-title="TETRIS : THE GRAND MASTER">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Tetris" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/tetris.png">
-              </div>
-              <div class="card-title font-semibold text-[10px] sm:text-[11px] truncate text-slate-400 transition-all">Tetris Grand Master</div>
-              <div class="card-sub text-[9px] font-mono text-slate-500 transition-all">Arika Arcade</div>
-            </div>
-
-            <!-- Jeu 5 : Retro Snake Deluxe -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border border-white/10 bg-white/5 opacity-65 scale-100 translate-y-0 z-10 hover:opacity-90 hover:scale-105 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-snake.jpg" 
-                 data-desc-en="The timeless reflexes challenge rebuilt for arcade sticks. Navigate an authentic phosphor green CRT grid without biting your own tail." 
-                 data-desc-fr="Le roi des réflexes rétro réinventé pour stick arcade. Frayez-vous un chemin dans une grille CRT phosphorescente sans jamais mordre votre propre queue." 
-                 data-genre="SURVIE RETRO · HIGH SCORE" 
-                 data-tag="RETRO VINTAGE · 1997" 
-                 data-title="RETRO SNAKE DELUXE">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Retro Snake" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/snake.jpg">
-              </div>
-              <div class="card-title font-semibold text-[10px] sm:text-[11px] truncate text-slate-400 transition-all">Retro Snake</div>
-              <div class="card-sub text-[9px] font-mono text-slate-500 transition-all">Green Pixel CRT</div>
-            </div>
-
-            <!-- Jeu 6 : Metal Slug X -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border border-white/10 bg-white/5 opacity-65 scale-100 translate-y-0 z-10 hover:opacity-90 hover:scale-105 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-metalslug.jpg" 
-                 data-desc-en="The pinnacle of explosive Neo-Geo 2D pixel-art. Heavy machine guns, colossal mecha bosses, and unrelenting 2-player cooperative mayhem." 
-                 data-desc-fr="Le chef-d'œuvre du pixel-art explosif Neo-Geo. Armes lourdes déjantées, boss mécaniques géants et action coopérative frénétique à deux joueurs." 
-                 data-genre="RUN & GUN · CO-OP ARCADE" 
-                 data-tag="SNK NEO-GEO MVS" 
-                 data-title="METAL SLUG X">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Metal Slug X" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/metalslug.jpg">
-              </div>
-              <div class="card-title font-semibold text-[10px] sm:text-[11px] truncate text-slate-400 transition-all">Metal Slug X</div>
-              <div class="card-sub text-[9px] font-mono text-slate-500 transition-all">SNK Neo-Geo</div>
-            </div>
-
-            <!-- Jeu 7 : Pac-Man Championship -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border border-white/10 bg-white/5 opacity-65 scale-100 translate-y-0 z-10 hover:opacity-90 hover:scale-105 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-tekken.jpg" 
-                 data-desc-en="The golden arcade icon propelled at blistering speeds. Gobble glowing ghost trains, weave through shifting neon mazes, and shatter world high-scores." 
-                 data-desc-fr="L'icône jaune d'or à la vitesse de l'éclair. Enchaînez les fantômes en train, esquivez les impasses lumineuses et pulvérisez les records mondiaux." 
-                 data-genre="LABYRINTHE · HIGH SPEED" 
-                 data-tag="NAMCO ARCADE CLASSICS" 
-                 data-title="PAC-MAN CHAMPIONSHIP">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Pac-Man" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/pacman.jpg">
-              </div>
-              <div class="card-title font-semibold text-[10px] sm:text-[11px] truncate text-slate-400 transition-all">Pac-Man</div>
-              <div class="card-sub text-[9px] font-mono text-slate-500 transition-all">Namco Classics</div>
-            </div>
-
-            <!-- Jeu 8 : Sonic The Hedgehog 2 -->
-            <div class="game-card shrink-0 w-32 sm:w-36 md:w-40 rounded-2xl p-2 cursor-pointer transition-all duration-300 backdrop-blur-md border border-white/10 bg-white/5 opacity-65 scale-100 translate-y-0 z-10 hover:opacity-90 hover:scale-105 flex flex-col justify-between select-none" 
-                 data-bg="assets/img/wallpapers/bg-sonic.jpg" 
-                 data-desc-en="The blue blur blasting through Chemical Plant and Emerald Hill at Mach 1. Unleash supersonic Spin Dashes and iconic arcade synth-bass grooves." 
-                 data-desc-fr="Le hérisson bleu légendaire lancé à Mach 1 dans Chemical Plant et Emerald Hill. Spin Dash supersonique et bande-son arcade inoubliable." 
-                 data-genre="VITESSE PURE · PLATEFORME" 
-                 data-tag="SEGA MEGA-PLAY ARCADE" 
-                 data-title="SONIC THE HEDGEHOG 2">
-              <div class="card-img-wrap aspect-[3/4] w-full rounded-xl overflow-hidden relative mb-2 bg-slate-900 border border-white/10 shadow-inner">
-                <img alt="Sonic 2" class="w-full h-full object-cover transition-transform duration-300" src="assets/img/games/sonic2.png">
-              </div>
-              <div class="card-title font-semibold text-[10px] sm:text-[11px] truncate text-slate-400 transition-all">Sonic The Hedgehog 2</div>
-              <div class="card-sub text-[9px] font-mono text-slate-500 transition-all">Sega Mega-Play</div>
-            </div>
-          </div>
-
-          <!-- Barre de statut manette en bas de l'écran -->
-          <div class="flex flex-wrap items-center justify-between gap-3 pt-3 mt-2 border-t border-white/10 text-[11px] font-mono">
-            <div class="flex items-center gap-3">
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-[9px]">A</span> <span data-en="Launch" data-fr="Lancer">Lancer</span></span>
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded-full bg-rose-500 text-white font-bold flex items-center justify-center text-[9px]">B</span> <span data-en="Back" data-fr="Retour">Retour</span></span>
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-[9px]">X</span> <span data-en="Favorite" data-fr="Favoris">Favoris</span></span>
-            </div>
-            <div class="text-slate-400 text-[11px]">
-              <span class="text-white font-semibold">START + SELECT :</span> <span data-en="Close game & return to Kairo" data-fr="Fermer le jeu et revenir à Kairo">Fermer le jeu et revenir à Kairo</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- METRICS & CHIFFRES CLÉS (STYLE VOICEFLOW TECH) -->
 <section class="max-w-7xl mx-auto px-4 sm:px-8 py-8">
-<div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-card text-center">
+<div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-card text-center active">
 <div class="p-3">
 <div class="text-3xl sm:text-4xl font-display font-bold text-heading mb-1">&lt; 60 Mo</div>
 <div class="text-xs sm:text-sm font-medium text-muted" data-en="Ultra-light RAM footprint (Rust)" data-fr="Empreinte RAM ultra-légère (Rust)">Empreinte RAM ultra-légère (Rust)</div>
@@ -463,13 +285,13 @@
 </section>
 <!-- AVANT / APRÈS : LE PROBLÈME vs LA CLARTÉ KAIROOS -->
 <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16" id="experience">
-<div class="text-center max-w-3xl mx-auto mb-12 reveal">
+<div class="text-center max-w-3xl mx-auto mb-12 reveal active">
 <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100" data-en="WHY KAIROOS?" data-fr="POURQUOI KAIROOS ?">POURQUOI KAIROOS ?</span>
 <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3" data-en="Your games shouldn't feel like separate worlds." data-fr="Vos jeux ne devraient pas ressembler à un casse-tête.">Vos jeux ne devraient pas ressembler à un casse-tête.</h2>
 <p class="text-muted text-base sm:text-lg" data-en="Putting a PC inside an arcade cabinet or under a TV quickly turns into administrative chaos. KairoOS brings singular purity." data-fr="Installer un PC de jeu dans un meuble arcade ou sous une télévision tourne vite à l'enfer administratif. KairoOS remplace la fragmentation par une pureté totale.">Installer un PC de jeu dans un meuble arcade ou sous une télévision tourne vite à l'enfer administratif. KairoOS remplace la fragmentation par une pureté totale.</p>
 </div>
 <!-- Sélecteur Avant / Après -->
-<div class="reveal delay-1 max-w-4xl mx-auto">
+<div class="reveal delay-1 max-w-4xl mx-auto active">
 <div class="flex justify-center mb-6">
 <div class="inline-flex p-1 bg-slate-200/70 rounded-2xl border border-slate-300/60 shadow-inner">
 <button class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all hover:text-slate-900 bg-white text-heading shadow-subtle" data-en="❌ Traditional Windows Chaos" data-fr="❌ Le Calvaire Windows" id="toggle-chaos">❌ Le Calvaire Windows</button>
@@ -524,34 +346,34 @@
 </section>
 <!-- LES 4 PILIERS DU PROJET -->
 <section class="max-w-7xl mx-auto px-4 sm:px-8 py-14">
-<div class="text-center max-w-2xl mx-auto mb-12 reveal">
+<div class="text-center max-w-2xl mx-auto mb-12 reveal active">
 <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100" data-en="MORE THAN A LAUNCHER" data-fr="PLUS QU'UN LAUNCHER">PLUS QU'UN LAUNCHER</span>
 <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3" data-en="Engineered as an arcade layer." data-fr="L'architecture d'un système arcade.">L'architecture d'un système arcade.</h2>
 <p class="text-muted text-base" data-en="Every layer was engineered to eliminate friction and ensure sheer responsiveness." data-fr="Chaque couche a été conçue pour éliminer la friction et garantir une réactivité instantanée.">Chaque couche a été conçue pour éliminer la friction et garantir une réactivité instantanée.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-<div class="reveal delay-1 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all">
+<div class="reveal delay-1 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all active">
 <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
 <span class="material-symbols-outlined text-[26px]">folder_special</span>
 </div>
 <h3 class="font-display font-bold text-base text-heading mb-2" data-en="Game Library Vault" data-fr="Bibliothèque Unifiée">Bibliothèque Unifiée</h3>
 <p class="text-xs text-muted leading-relaxed" data-en="High-speed local SQLite vault. Scans hard drives and indexes tens of thousands of ROMs in seconds." data-fr="Base SQLite locale haute vitesse. Scanne vos disques durs et indexe des milliers de jeux en un clin d'œil.">Base SQLite locale haute vitesse. Scanne vos disques durs et indexe des milliers de jeux en un clin d'œil.</p>
 </div>
-<div class="reveal delay-2 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all">
+<div class="reveal delay-2 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all active">
 <div class="w-12 h-12 rounded-2xl bg-rose-50 text-coral-600 flex items-center justify-center mb-4">
 <span class="material-symbols-outlined text-[26px]">tune</span>
 </div>
 <h3 class="font-display font-bold text-base text-heading mb-2" data-en="Emulation Orchestrator" data-fr="Orchestrateur d'Émulateurs">Orchestrateur d'Émulateurs</h3>
 <p class="text-xs text-muted leading-relaxed" data-en="Commands RetroArch, Dolphin, PCSX2 and DuckStation with finely tuned launch flags." data-fr="Pilote RetroArch, Dolphin, PCSX2 et DuckStation avec les meilleurs arguments de démarrage graphique.">Pilote RetroArch, Dolphin, PCSX2 et DuckStation avec les meilleurs arguments de démarrage graphique.</p>
 </div>
-<div class="reveal delay-3 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all">
+<div class="reveal delay-3 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all active">
 <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center mb-4">
 <span class="material-symbols-outlined text-[26px]">terminal</span>
 </div>
 <h3 class="font-display font-bold text-base text-heading mb-2" data-en="Native PC Gaming" data-fr="Jeux PC Natifs">Jeux PC Natifs</h3>
 <p class="text-xs text-muted leading-relaxed" data-en="First-class execution of Windows (.exe) files and Steam shortcuts with zero hidden menus." data-fr="Prise en charge directe des exécutables Windows (.exe) et raccourcis Steam sans sous-menus cachés.">Prise en charge directe des exécutables Windows (.exe) et raccourcis Steam sans sous-menus cachés.</p>
 </div>
-<div class="reveal delay-1 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all">
+<div class="reveal delay-1 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all active">
 <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
 <span class="material-symbols-outlined text-[26px]">desktop_windows</span>
 </div>
@@ -561,8 +383,8 @@
 </div>
 </section>
 <!-- SYSTÈMES COMPATIBLES -->
-<section class="max-w-7xl mx-auto px-4 sm:px-8 py-20" id="systems">
-<div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-card reveal">
+<section class="max-w-7xl mx-auto px-4 sm:px-8 py-14" id="systems">
+<div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-card">
 <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
 <div>
 <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600" data-en="SUPPORTED PLATFORMS" data-fr="PLATEFORMES COMPATIBLES">PLATEFORMES COMPATIBLES</span>
@@ -588,7 +410,7 @@
 </div>
 <div class="p-4 rounded-2xl bg-slate-50 hover:bg-brand-50 border border-slate-200/80 hover:border-brand-200 transition-all text-center group cursor-pointer">
 <span class="material-symbols-outlined text-sky-600 text-[28px] group-hover:scale-110 transition-transform mb-1">disc_full</span>
-<div class="font-bold text-sm text-heading" data-fr="PlayStation 1" data-en="PlayStation 1">PlayStation 1 &amp; 2</div>
+<div class="font-bold text-sm text-heading">PlayStation 1 &amp; 2</div>
 <div class="text-[11px] font-mono text-muted">DuckStation, PCSX2</div>
 </div>
 <div class="p-4 rounded-2xl bg-slate-50 hover:bg-brand-50 border border-slate-200/80 hover:border-brand-200 transition-all text-center group cursor-pointer">
@@ -605,13 +427,13 @@
 </div>
 </section>
 <!-- CONTRÔLE 100% MANETTE -->
-<section class="max-w-7xl mx-auto px-4 sm:px-8 py-20" id="gamepad">
-<div class="text-center max-w-2xl mx-auto mb-12 reveal">
+<section class="max-w-7xl mx-auto px-4 sm:px-8 py-14" id="gamepad">
+<div class="text-center max-w-2xl mx-auto mb-12 reveal active">
 <span class="text-xs font-mono font-bold tracking-widest uppercase text-coral-600 bg-coral-50 px-3 py-1 rounded-full border border-coral-100" data-en="ZERO MOUSE · ZERO KEYBOARD" data-fr="AUCUN CURSEUR · AUCUN CLAVIER">AUCUN CURSEUR · AUCUN CLAVIER</span>
 <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3" data-en="Built for the controller &amp; arcade sticks." data-fr="Né pour les boutons d'arcade et les manettes.">Né pour les boutons d'arcade et les manettes.</h2>
 <p class="text-muted text-base" data-en="Every drawer, search filter, and settings panel can be fully controlled with a pad without touching a pointer." data-fr="Tous les menus, tiroirs de filtres et réglages sont accessibles au stick sans jamais devoir toucher un mulot.">Tous les menus, tiroirs de filtres et réglages sont accessibles au stick sans jamais devoir toucher un mulot.</p>
 </div>
-<div class="reveal delay-1 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-card max-w-4xl mx-auto">
+<div class="reveal delay-1 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-card max-w-4xl mx-auto active">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 <!-- Visual Gamepad SVG -->
 <div class="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-2xl border border-slate-200/60">
@@ -658,22 +480,22 @@
 </div>
 </section>
 <!-- MOTEUR DE THÈMES -->
-<section class="max-w-7xl mx-auto px-4 sm:px-8 py-20" id="themes">
-<div class="text-center max-w-2xl mx-auto mb-10 reveal">
+<section class="max-w-7xl mx-auto px-4 sm:px-8 py-14" id="themes">
+<div class="text-center max-w-2xl mx-auto mb-10 reveal active">
 <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100" data-en="THEME ENGINE" data-fr="MOTEUR DE THÈMES">MOTEUR DE THÈMES</span>
 <h2 class="text-3xl font-display font-bold text-heading mt-4 mb-3" data-en="Your arcade. Your style." data-fr="Votre arcade. Votre style.">Votre arcade. Votre style.</h2>
 <p class="text-muted text-base" data-en="Switch between official layout engines crafted with React 19 and Tailwind CSS." data-fr="Basculez entre les agencements officiels conçus avec React 19 et Tailwind CSS.">Basculez entre les agencements officiels conçus avec React 19 et Tailwind CSS.</p>
 </div>
-<div class="reveal delay-1 max-w-4xl mx-auto">
+<div class="reveal delay-1 max-w-4xl mx-auto active">
 <!-- Theme Tabs -->
 <div class="flex justify-center gap-2 mb-6">
-<button class="theme-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all bg-slate-900 text-white shadow-subtle" data-theme="default" data-fr="Kairo Default" data-en="Kairo Default">
+<button class="theme-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all bg-slate-900 text-white shadow-subtle" data-theme="default">
             1. Kairo Default
           </button>
-<button class="theme-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold hover:text-heading border border-slate-200/80 transition-all bg-white text-slate-600" data-theme="hub" data-fr="Kairo Hub" data-en="Kairo Hub">
+<button class="theme-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold hover:text-heading border border-slate-200/80 transition-all bg-white text-slate-600" data-theme="hub">
             2. Kairo Hub
           </button>
-<button class="theme-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold hover:text-heading border border-slate-200/80 transition-all bg-white text-slate-600" data-theme="console" data-fr="Console TV" data-en="TV Console">
+<button class="theme-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold hover:text-heading border border-slate-200/80 transition-all bg-white text-slate-600" data-theme="console">
             3. Kairo Console TV
           </button>
 </div>
@@ -681,7 +503,7 @@
 <div>
 <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
 <div>
-<h4 class="font-display font-bold text-base text-heading" id="theme-name" data-fr="Kairo Default" data-en="Kairo Default">Kairo Default Layout</h4>
+<h4 class="font-display font-bold text-base text-heading" id="theme-name">Kairo Default Layout</h4>
 <p class="text-xs text-muted" id="theme-desc">Navigation latérale par catégories et rayonnage fluide de jaquettes.</p>
 </div>
 <span class="px-2.5 py-0.5 bg-brand-50 text-brand-700 font-mono text-[11px] rounded-full font-bold">OFFICIEL</span>
@@ -714,11 +536,11 @@
 <span class="text-brand-600 font-semibold">1080p, 1440p &amp; 4K Ready</span>
 </div>
 </div>
-<div class="mt-8 text-center"><a class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-brand-600 transition-all shadow-subtle hover:scale-[1.02]" href="./themes/"><span class="material-symbols-outlined text-[18px] text-brand-300">palette</span><span data-en="Explore all themes &amp; customizations →" data-fr="Explorer tous les thèmes &amp; personnalisations →" class="">Explorer tous les thèmes &amp; personnalisations →</span></a><p class="text-xs text-muted mt-2" data-en="Custom shaders, grid layouts, marquees and community layouts available." data-fr="Shaders sur-mesure, grilles dynamiques, affichage marquee et créations communautaires.">Shaders sur-mesure, grilles dynamiques, affichage marquee et créations communautaires.</p></div></div>
+<div class="mt-8 text-center"><a class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-brand-600 transition-all shadow-subtle hover:scale-[1.02]" href="#"><span class="material-symbols-outlined text-[18px] text-brand-300">palette</span><span data-en="Explore all themes &amp; customizations →" data-fr="Explorer tous les thèmes &amp; personnalisations →" class="">Explorer tous les thèmes &amp; personnalisations →</span></a><p class="text-xs text-muted mt-2" data-en="Custom shaders, grid layouts, marquees and community layouts available." data-fr="Shaders sur-mesure, grilles dynamiques, affichage marquee et créations communautaires.">Shaders sur-mesure, grilles dynamiques, affichage marquee et créations communautaires.</p></div></div>
 </section>
 <!-- COMPAGNON SMARTPHONE (KAIRO REMOTE PWA) -->
-<section class="max-w-7xl mx-auto px-4 sm:px-8 py-20">
-<div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-float relative overflow-hidden reveal">
+<section class="max-w-7xl mx-auto px-4 sm:px-8 py-14">
+<div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-8 sm:p-12 text-white shadow-float relative overflow-hidden">
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center relative z-10">
 <div>
 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 text-xs font-mono font-semibold mb-3 border border-brand-500/30">
@@ -777,14 +599,14 @@
 </div>
 </section>
 <!-- ARCHITECTURE TECHNIQUE MODERNE (STACK) -->
-<section class="max-w-7xl mx-auto px-4 sm:px-8 py-20" id="tech">
-<div class="text-center max-w-2xl mx-auto mb-12 reveal">
+<section class="max-w-7xl mx-auto px-4 sm:px-8 py-14" id="tech">
+<div class="text-center max-w-2xl mx-auto mb-12 reveal active">
 <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100" data-en="ARCHITECTURE &amp; SPEED" data-fr="ARCHITECTURE &amp; VITESSE">ARCHITECTURE &amp; VITESSE</span>
 <h2 class="text-3xl font-display font-bold text-heading mt-4 mb-3" data-en="Fast where it matters. Modular where it counts." data-fr="Rapide là où ça compte. Modulaire partout.">Rapide là où ça compte. Modulaire partout.</h2>
 <p class="text-muted text-base" data-en="Zero Electron bloat. KairoOS is engineered on Tauri 2 with a native Rust core." data-fr="Zéro lourdeur d'Electron. KairoOS repose sur Tauri 2 et un cœur Rust ultra-rapide.">Zéro lourdeur d'Electron. KairoOS repose sur Tauri 2 et un cœur Rust ultra-rapide.</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-<div class="reveal delay-1 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between">
+<div class="reveal delay-1 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between active">
 <div>
 <span class="text-[10px] font-mono font-bold text-brand-600 uppercase">01 / PRÉSENTATION</span>
 <h3 class="text-lg font-display font-bold text-heading mt-2 mb-2">Kairo UI (React 19)</h3>
@@ -794,7 +616,7 @@
             React 19 · WebGL · CSS GPU Pipeline
           </div>
 </div>
-<div class="reveal delay-2 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between">
+<div class="reveal delay-2 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between active">
 <div>
 <span class="text-[10px] font-mono font-bold text-coral-600 uppercase">02 / RUNTIME NATIF</span>
 <h3 class="text-lg font-display font-bold text-heading mt-2 mb-2">Tauri 2 Bridge</h3>
@@ -804,7 +626,7 @@
             Tauri 2 · WebView2 · Win32 Subsystem
           </div>
 </div>
-<div class="reveal delay-3 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between">
+<div class="reveal delay-3 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between active">
 <div>
 <span class="text-[10px] font-mono font-bold text-emerald-600 uppercase">03 / CŒUR SYSTÈME</span>
 <h3 class="text-lg font-display font-bold text-heading mt-2 mb-2">Kairo Core (Rust)</h3>
@@ -818,13 +640,13 @@
 </section>
 <!-- ROADMAP OFFICIELLE -->
 <!-- FAQ ACCORDÉON -->
-<section class="max-w-3xl mx-auto px-4 sm:px-8 py-20" id="faq">
-<div class="text-center mb-10 reveal">
+<section class="max-w-3xl mx-auto px-4 sm:px-8 py-14" id="faq">
+<div class="text-center mb-10 reveal active">
 <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100" data-en="FAQ" data-fr="QUESTIONS FRÉQUENTES">QUESTIONS FRÉQUENTES</span>
 <h2 class="text-3xl font-display font-bold text-heading mt-4 mb-3" data-en="Everything you need to know." data-fr="Tout ce que vous devez savoir.">Tout ce que vous devez savoir.</h2>
 <p class="text-muted text-base" data-en="Clear answers for gamers and arcade builders." data-fr="Des réponses claires pour les joueurs et les créateurs de bornes.">Des réponses claires pour les joueurs et les créateurs de bornes.</p>
 </div>
-<div class="space-y-3" id="faq-accordion-container">
+<div class="space-y-3">
 <div class="faq-item bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
 <button class="faq-btn w-full p-4 text-left flex items-center justify-between gap-4 font-display font-bold text-sm text-heading">
 <span class="" data-en="Is KairoOS an emulator itself?" data-fr="KairoOS est-il un émulateur lui-même ?">KairoOS est-il un émulateur lui-même ?</span>
@@ -856,11 +678,11 @@
 </div>
 </section>
 <!-- CALL TO ACTION FINAL -->
-<section class="max-w-7xl mx-auto px-4 sm:px-8 py-20" id="download">
-<div class="relative rounded-3xl bg-slate-900 text-white p-8 sm:p-14 text-center shadow-float overflow-hidden reveal">
+<section class="max-w-7xl mx-auto px-4 sm:px-8 py-16" id="download">
+<div class="relative rounded-3xl bg-slate-900 text-white p-8 sm:p-14 text-center shadow-float overflow-hidden">
 <div class="relative z-10 max-w-2xl mx-auto">
 <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-5 p-2">
-<img alt="Kairo Logo" class="w-full h-full object-contain filter invert" src="assets/img/logo.png">
+<img alt="Kairo Logo" class="w-full h-full object-contain filter invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlcIZ3scB6x18QdCASmppqjn201xp1RtEo366MlS9JC1HN6Pj7e2C6NXRxAmgwmDg-rK6NqpVsJoR1IIsC1QnUAotYkr-5PMMy7k_CVMKTE2lguwjODw6wxUCCVHjE8Z83VRam7OHh9QPyrcPUVULqgN_2KQGBTDvMCteeaXdJkerxuKENsjAeVIph_E4gw-flytLD3R8ZmoSJji_Wfgdp9C5I7N1vmggKuu_Df5h8dbnEHOYfab6NqOEs_Xf7PcuAGJk">
 </div>
 <h2 class="text-3xl sm:text-5xl font-display font-extrabold tracking-tight mb-3 uppercase">
 <span class="" data-en="Your arcade." data-fr="Votre arcade.">Votre arcade.</span> <span class="text-brand-400" data-en="Your rules." data-fr="Vos règles.">Vos règles.</span>
@@ -884,18 +706,21 @@
 </section>
 </main>
 <!-- FOOTER ÉPURÉ BLANC -->
-  <kairo-footer></kairo-footer>
+<footer class="w-full bg-white border-t border-slate-200/80 pt-16 pb-12"><div class="max-w-7xl mx-auto px-4 sm:px-8"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-200/70"><div class="lg:col-span-2 space-y-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center p-1.5 shadow-sm"><img alt="Kairo Logo" class="w-full h-full object-contain filter invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVHpoxxmdCd1w9_odwU7O85LoG20UJtXUy0KSlPwc1UQMSRQfo_MxStbNjR4GmTsji0ZCEE-XESV7s1ndZp9m5PAr9U7c1Vek-CqACY_xidTigm0_YU_ydHZDzQwUqXnaoGkiechJgBtxmPRon-BYEEXtQpO0faCpK4W-Aa2BDPOzqPosR4fUi00Bt4jphXmeiP3d78sKtHKQSWS6jWMWkABESaedJjojwNioSYIZ_q1Wa6GGb7Icf0MneeTE0eK1k6kA"></div><span class="font-display font-bold text-lg tracking-tight text-heading">Kairo<span class="text-brand-600">OS</span></span><span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">v0.1.0 Alpha</span></div><p class="text-xs text-muted leading-relaxed max-w-sm" data-en="Modular, open-source operating layer crafted with editorial elegance for dedicated gaming setups." data-fr="Système d'exploitation modulaire, libre et axé sur l'élégance éditoriale">Système d'exploitation modulaire, libre et axé sur l'élégance éditoriale</p><div class="flex items-center gap-2 text-xs font-mono text-slate-500"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="">Licence MIT · Open Source</span></div></div><div><h5 class="font-mono text-[11px] font-bold uppercase tracking-wider text-heading mb-4" data-en="Navigation" data-fr="NAVIGATION">NAVIGATION</h5><ul class="space-y-2.5 text-xs font-medium text-muted"><li class=""><a class="hover:text-heading transition-colors" data-en="Home" data-fr="Accueil" href="#">Accueil</a></li><li class=""><a class="hover:text-heading transition-colors" data-en="Themes" data-fr="Thèmes" href="#themes">Thèmes</a></li><li class=""><a class="hover:text-heading transition-colors" data-en="Plugins" data-fr="Plugins" href="#plugins">Plugins</a></li><li class=""><a class="hover:text-heading transition-colors" data-en="Roadmap" data-fr="Roadmap" href="#">Roadmap</a></li></ul></div><div><h5 class="font-mono text-[11px] font-bold uppercase tracking-wider text-heading mb-4" data-en="Resources" data-fr="RESSOURCES">RESSOURCES</h5><ul class="space-y-2.5 text-xs font-medium text-muted"><li class=""><a class="hover:text-heading transition-colors" data-en="Documentation" data-fr="Documentation" href="#">Documentation</a></li><li class=""><a class="hover:text-heading transition-colors" data-en="Downloads" data-fr="Téléchargements" href="#download">Téléchargements</a></li><li class=""><a class="hover:text-heading transition-colors" data-en="Release Notes" data-fr="Notes de version" href="#">Notes de version</a></li></ul></div><div><h5 class="font-mono text-[11px] font-bold uppercase tracking-wider text-heading mb-4" data-en="Community" data-fr="COMMUNAUTÉ">COMMUNAUTÉ</h5><ul class="space-y-2.5 text-xs font-medium text-muted"><li class=""><a class="hover:text-heading transition-colors" data-en="Discord Community" data-fr="Discord Community" href="#">Discord Community</a></li><li class=""><a class="hover:text-heading transition-colors" data-en="GitHub Repository" data-fr="Dépôt GitHub" href="https://github.com/KairoOS-Official/KairoOS" rel="noopener noreferrer" target="_blank">Dépôt GitHub</a></li><li class=""><a class="hover:text-heading transition-colors" data-en="Contribute Code" data-fr="Contribuer au code" href="https://github.com/KairoOS-Official/KairoOS" rel="noopener noreferrer" target="_blank">Contribuer au code</a></li></ul></div></div><div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted"><p class="">© 2025 KairoOS Project · Crafted with precision · Open Source MIT</p><div class="flex items-center gap-4"><span class="">DirectX 12</span><span class="">·</span><span class="">Vulkan Engine</span><span class="">·</span><span class="">Rust / Tauri 2</span></div></div></div></footer>
 <!-- SCRIPT JS INTERACTIF : BILINGUISME, ANIMATIONS SCROLL, SHELF & THEMES -->
 <script>
-    window.initHomePage = function() {
+    document.addEventListener('DOMContentLoaded', function() {
       
-      // 1. SCROLL REVEAL ANIMATION & SCROLL ZOOM
-      if (typeof window.initScrollReveal === 'function') {
-        window.initScrollReveal();
-      }
-      if (typeof window.initScrollZoom === 'function') {
-        window.initScrollZoom();
-      }
+      // 1. SCROLL REVEAL ANIMATION (INTERSECTION OBSERVER)
+      const reveals = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.1 });
+      reveals.forEach(el => observer.observe(el));
 
       // 2. BILINGUAL SWITCHER (FRANÇAIS FIRST / ENGLISH TOGGLE)
       let currentLang = 'fr';
@@ -906,18 +731,16 @@
         currentLang = lang;
         document.documentElement.lang = lang;
 
-        if (btnFr && btnEn) {
-          if (lang === 'fr') {
-            btnFr.classList.add('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
-            btnFr.classList.remove('text-slate-500');
-            btnEn.classList.remove('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
-            btnEn.classList.add('text-slate-500');
-          } else {
-            btnEn.classList.add('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
-            btnEn.classList.remove('text-slate-500');
-            btnFr.classList.remove('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
-            btnFr.classList.add('text-slate-500');
-          }
+        if (lang === 'fr') {
+          btnFr.classList.add('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
+          btnFr.classList.remove('text-slate-500');
+          btnEn.classList.remove('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
+          btnEn.classList.add('text-slate-500');
+        } else {
+          btnEn.classList.add('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
+          btnEn.classList.remove('text-slate-500');
+          btnFr.classList.remove('bg-white', 'text-heading', 'shadow-xs', 'font-bold');
+          btnFr.classList.add('text-slate-500');
         }
 
         // Met à jour tous les éléments ayant data-fr / data-en
@@ -936,14 +759,44 @@
         }
       }
 
-      btnFr?.addEventListener('click', () => setLanguage('fr'));
-      btnEn?.addEventListener('click', () => setLanguage('en'));
-      if (window.kairoI18n) {
-        window.kairoI18n.onChange(lang => setLanguage(lang));
-      }
-      
+      btnFr.addEventListener('click', () => setLanguage('fr'));
+      btnEn.addEventListener('click', () => setLanguage('en'));
 
-      // 3. Kiosk interactive demo handled by kiosk-demo.js with keyboard navigation and horizontal shelf scroll
+      // 3. INTERACTIVE GAME SHELF (CLICK ON GAME COVERS)
+      const gameCards = document.querySelectorAll('.game-card');
+      const gameTitle = document.getElementById('game-title');
+      const gameTag = document.getElementById('game-tag');
+      const gameGenre = document.getElementById('game-genre');
+      const gameDesc = document.getElementById('game-desc');
+      const kioskBg = document.getElementById('kiosk-bg');
+
+      gameCards.forEach(card => {
+        card.addEventListener('click', () => {
+          gameCards.forEach(c => {
+            c.classList.remove('border-brand-400', '-translate-y-2', 'shadow-2xl', 'opacity-100');
+            c.classList.add('border-white/10', 'opacity-80');
+            const badge = c.querySelector('.bg-brand-600');
+            if (badge) badge.remove();
+          });
+
+          card.classList.add('border-brand-400', '-translate-y-2', 'shadow-2xl', 'opacity-100');
+          card.classList.remove('border-white/10', 'opacity-80');
+
+          const imgContainer = card.querySelector('.aspect-\\[3\\/4\\]');
+          if (imgContainer && !imgContainer.querySelector('.bg-brand-600')) {
+            const activeBadge = document.createElement('span');
+            activeBadge.className = 'absolute top-1.5 left-1.5 px-2 py-0.5 rounded bg-brand-600 text-white font-mono text-[9px] font-bold';
+            activeBadge.textContent = 'ACTIF';
+            imgContainer.appendChild(activeBadge);
+          }
+
+          gameTitle.textContent = card.getAttribute('data-title');
+          gameTag.textContent = card.getAttribute('data-tag');
+          gameGenre.textContent = card.getAttribute('data-genre');
+          gameDesc.textContent = card.getAttribute('data-desc-' + currentLang);
+          kioskBg.style.backgroundImage = 'url("' + card.getAttribute('data-bg') + '")';
+        });
+      });
 
       // 4. AVANT / APRÈS (CHAOS vs PURITY) TOGGLE
       const toggleChaos = document.getElementById('toggle-chaos');
@@ -951,22 +804,22 @@
       const panelChaos = document.getElementById('panel-chaos');
       const panelPurity = document.getElementById('panel-purity');
 
-      toggleChaos?.addEventListener('click', () => {
-        toggleChaos?.classList.add('bg-white', 'text-heading', 'shadow-subtle');
-        toggleChaos?.classList.remove('text-slate-600');
-        togglePurity?.classList.remove('bg-white', 'text-heading', 'shadow-subtle');
-        togglePurity?.classList.add('text-slate-600');
-        panelChaos?.classList.remove('hidden');
-        panelPurity?.classList.add('hidden');
+      toggleChaos.addEventListener('click', () => {
+        toggleChaos.classList.add('bg-white', 'text-heading', 'shadow-subtle');
+        toggleChaos.classList.remove('text-slate-600');
+        togglePurity.classList.remove('bg-white', 'text-heading', 'shadow-subtle');
+        togglePurity.classList.add('text-slate-600');
+        panelChaos.classList.remove('hidden');
+        panelPurity.classList.add('hidden');
       });
 
-      togglePurity?.addEventListener('click', () => {
-        togglePurity?.classList.add('bg-white', 'text-heading', 'shadow-subtle');
-        togglePurity?.classList.remove('text-slate-600');
-        toggleChaos?.classList.remove('bg-white', 'text-heading', 'shadow-subtle');
-        toggleChaos?.classList.add('text-slate-600');
-        panelPurity?.classList.remove('hidden');
-        panelChaos?.classList.add('hidden');
+      togglePurity.addEventListener('click', () => {
+        togglePurity.classList.add('bg-white', 'text-heading', 'shadow-subtle');
+        togglePurity.classList.remove('text-slate-600');
+        toggleChaos.classList.remove('bg-white', 'text-heading', 'shadow-subtle');
+        toggleChaos.classList.add('text-slate-600');
+        panelPurity.classList.remove('hidden');
+        panelChaos.classList.add('hidden');
       });
 
       // 5. THEMES INTERACTIVE SWITCHER
@@ -1006,14 +859,28 @@
         });
       });
 
-      // 6. FAQ Accordion handled globally by assets/js/main.js
-    };
+      // 6. FAQ ACCORDION
+      const faqItems = document.querySelectorAll('.faq-item');
+      faqItems.forEach(item => {
+        const btn = item.querySelector('.faq-btn');
+        const content = item.querySelector('.faq-content');
+        const icon = btn.querySelector('.material-symbols-outlined');
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', window.initHomePage);
-    } else {
-      window.initHomePage();
-    }
+        btn.addEventListener('click', () => {
+          const isOpen = !content.classList.contains('hidden');
+          faqItems.forEach(i => {
+            i.querySelector('.faq-content').classList.add('hidden');
+            i.querySelector('.material-symbols-outlined').style.transform = 'rotate(0deg)';
+          });
+
+          if (!isOpen) {
+            content.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+          }
+        });
+      });
+
+    });
   </script>
 
 

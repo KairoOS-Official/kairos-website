@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title data-fr="Thèmes & Personnalisation — KairoOS" data-en="Themes & Customization — KairoOS">Thèmes & Personnalisation — KairoOS</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            coral: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              500: '#f43f5e',
+              600: '#e11d48',
+            },
+            canvas: '#FBFBF9',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)',
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/components/navbar.js" defer></script>
+  <script src="../assets/js/components/footer.js" defer></script>
+  <script src="../assets/js/components/code-editor.js" defer></script>
+  <script src="../assets/js/main.js" defer></script>
+  <script src="../assets/js/kiosk-demo.js" defer></script>
+  <script src="../assets/js/gamepad-visualizer.js" defer></script>
+  <script src="../assets/js/router.js" defer></script>
+  <script src="../assets/js/tracker.js" defer></script>
+  <script src="../assets/js/content-sync.js" defer></script>
+  <script src="../assets/js/admin-toolbar.js" defer></script>
+</head>
+<body class="bg-[#FBFBF9] font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+  
+  <kairo-navbar active="themes"></kairo-navbar>
+
+  <main class="w-full pt-28 sm:pt-36 bg-[#FBFBF9] flex-1">
+    
+    <!-- HERO APPLE STYLE -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 pt-8 pb-20 text-center relative overflow-hidden">
+      <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[680px] h-[340px] bg-gradient-to-tr from-brand-500/10 via-coral-500/8 to-indigo-500/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+      
+      <div class="max-w-3xl mx-auto space-y-5">
+        <div class="reveal inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 border border-slate-200/80 shadow-xs">
+          <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+          <span data-content-key="themes_hero_badge" class="font-mono text-xs uppercase tracking-widest font-semibold text-slate-700" data-fr="Personnalisation Éditoriale" data-en="Editorial Customization">Personnalisation Éditoriale</span>
+        </div>
+
+        <h1 class="reveal delay-1 font-display font-bold text-4xl sm:text-6xl md:text-7xl tracking-tight text-heading leading-[1.08]">
+          <span data-content-key="themes_hero_title1">Votre arcade.</span><br>
+          <span data-content-key="themes_hero_title2" class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-600 to-coral-600" data-fr="Votre signature visuelle." data-en="Your visual signature.">Votre signature visuelle.</span>
+        </h1>
+
+        <p data-content-key="themes_hero_desc" class="reveal delay-2 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto" data-fr="KairoOS sépare strictement le moteur de jeu de ses palettes lumineuses. Choisissez une ambiance officielle, activez les scanlines CRT authentiques ou injectez vos propres shaders en direct." data-en="KairoOS strictly separates the gaming core from its luminous palettes. Choose an official atmosphere, enable authentic CRT scanlines, or inject custom shaders in real time.">
+          KairoOS sépare strictement le moteur de jeu de ses palettes lumineuses. Choisissez une ambiance officielle, activez les scanlines CRT authentiques ou injectez vos propres shaders en direct.
+        </p>
+
+        <!-- Quick Specs Badges -->
+        <div class="reveal delay-3 pt-4 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-slate-600">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/70 shadow-xs">
+            <span class="material-symbols-outlined text-[16px] text-brand-600">speed</span>
+            <span>Rendu GPU 120 FPS</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/70 shadow-xs">
+            <span class="material-symbols-outlined text-[16px] text-coral-500">tv</span>
+            <span>Scanlines Trinitron 15kHz</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200/70 shadow-xs">
+            <span class="material-symbols-outlined text-[16px] text-indigo-600">aspect_ratio</span>
+            <span>Format 4:3, 16:9 & TATE 9:16</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION INTERACTIVE : DE PLUS PRÈS (STYLE IPHONE DUO) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-12" id="de-plus-pres" data-apple-explorer>
+      
+      <div class="mb-8">
+        <span class="font-mono text-xs uppercase tracking-widest font-bold text-brand-600 block mb-2" data-fr="Polyvalence" data-en="Versatility">Polyvalence</span>
+        <h2 class="font-display font-bold text-3xl sm:text-5xl text-heading tracking-tight" data-fr="De plus près." data-en="A closer look.">De plus près.</h2>
+        <p class="text-sm sm:text-base text-slate-500 mt-2 max-w-xl" id="explorer-dynamic-desc" data-explorer-desc data-fr="Cliquez sur chaque mode pour voir comment KairoOS transforme l'affichage de votre borne ou salon." data-en="Click each mode to see how KairoOS transforms your arcade or living room display.">
+          Cliquez sur chaque mode pour voir comment KairoOS transforme l'affichage de votre borne ou salon.
+        </p>
+      </div>
+
+      <!-- Grande Carte Apple Container -->
+      <div class="bg-[#F5F5F7] rounded-[32px] border border-slate-200/80 p-6 sm:p-12 shadow-sm">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          <!-- Colonne Gauche : Pilules Interactives (Exactement comme iPhone Duo) -->
+          <div class="lg:col-span-4 flex flex-col gap-2.5">
+            
+            <button type="button" class="apple-pill-btn active" data-target="synthwave"
+                    data-title="Néon Synthwave 1984" 
+                    data-desc="Inspiré des nuits tokyoïtes et des salles d'arcade des années 80. Grille néon dynamique, halos magenta et scanlines ambrées.">
+              <span class="pill-icon material-symbols-outlined text-[13px]">check</span>
+              <span>Néon Synthwave</span>
+            </button>
+
+            <button type="button" class="apple-pill-btn" data-target="crt"
+                    data-title="CRT Trinitron 15kHz"
+                    data-desc="Rendu phosphore chaud, courbure de tube cathodique authentique et masque d'ouverture calibré pour retrouver le grain d'époque.">
+              <span class="pill-icon material-symbols-outlined text-[13px]">add</span>
+              <span>CRT Trinitron 15kHz</span>
+            </button>
+
+            <button type="button" class="apple-pill-btn" data-target="tv"
+                    data-title="Console TV Salon 4K"
+                    data-desc="Navigation grand écran fluide pensée pour être lue à 3 mètres de distance sur téléviseur OLED avec artbooks haute définition.">
+              <span class="pill-icon material-symbols-outlined text-[13px]">add</span>
+              <span>Console TV Salon</span>
+            </button>
+
+            <button type="button" class="apple-pill-btn" data-target="vertical"
+                    data-title="Bartop Vertical 9:16 (TATE)"
+                    data-desc="Disposition sur-mesure pour les bornes verticales et shoot'em ups d'arcade légendaires. Tout l'espace est optimisé en hauteur.">
+              <span class="pill-icon material-symbols-outlined text-[13px]">add</span>
+              <span>Bartop Vertical 9:16</span>
+            </button>
+
+            <button type="button" class="apple-pill-btn" data-target="minimal"
+                    data-title="Noir Minimal & Titane"
+                    data-desc="Une interface silencieuse en verre sombre et titane brossé. Aucune distraction, toute l'attention est portée sur vos jeux.">
+              <span class="pill-icon material-symbols-outlined text-[13px]">add</span>
+              <span>Noir Minimal</span>
+            </button>
+
+          </div>
+
+          <!-- Colonne Droite : Vitrine Visuelle Dédiée en Plein Écran de Carte -->
+          <div class="lg:col-span-8 relative min-h-[460px] flex items-center justify-center">
+            
+            <!-- Vue 1 : Synthwave (Active) -->
+            <div class="apple-explorer-view flex flex-col w-full bg-[#0a0d14] rounded-2xl border border-white/10 shadow-float overflow-hidden transition-all duration-300" data-view="synthwave">
+              <div class="h-10 bg-slate-900/90 border-b border-white/10 px-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                  <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                  <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                  <span class="text-xs font-mono text-slate-400 ml-2 font-medium">KairoOS — Synthwave Neon 1984</span>
+                </div>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">Bloom 120 FPS</span>
+              </div>
+              <div class="p-6 sm:p-8 bg-gradient-to-br from-[#0c0f1d] via-[#1a1233] to-[#0a0d14] relative overflow-hidden">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(225,29,72,0.25),transparent_70%)] pointer-events-none"></div>
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                  <div>
+                    <span class="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">THÈME ACTIF</span>
+                    <h3 class="text-2xl sm:text-3xl font-display font-bold text-white mt-1">Néon Synthwave 1984</h3>
+                    <p class="text-xs text-slate-300 mt-1">Palette électrisante · Halo magenta · Grid perspective</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                    <span class="material-symbols-outlined text-2xl">palette</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 relative z-10">
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Couleur Primaire</span>
+                    <div class="text-sm font-bold text-rose-400 font-mono mt-1">#dc2c4f</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Accent Néon</span>
+                    <div class="text-sm font-bold text-cyan-300 font-mono mt-1">#06b6d4</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Shaders Bloom</span>
+                    <div class="text-sm font-bold text-emerald-400 font-mono mt-1">Activé (0.85)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vue 2 : CRT Trinitron (Hidden) -->
+            <div class="apple-explorer-view hidden flex-col w-full bg-[#14120c] rounded-2xl border border-amber-500/20 shadow-float overflow-hidden transition-all duration-300" data-view="crt">
+              <div class="h-10 bg-amber-950/80 border-b border-amber-500/20 px-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-amber-600 inline-block"></span>
+                  <span class="text-xs font-mono text-amber-300 ml-2 font-medium">Sony Trinitron CRT Aperture Grille</span>
+                </div>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30">15.7 kHz Native</span>
+              </div>
+              <div class="p-6 sm:p-8 bg-gradient-to-br from-[#1a150a] via-[#241c0e] to-[#120f08] relative arcade-scanlines overflow-hidden">
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                  <div>
+                    <span class="text-xs font-mono text-amber-400 font-bold uppercase tracking-wider">MODE RÉTRO FIDÈLE</span>
+                    <h3 class="text-2xl sm:text-3xl font-display font-bold text-amber-100 mt-1">CRT Trinitron 15kHz</h3>
+                    <p class="text-xs text-amber-200/80 mt-1">Scanlines authentiques · Masque phosphore chaud · Zéro latence</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300">
+                    <span class="material-symbols-outlined text-2xl">tv</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 relative z-10">
+                  <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <span class="text-[10px] font-mono text-amber-300/80 uppercase">Fréquence</span>
+                    <div class="text-sm font-bold text-amber-200 font-mono mt-1">15 734 Hz</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <span class="text-[10px] font-mono text-amber-300/80 uppercase">Courbure Écran</span>
+                    <div class="text-sm font-bold text-amber-200 font-mono mt-1">R = 2.4%</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <span class="text-[10px] font-mono text-amber-300/80 uppercase">Rendu Signal</span>
+                    <div class="text-sm font-bold text-emerald-400 font-mono mt-1">RGB Péritel</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vue 3 : Console TV Salon (Hidden) -->
+            <div class="apple-explorer-view hidden flex-col w-full bg-[#0f172a] rounded-2xl border border-slate-700 shadow-float overflow-hidden transition-all duration-300" data-view="tv">
+              <div class="h-10 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span>
+                  <span class="text-xs font-mono text-slate-300 ml-2 font-medium">Console 4K 10-Foot UI</span>
+                </div>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">HDR 4K Ready</span>
+              </div>
+              <div class="p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                  <div>
+                    <span class="text-xs font-mono text-indigo-400 font-bold uppercase tracking-wider">EXPÉRIENCE SALON</span>
+                    <h3 class="text-2xl sm:text-3xl font-display font-bold text-white mt-1">Console TV Salon 4K</h3>
+                    <p class="text-xs text-slate-300 mt-1">Typographie haute visibilité · Navigation ultra-rapide à la manette</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+                    <span class="material-symbols-outlined text-2xl">sports_esports</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 relative z-10">
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Résolution</span>
+                    <div class="text-sm font-bold text-white font-mono mt-1">3840 x 2160</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Support Manette</span>
+                    <div class="text-sm font-bold text-emerald-400 font-mono mt-1">XInput & PS5</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Distance Vue</span>
+                    <div class="text-sm font-bold text-indigo-300 font-mono mt-1">3 à 5 mètres</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vue 4 : Bartop Vertical (Hidden) -->
+            <div class="apple-explorer-view hidden flex-col w-full bg-[#111827] rounded-2xl border border-purple-500/20 shadow-float overflow-hidden transition-all duration-300" data-view="vertical">
+              <div class="h-10 bg-slate-900 border-b border-purple-500/20 px-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span>
+                  <span class="text-xs font-mono text-purple-300 ml-2 font-medium">Format Vertical TATE 9:16</span>
+                </div>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">SHMUP Arcade</span>
+              </div>
+              <div class="p-6 sm:p-8 bg-gradient-to-br from-[#181126] via-[#23153b] to-[#120d1c] relative overflow-hidden">
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                  <div>
+                    <span class="text-xs font-mono text-purple-400 font-bold uppercase tracking-wider">BORNE VERTICALE</span>
+                    <h3 class="text-2xl sm:text-3xl font-display font-bold text-white mt-1">Bartop Vertical 9:16</h3>
+                    <p class="text-xs text-slate-300 mt-1">Conçu pour Ikaruga, DoDonPachi, Pac-Man et les flippers virtuels</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                    <span class="material-symbols-outlined text-2xl">stay_current_portrait</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 relative z-10">
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Ratio Pivot</span>
+                    <div class="text-sm font-bold text-purple-300 font-mono mt-1">9:16 Portrait</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Marquee Dédié</span>
+                    <div class="text-sm font-bold text-emerald-400 font-mono mt-1">Haut d'écran</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <span class="text-[10px] font-mono text-slate-400 uppercase">Rotation Auto</span>
+                    <div class="text-sm font-bold text-purple-300 font-mono mt-1">0° / 90° / 270°</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vue 5 : Noir Minimal (Hidden) -->
+            <div class="apple-explorer-view hidden flex-col w-full bg-[#09090b] rounded-2xl border border-zinc-800 shadow-float overflow-hidden transition-all duration-300" data-view="minimal">
+              <div class="h-10 bg-zinc-900 border-b border-zinc-800 px-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-zinc-600 inline-block"></span>
+                  <span class="text-xs font-mono text-zinc-400 ml-2 font-medium">Titanium Dark Silence</span>
+                </div>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">Monochrome</span>
+              </div>
+              <div class="p-6 sm:p-8 bg-zinc-950 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-6 relative z-10">
+                  <div>
+                    <span class="text-xs font-mono text-zinc-400 font-bold uppercase tracking-wider">ÉLÉGANCE PURE</span>
+                    <h3 class="text-2xl sm:text-3xl font-display font-bold text-white mt-1">Noir Minimal & Titane</h3>
+                    <p class="text-xs text-zinc-400 mt-1">Aucune couleur superflue · Contraste OLED parfait · Discrétion absolue</p>
+                  </div>
+                  <div class="w-12 h-12 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300">
+                    <span class="material-symbols-outlined text-2xl">contrast</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3 relative z-10">
+                  <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800">
+                    <span class="text-[10px] font-mono text-zinc-500 uppercase">Fond d'écran</span>
+                    <div class="text-sm font-bold text-zinc-200 font-mono mt-1">Noir 100% OLED</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800">
+                    <span class="text-[10px] font-mono text-zinc-500 uppercase">Typographie</span>
+                    <div class="text-sm font-bold text-zinc-100 font-mono mt-1">Plus Jakarta Sans</div>
+                  </div>
+                  <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800">
+                    <span class="text-[10px] font-mono text-zinc-500 uppercase">Animations</span>
+                    <div class="text-sm font-bold text-emerald-400 font-mono mt-1">Ultra-subtiles</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- 3. SIMULATEUR INTERACTIF DE SHADERS CRT & EFFETS D'OPTIQUE -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="bg-[#F5F5F7] rounded-[32px] p-8 sm:p-14 border border-slate-200/80 reveal">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <span data-content-key="themes_crt_badge" class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">SIMULATEUR DE SHADERS EN DIRECT</span>
+          <h2 data-content-key="themes_crt_title" class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-2" data-en="Dial in your authentic retro feel." data-fr="Ajustez l'optique rétro au millimètre.">Ajustez l'optique rétro au millimètre.</h2>
+          <p data-content-key="themes_crt_desc" class="text-xs sm:text-sm text-muted" data-en="Test our GPU shader parameters in real-time. From subtle arcade bloom to authentic Sony PVM aperture lines." data-fr="Testez en direct les paramètres de nos shaders GPU. Du bloom néon subtil aux lignes cathodiques authentiques d'un moniteur Sony PVM.">
+            Testez en direct les paramètres de nos shaders GPU. Du bloom néon subtil aux lignes cathodiques authentiques d'un moniteur Sony PVM.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Contrôles interactifs à curseurs (Sliders) -->
+          <div class="lg:col-span-5 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-subtle space-y-5 select-none">
+            <h4 class="font-display font-bold text-sm text-heading pb-2 border-b border-slate-100 flex items-center justify-between">
+              <span>Paramètres Optiques GPU</span>
+              <span class="font-mono text-[11px] text-emerald-600 font-semibold">DirectX 12 / HLSL</span>
+            </h4>
+
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1.5">
+                <span class="text-slate-600">Scanlines 15kHz (Opacité)</span>
+                <span id="val-scanlines" class="text-brand-600 font-bold">50%</span>
+              </div>
+              <input type="range" min="0" max="100" value="50" id="slider-scanlines" class="w-full accent-brand-600 cursor-pointer">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1.5">
+                <span class="text-slate-600">Courbure du Tube CRT</span>
+                <span id="val-curve" class="text-brand-600 font-bold">12px</span>
+              </div>
+              <input type="range" min="0" max="30" value="12" id="slider-curve" class="w-full accent-brand-600 cursor-pointer">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1.5">
+                <span class="text-slate-600">Halo Phosphore & Bloom</span>
+                <span id="val-bloom" class="text-brand-600 font-bold">40%</span>
+              </div>
+              <input type="range" min="0" max="100" value="40" id="slider-bloom" class="w-full accent-brand-600 cursor-pointer">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-mono mb-1.5">
+                <span class="text-slate-600">Vignettage Bords Noirs</span>
+                <span id="val-vignette" class="text-brand-600 font-bold">35%</span>
+              </div>
+              <input type="range" min="0" max="100" value="35" id="slider-vignette" class="w-full accent-brand-600 cursor-pointer">
+            </div>
+
+            <div class="pt-2">
+              <button id="btn-reset-shaders" type="button" class="w-full py-2 rounded-xl text-xs font-mono font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+                ↺ Réinitialiser au profil Trinitron Usine
+              </button>
+            </div>
+          </div>
+
+          <!-- Écran de prévisualisation réactif en temps réel -->
+          <div class="lg:col-span-7 flex flex-col items-center justify-center">
+            <div id="crt-preview-box" class="relative w-full aspect-[16/10] bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-700 shadow-2xl transition-all duration-150 flex flex-col justify-between p-6 text-white" style="border-radius: 12px; box-shadow: 0 0 40px rgba(99,102,241,0.25);">
+              
+              <!-- Scanlines overlay dynamique -->
+              <div id="crt-scanline-layer" class="absolute inset-0 pointer-events-none z-20 arcade-scanlines" style="opacity: 0.5;"></div>
+
+              <!-- Vignette shadow overlay dynamique -->
+              <div id="crt-vignette-layer" class="absolute inset-0 pointer-events-none z-20" style="background: radial-gradient(circle at center, transparent 55%, rgba(0,0,0,0.6) 100%);"></div>
+
+              <!-- Contenu simulé du jeu -->
+              <div class="relative z-10 flex items-center justify-between font-mono text-[11px] text-slate-400">
+                <span class="flex items-center gap-1.5 text-emerald-400 font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> 60.0 FPS LOCKED</span>
+                <span class="text-slate-500">KAIRO-OS · DIRECT3D 12 VIEWPORT</span>
+                <span class="text-amber-400 font-bold">15 734 Hz</span>
+              </div>
+
+              <div class="relative z-10 my-auto text-center py-4">
+                <div class="inline-block px-3 py-1 rounded-full bg-white/10 text-cyan-300 font-mono text-xs mb-2 border border-white/15">
+                  ÉMULATION SONY TRINITRON 15kHz
+                </div>
+                <h3 id="crt-game-preview-title" class="text-3xl sm:text-4xl font-display font-extrabold uppercase tracking-tight text-white drop-shadow-[0_0_15px_rgba(99,102,241,0.8)]">
+                  STREET FIGHTER ALPHA 3
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-300 max-w-md mx-auto mt-2 font-mono">
+                  CP System II · 384×224 Natif · Rendu Pixel-Art Phosphore
+                </p>
+              </div>
+
+              <div class="relative z-10 flex items-center justify-between text-[11px] font-mono border-t border-white/15 pt-3 text-slate-400">
+                <span>PRESS COIN TO PLAY</span>
+                <span class="text-brand-300 font-bold">CREDIT 02</span>
+              </div>
+            </div>
+            <p class="text-xs text-muted font-mono mt-3">Rendu matériel Direct3D 12 sans aucune baisse de performance.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. POLYVALENCE MATÉRIELLE & FORMATS D'ÉCRAN D'ARCADE -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">COMPATIBILITÉ ÉCRANS & RATIOS</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3" data-en="Adapts to your exact cabinet geometry." data-fr="S'adapte exactement à la géométrie de votre meuble.">S'adapte exactement à la géométrie de votre meuble.</h2>
+        <p class="text-muted text-sm sm:text-base leading-relaxed" data-en="Whether you operate an authentic 4:3 CRT tube, a 9:16 vertical bartop, or a 4K 16:9 OLED living room display, KairoOS composes every element with sub-pixel perfection." data-fr="Que vous possédiez un tube CRT 4:3 vintage, un bartop vertical 9:16 ou une télévision 16:9 4K OLED, KairoOS recompose automatiquement l'interface au pixel près.">
+          Que vous possédiez un tube CRT 4:3 vintage, un bartop vertical 9:16 ou une télévision 16:9 4K OLED, KairoOS recompose automatiquement l'interface au pixel près.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-1">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[26px]">tv</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Cathodique Vintage 4:3</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Idéal pour les bornes d'arcade authentiques (Astro City, New Astro City, Egret II). Résolution 240p / 480i native sans aucun étirement de pixels.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 text-xs font-mono text-amber-600 font-semibold">
+            Pixel Ratio 1:1 Intact
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-2">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[26px]">stay_current_portrait</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Bartop Vertical 9:16 (TATE)</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Optimisé pour les Shoot'em up verticaux légendaires (Cave, Toaplan, Ikaruga) et les tables de flipper virtuel. Marquee interactif en haut d'écran.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 text-xs font-mono text-purple-600 font-semibold">
+            Rotation 90° Native
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-3">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[26px]">desktop_windows</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Salon 16:9 & Ultra-Large 21:9</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Conçu pour les téléviseurs OLED de salon et moniteurs incurvés. Rayonnage étendu, fanarts immersifs 4K HDR et contrastes infinis.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 text-xs font-mono text-indigo-600 font-semibold">
+            4K 120Hz HDR Ready
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION SOUS LE CAPOT & EDITEUR DE CODE -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-5 space-y-5">
+          <span class="font-mono text-xs uppercase tracking-widest font-bold text-brand-600 block" data-fr="Architecture Ouverte" data-en="Open Architecture">Architecture Ouverte</span>
+          <h2 class="font-display font-bold text-3xl sm:text-5xl text-heading tracking-tight leading-tight">
+            Un simple fichier JSON.<br>
+            <span class="text-slate-500 font-medium text-2xl sm:text-4xl">Des possibilités illimitées.</span>
+          </h2>
+          <p class="text-slate-600 text-base leading-relaxed">
+            Chaque thème est défini de manière déclarative dans un fichier <code class="px-2 py-0.5 rounded-lg bg-slate-100 font-mono text-sm text-brand-700 border border-slate-200">theme.json</code>. Pas de code obscur : vous contrôlez les couleurs, les sons d'interface et les shaders GPU.
+          </p>
+          <div class="space-y-3 pt-2 text-sm text-slate-700">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-emerald-600 text-lg">check_circle</span>
+              <span>Rechargement à chaud instantané (Hot-Reload)</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-emerald-600 text-lg">check_circle</span>
+              <span>Shaders GPU natifs HLSL / GLSL sans perte de FPS</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-emerald-600 text-lg">check_circle</span>
+              <span>Sons de navigation personnalisés (.wav, .ogg)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Composant Éditeur Unifié -->
+        <div class="lg:col-span-7">
+          <kairo-code-editor title="Spécification Thème">
+            <!-- Fichier 1 : theme.json -->
+            <div data-filename="theme.json" data-lang="JSON" data-badge="Manifest" data-active="true">
+{
+  <span class="text-rose-400">"name"</span>: <span class="text-amber-300">"Neon Synthwave 1984"</span>,
+  <span class="text-rose-400">"author"</span>: <span class="text-amber-300">"Kairo Community"</span>,
+  <span class="text-rose-400">"version"</span>: <span class="text-amber-300">"1.0.0"</span>,
+  <span class="text-rose-400">"layoutCompatibility"</span>: [<span class="text-amber-300">"default"</span>, <span class="text-amber-300">"hub"</span>, <span class="text-amber-300">"tv"</span>, <span class="text-amber-300">"vertical"</span>],
+  <span class="text-rose-400">"tokens"</span>: {
+    <span class="text-rose-400">"--kairo-accent"</span>: <span class="text-cyan-300">"#dc2c4f"</span>,
+    <span class="text-rose-400">"--kairo-bg-primary"</span>: <span class="text-cyan-300">"#0a0d14"</span>,
+    <span class="text-rose-400">"--kairo-surface-card"</span>: <span class="text-cyan-300">"#161b26"</span>,
+    <span class="text-rose-400">"--kairo-crt-scanlines"</span>: <span class="text-emerald-400">true</span>,
+    <span class="text-rose-400">"--kairo-crt-curvature"</span>: <span class="text-purple-300">0.03</span>,
+    <span class="text-rose-400">"--kairo-card-radius"</span>: <span class="text-amber-300">"16px"</span>
+  },
+  <span class="text-rose-400">"soundtrack"</span>: {
+    <span class="text-rose-400">"bgmAmbient"</span>: <span class="text-amber-300">"assets/audio/synth_loop.ogg"</span>,
+    <span class="text-rose-400">"cursorNavigate"</span>: <span class="text-amber-300">"assets/audio/tick.wav"</span>,
+    <span class="text-rose-400">"gameLaunch"</span>: <span class="text-amber-300">"assets/audio/insert_coin.wav"</span>
+  }
+}
+            </div>
+
+            <!-- Fichier 2 : tokens.css -->
+            <div data-filename="tokens.css" data-lang="CSS" data-badge="Shaders">
+<span class="text-slate-500">/* Variables de Rendu Direct3D 12 / Vulkan */</span>
+<span class="text-purple-400">:root</span> {
+  <span class="text-sky-300">--crt-bloom</span>: <span class="text-amber-300">0.85</span>;
+  <span class="text-sky-300">--phosphor-mask</span>: <span class="text-amber-300">url('shaders/aperture_grille.png')</span>;
+  <span class="text-sky-300">--ambient-mesh-opacity</span>: <span class="text-amber-300">0.45</span>;
+  <span class="text-sky-300">--glow-color-primary</span>: <span class="text-emerald-400">#6366f1</span>;
+  <span class="text-sky-300">--glow-color-accent</span>: <span class="text-emerald-400">#f43f5e</span>;
+}
+
+<span class="text-purple-400">.game-marquee-card</span> {
+  <span class="text-sky-300">backdrop-filter</span>: <span class="text-amber-300">blur(24px) saturate(180%)</span>;
+  <span class="text-sky-300">box-shadow</span>: <span class="text-amber-300">0 30px 60px -12px rgba(15, 23, 42, 0.45)</span>;
+  <span class="text-sky-300">transform</span>: <span class="text-amber-300">perspective(1000px) rotateY(-4deg)</span>;
+}
+            </div>
+          </kairo-code-editor>
+        </div>
+
+      </div>
+    </section>
+
+  
+    <!-- 5. LES THÈMES LES PLUS PLÉBISCITÉS PAR LA COMMUNAUTÉ -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16" id="community-themes">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">COMMUNAUTÉ & CRÉATIONS</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3">Les thèmes les plus plébiscités.</h2>
+        <p class="text-muted text-sm sm:text-base leading-relaxed">
+          Téléchargeables en un clic ou personnalisables directement dans vos dossiers locaux.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Theme 1 : Tokyo Cyber Arcade -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-1">
+          <div>
+            <div class="aspect-[16/10] rounded-2xl bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 p-4 flex flex-col justify-between mb-4 border border-purple-500/20 shadow-inner relative overflow-hidden">
+              <div class="flex justify-between items-center z-10 font-mono text-[10px] text-purple-300">
+                <span>TOKYO 2088</span>
+                <span class="px-2 py-0.5 rounded bg-purple-500/30 text-purple-200">120 FPS</span>
+              </div>
+              <div class="z-10">
+                <span class="text-white font-bold text-base block font-display">Tokyo Cyber</span>
+                <span class="text-xs text-purple-300 font-mono">Néon Magenta &amp; Shaders</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display font-bold text-base text-heading">Tokyo Cyber Arcade</h3>
+              <span class="text-amber-500 font-bold text-xs flex items-center gap-1 font-mono">★ 4.9</span>
+            </div>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Inspiré des salles d'arcade d'Akihabara. Scanlines fines horizontales, reflets dynamiques et ambiance sonore lo-fi.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>1 240 installs</span>
+            <span class="text-brand-600 font-semibold">Par @kenji_arcade</span>
+          </div>
+        </div>
+
+        <!-- Theme 2 : Atelier Minimaliste -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-2">
+          <div>
+            <div class="aspect-[16/10] rounded-2xl bg-zinc-950 p-4 flex flex-col justify-between mb-4 border border-zinc-800 shadow-inner relative overflow-hidden">
+              <div class="flex justify-between items-center z-10 font-mono text-[10px] text-zinc-400">
+                <span>MONOCHROME</span>
+                <span class="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">OLED SAFE</span>
+              </div>
+              <div class="z-10">
+                <span class="text-white font-bold text-base block font-display">Atelier Noir</span>
+                <span class="text-xs text-zinc-400 font-mono">Typographie pure</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display font-bold text-base text-heading">Atelier Minimaliste</h3>
+              <span class="text-amber-500 font-bold text-xs flex items-center gap-1 font-mono">★ 4.8</span>
+            </div>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Zéro distraction. Contraste infini pour écrans OLED et téléviseurs de salon avec mise en valeur exclusive de vos jaquettes.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>890 installs</span>
+            <span class="text-brand-600 font-semibold">Par @lucas_design</span>
+          </div>
+        </div>
+
+        <!-- Theme 3 : Phosphore Ambre 1982 -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-3">
+          <div>
+            <div class="aspect-[16/10] rounded-2xl bg-[#141006] p-4 flex flex-col justify-between mb-4 border border-amber-500/20 shadow-inner relative overflow-hidden arcade-scanlines">
+              <div class="flex justify-between items-center z-10 font-mono text-[10px] text-amber-300">
+                <span>VT220 CRT</span>
+                <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-200">AMBER GLOW</span>
+              </div>
+              <div class="z-10">
+                <span class="text-amber-100 font-bold text-base block font-display">Ambre 1982</span>
+                <span class="text-xs text-amber-300/80 font-mono">Phosphore P3 monochrome</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display font-bold text-base text-heading">Phosphore Ambre 1982</h3>
+              <span class="text-amber-500 font-bold text-xs flex items-center gap-1 font-mono">★ 5.0</span>
+            </div>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Rendu fidèle des premiers terminaux informatiques et bornes vectorielles avec traînée de persistance rétinienne.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>640 installs</span>
+            <span class="text-brand-600 font-semibold">Par @retro_vault</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. CARTE BLEUE CTA POUR PROPOSER UN THÈME (HARMONISÉE APPLE) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16" id="themes-cta">
+      <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-[32px] p-8 sm:p-14 text-white shadow-float relative overflow-hidden reveal">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-200 font-mono text-xs font-semibold mb-4 border border-white/15">
+            CRÉATEURS & DESIGNERS
+          </div>
+
+          <h2 class="text-3xl sm:text-5xl font-display font-extrabold tracking-tight mb-4 leading-tight">
+            Vous avez conçu un thème pour KairoOS ?
+          </h2>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-8">
+            Partagez votre vision esthétique avec la communauté des passionnés d'arcade. Soumettez votre fichier <code class="text-cyan-300 font-mono">theme.json</code> et vos shaders sur GitHub pour intégrer le catalogue officiel.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4">
+            <a class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-slate-950 font-display font-bold text-sm hover:bg-slate-100 transition-all shadow-subtle hover:scale-105" href="https://github.com/KairoOS-Official/KairoOS" rel="noopener noreferrer" target="_blank">
+              <span class="material-symbols-outlined text-[20px] text-brand-600">palette</span>
+              <span>Publier mon thème sur GitHub</span>
+            </a>
+
+            <a class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-display font-bold text-sm backdrop-blur-md transition-all border border-white/15" href="https://github.com/KairoOS-Official/KairoOS#themes" rel="noopener noreferrer" target="_blank">
+              <span class="material-symbols-outlined text-[18px] text-amber-300">description</span>
+              <span>Documentation Design System</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+  </main>
+
+  <kairo-footer></kairo-footer>
+
+
+  <script>
+    window.initThemesPage = function() {
+      // 1. Déclenchement du composant "De plus près"
+      if (typeof window.initDePlusPres === 'function') {
+        window.initDePlusPres();
+      }
+
+      // 2. Simulateur interactif de shaders en direct
+      const sScanlines = document.getElementById('slider-scanlines');
+      const sCurve = document.getElementById('slider-curve');
+      const sBloom = document.getElementById('slider-bloom');
+      const sVignette = document.getElementById('slider-vignette');
+      const btnReset = document.getElementById('btn-reset-shaders');
+
+      const vScanlines = document.getElementById('val-scanlines');
+      const vCurve = document.getElementById('val-curve');
+      const vBloom = document.getElementById('val-bloom');
+      const vVignette = document.getElementById('val-vignette');
+
+      const previewBox = document.getElementById('crt-preview-box');
+      const scanLayer = document.getElementById('crt-scanline-layer');
+      const vignetteLayer = document.getElementById('crt-vignette-layer');
+
+      function updateShaders() {
+        if (!previewBox) return;
+        const scan = sScanlines.value;
+        const curve = sCurve.value;
+        const bloom = sBloom.value;
+        const vig = sVignette.value;
+
+        if (vScanlines) vScanlines.textContent = scan + '%';
+        if (vCurve) vCurve.textContent = curve + 'px';
+        if (vBloom) vBloom.textContent = bloom + '%';
+        if (vVignette) vVignette.textContent = vig + '%';
+
+        if (scanLayer) scanLayer.style.opacity = (scan / 100).toString();
+        if (previewBox) {
+          previewBox.style.borderRadius = curve + 'px';
+          const glowPx = Math.round(bloom * 0.8);
+          previewBox.style.boxShadow = `0 0 ${glowPx}px rgba(99,102,241,${bloom / 100 * 0.6})`;
+        }
+        if (vignetteLayer) {
+          vignetteLayer.style.background = `radial-gradient(circle at center, transparent ${100 - vig}%, rgba(0,0,0,${vig / 100 * 0.9}) 100%)`;
+        }
+      }
+
+      [sScanlines, sCurve, sBloom, sVignette].forEach(input => {
+        input?.addEventListener('input', updateShaders);
+      });
+
+      btnReset?.addEventListener('click', () => {
+        if (sScanlines) sScanlines.value = 50;
+        if (sCurve) sCurve.value = 12;
+        if (sBloom) sBloom.value = 40;
+        if (sVignette) sVignette.value = 35;
+        updateShaders();
+        if (typeof window.showToast === 'function') {
+          window.showToast('Profil Trinitron Usine restauré !');
+        }
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', window.initThemesPage);
+    } else {
+      window.initThemesPage();
+    }
+  </script>
+
+</body>
+</html>
