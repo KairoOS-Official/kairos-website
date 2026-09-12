@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration Complète & Analytics — KairoOS</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#1e1b4b' },
+            coral: { 50: '#fff1f2', 100: '#ffe4e6', 500: '#f43f5e', 600: '#e11d48' },
+            canvas: '#F8FAFC',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'card': '0 20px 40px -15px rgba(0,0,0,0.05), 0 0 1px 1px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen">
+
+  <!-- 1. ÉCRAN DE CONNEXION (AFFICHÉ SI NON AUTHENTIFIÉ) -->
+  <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 shadow-float border border-slate-200/80">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-900 text-white font-display font-extrabold text-2xl shadow-lg mb-4">
+          K
+        </div>
+        <h1 class="text-2xl font-display font-bold text-heading">Portail KairoOS Admin</h1>
+        <p class="text-xs text-muted mt-1.5">Gestion bilingue intégrale, base de données SQLite & suivi des clics en temps réel.</p>
+      </div>
+
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1.5" for="username">Identifiant</label>
+          <input id="username" type="text" value="admin" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+        </div>
+        <div>
+          <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1.5" for="password">Mot de passe</label>
+          <input id="password" type="password" value="admin123" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+        </div>
+
+        <div id="login-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">error</span>
+          <span id="login-error-text">Identifiants incorrects</span>
+        </div>
+
+        <button type="submit" id="btn-login" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <span class="material-symbols-outlined text-base">lock_open</span>
+          <span>Se connecter</span>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+        <a href="/" class="text-xs text-brand-600 hover:text-brand-700 font-medium flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+          <span>Retourner sur le site public</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PANNEAU DE BORD PRINCIPAL (AFFICHÉ QUAND CONNECTÉ) -->
+  <div id="dashboard-container" class="hidden min-h-screen flex flex-col">
+    
+    <!-- Topbar Admin -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 px-6 py-3 flex items-center justify-between shadow-xs">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-slate-900 text-white font-display font-extrabold text-base flex items-center justify-center">K</div>
+          <span class="font-display font-bold text-base text-heading">KairoOS <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-100">ADMIN PRO</span></span>
+        </div>
+        <div class="h-4 w-[1px] bg-slate-200 hidden lg:block"></div>
+        <div class="hidden lg:flex items-center gap-1.5 text-xs">
+          <a href="/fr/" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">home</span>
+            <span>Accueil</span>
+          </a>
+          <a href="/fr/themes" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">palette</span>
+            <span>Thèmes</span>
+          </a>
+          <a href="/fr/plugins" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">extension</span>
+            <span>Plugins</span>
+          </a>
+          <a href="/fr/roadmap" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">timeline</span>
+            <span>Roadmap</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Sélecteur de Langue d'Édition Admin -->
+        <div class="flex items-center bg-slate-100 rounded-full p-0.5 border border-slate-200 text-xs font-mono font-bold">
+          <button id="btn-admin-lang-fr" type="button" class="px-3 py-1 rounded-full bg-white shadow-xs text-slate-900 transition-all">🇫🇷 FR</button>
+          <button id="btn-admin-lang-en" type="button" class="px-3 py-1 rounded-full text-slate-500 hover:text-slate-900 transition-all">🇬🇧 EN</button>
+        </div>
+
+        <button id="btn-open-live-edit" type="button" class="px-3.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer">
+          <span class="material-symbols-outlined text-sm text-amber-600">edit</span>
+          <span class="hidden md:inline">Mode Édition Directe</span>
+        </button>
+
+        <button id="btn-logout" type="button" class="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer">
+          <span class="material-symbols-outlined text-sm">logout</span>
+          <span class="hidden md:inline">Déconnexion</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Subnav Tabs (6 Onglets Complets) -->
+    <div class="bg-white border-b border-slate-200 px-6 py-2 flex gap-2 overflow-x-auto">
+      <button class="nav-tab active px-3.5 py-2 rounded-xl text-xs font-display font-bold flex items-center gap-1.5 bg-slate-900 text-white transition-all cursor-pointer" data-tab="analytics">
+        <span class="material-symbols-outlined text-base">analytics</span>
+        <span>Analytics & Clics</span>
+      </button>
+      <button class="nav-tab px-3.5 py-2 rounded-xl text-xs font-display font-bold flex items-center gap-1.5 text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" data-tab="content">
+        <span class="material-symbols-outlined text-base">article</span>
+        <span>Contenu des Pages</span>
+      </button>
+      <button class="nav-tab px-3.5 py-2 rounded-xl text-xs font-display font-bold flex items-center gap-1.5 text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" data-tab="games">
+        <span class="material-symbols-outlined text-base">sports_esports</span>
+        <span>Jeux Kiosque</span>
+      </button>
+      <button class="nav-tab px-3.5 py-2 rounded-xl text-xs font-display font-bold flex items-center gap-1.5 text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" data-tab="faq">
+        <span class="material-symbols-outlined text-base">quiz</span>
+        <span>Questions FAQ</span>
+      </button>
+      <button class="nav-tab px-3.5 py-2 rounded-xl text-xs font-display font-bold flex items-center gap-1.5 text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" data-tab="store">
+        <span class="material-symbols-outlined text-base">extension</span>
+        <span>Plugins & Thèmes</span>
+      </button>
+      <button class="nav-tab px-3.5 py-2 rounded-xl text-xs font-display font-bold flex items-center gap-1.5 text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" data-tab="roadmap">
+        <span class="material-symbols-outlined text-base">timeline</span>
+        <span>Roadmap & Jalons</span>
+      </button>
+      <button class="nav-tab px-3.5 py-2 rounded-xl text-xs font-display font-bold flex items-center gap-1.5 text-slate-600 hover:bg-slate-100 transition-all cursor-pointer" data-tab="settings">
+        <span class="material-symbols-outlined text-base">settings</span>
+        <span>Paramètres & Sécurité</span>
+      </button>
+    </div>
+
+    <!-- Main Content Panels -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+      <!-- ======================================================== -->
+      <!-- TAB 1 : ANALYTICS & CLICS                                -->
+      <!-- ======================================================== -->
+      <div id="tab-analytics" class="tab-panel space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-display font-bold text-heading">Statistiques de Fréquentation & Clics</h2>
+            <p class="text-xs text-muted">Mesure locale temps réel issue de SQLite (0 cookie, 100% conforme RGPD).</p>
+          </div>
+          <button id="btn-refresh-analytics" class="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5 shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            <span>Rafraîchir</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle">
+            <div class="flex items-center justify-between text-muted mb-2">
+              <span class="text-xs font-mono uppercase font-semibold">Total Pages Vues</span>
+              <span class="material-symbols-outlined text-brand-600 text-lg">visibility</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-views">0</div>
+            <div class="text-[11px] text-emerald-600 font-medium mt-2">Pages servies</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle">
+            <div class="flex items-center justify-between text-muted mb-2">
+              <span class="text-xs font-mono uppercase font-semibold">Visiteurs Uniques</span>
+              <span class="material-symbols-outlined text-indigo-500 text-lg">group</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-visitors">0</div>
+            <div class="text-[11px] text-muted font-medium mt-2">Sessions distinctes</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle">
+            <div class="flex items-center justify-between text-muted mb-2">
+              <span class="text-xs font-mono uppercase font-semibold">Clics « Télécharger »</span>
+              <span class="material-symbols-outlined text-emerald-600 text-lg">download</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-downloads">0</div>
+            <div class="text-[11px] text-slate-500 font-medium mt-2">Téléchargements demandés</div>
+          </div>
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle">
+            <div class="flex items-center justify-between text-muted mb-2">
+              <span class="text-xs font-mono uppercase font-semibold">Taux de Conversion</span>
+              <span class="material-symbols-outlined text-amber-500 text-lg">percent</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-conversion">0.0%</div>
+            <div class="text-[11px] text-muted font-medium mt-2">Téléchargements / Visites</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-subtle">
+            <h3 class="font-display font-bold text-base text-heading mb-1">Éléments les plus cliqués</h3>
+            <p class="text-xs text-muted mb-4">Volume total des interactions utilisateurs enregistrées.</p>
+            <div id="top-clicks-list" class="space-y-3">
+              <div class="text-xs text-muted py-4 text-center">Chargement des clics...</div>
+            </div>
+          </div>
+          <div class="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-subtle">
+            <h3 class="font-display font-bold text-base text-heading mb-1">Journal en direct des actions</h3>
+            <p class="text-xs text-muted mb-4">Flux temps réel des clics et navigations.</p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs font-sans">
+                <thead>
+                  <tr class="border-b border-slate-100 text-muted font-mono uppercase text-[10px]">
+                    <th class="py-2">Cible</th>
+                    <th class="py-2">Page</th>
+                    <th class="py-2 text-right">Horodatage</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-events-table" class="divide-y divide-slate-100">
+                  <tr><td colspan="3" class="py-4 text-center text-muted">Chargement du journal...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 2 : CONTENU DE TOUTES LES PAGES                     -->
+      <!-- ======================================================== -->
+      <div id="tab-content" class="tab-panel hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-display font-bold text-heading">Édition des Textes & Slogans par Page</h2>
+            <p class="text-xs text-muted">Sélectionnez une page pour modifier l'ensemble de ses textes dans la langue choisie (<span id="edit-lang-indicator" class="font-bold text-brand-600">FR</span>).</p>
+          </div>
+          <!-- Sélecteur de page -->
+          <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-display font-bold">
+            <button type="button" class="page-select-btn px-3 py-1.5 rounded-lg bg-white shadow-xs text-slate-900" data-page="home">Accueil</button>
+            <button type="button" class="page-select-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900" data-page="themes">Thèmes</button>
+            <button type="button" class="page-select-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900" data-page="plugins">Plugins</button>
+            <button type="button" class="page-select-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900" data-page="roadmap">Roadmap</button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+          <div class="relative flex-1">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-sm">search</span>
+            <input type="text" id="filter-fields-input" placeholder="Filtrer les champs de cette page..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-slate-200 text-xs focus:ring-2 focus:ring-brand-500">
+          </div>
+          <button type="button" id="btn-add-custom-field" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 shadow-xs shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-sm text-brand-600">add_circle</span>
+            <span>+ Champ personnalisé</span>
+          </button>
+        </div>
+
+        <form id="pages-content-form" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-subtle space-y-5">
+          <!-- Zone dynamique générée selon la page sélectionnée -->
+          <div id="page-fields-container" class="space-y-4">
+            <div class="text-xs text-muted py-6 text-center">Chargement des champs de la page...</div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <span id="page-save-status" class="text-xs font-mono text-emerald-600 hidden">✅ Contenus enregistrés en base !</span>
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-sm shadow transition-all flex items-center gap-2 cursor-pointer ml-auto">
+              <span class="material-symbols-outlined text-base">save</span>
+              <span>Enregistrer cette page</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 3 : JEUX KIOSQUE ARCADE (BILINGUE)                  -->
+      <!-- ======================================================== -->
+      <div id="tab-games" class="tab-panel hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-display font-bold text-heading">Jeux du Kiosque d'Arcade</h2>
+            <p class="text-xs text-muted">Ajoutez, modifiez ou supprimez les jeux avec jaquettes et descriptions bilingues FR/EN.</p>
+          </div>
+          <button id="btn-add-game" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>+ Ajouter un jeu</span>
+          </button>
+        </div>
+
+        <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div class="text-xs text-muted py-8 text-center col-span-full">Chargement des jeux...</div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 4 : FAQ BILINGUE                                    -->
+      <!-- ======================================================== -->
+      <div id="tab-faq" class="tab-panel hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-display font-bold text-heading">Foire Aux Questions (FAQ)</h2>
+            <p class="text-xs text-muted">Éditez les questions et réponses en français et anglais.</p>
+          </div>
+          <button id="btn-add-faq" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span>+ Ajouter une question</span>
+          </button>
+        </div>
+
+        <div id="faq-list" class="space-y-4">
+          <div class="text-xs text-muted py-8 text-center">Chargement de la FAQ...</div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 5 : PLUGINS & THÈMES STORE                          -->
+      <!-- ======================================================== -->
+      <div id="tab-store" class="tab-panel hidden space-y-6">
+        <div>
+          <h2 class="text-xl font-display font-bold text-heading">Catalogue & Vitrine des Plugins & Thèmes</h2>
+          <p class="text-xs text-muted">Gérez les extensions officielles et les créations communautaires mises en avant sur le site.</p>
+        </div>
+
+        <!-- Sous-onglets Plugins vs Thèmes -->
+        <div class="flex gap-2 border-b border-slate-200 pb-2">
+          <button id="subtab-plugins-btn" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs">Plugins Officiels & Communauté</button>
+          <button id="subtab-themes-btn" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs">Thèmes & Ambiance</button>
+        </div>
+
+        <div id="store-plugins-panel" class="space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="font-display font-bold text-sm text-heading">Plugins affichés sur /plugins</h3>
+            <button id="btn-add-plugin" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs">+ Nouveau plugin</button>
+          </div>
+          <div id="plugins-store-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <div id="store-themes-panel" class="space-y-4 hidden">
+          <div class="flex justify-between items-center">
+            <h3 class="font-display font-bold text-sm text-heading">Thèmes affichés sur /themes</h3>
+            <button id="btn-add-theme" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs">+ Nouveau thème</button>
+          </div>
+          <div id="themes-store-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 6 : ROADMAP & JALONS                                -->
+      <!-- ======================================================== -->
+      <div id="tab-roadmap" class="tab-panel hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-xl font-display font-bold text-heading">Jalons de la Feuille de Route</h2>
+            <p class="text-xs text-muted">Ajustez les pourcentages d'avancement, statuts et descriptions des versions.</p>
+          </div>
+          <button id="btn-add-milestone" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs">+ Nouveau jalon</button>
+        </div>
+
+        <div id="milestones-list" class="space-y-4"></div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 7 : PARAMÈTRES & SÉCURITÉ                           -->
+      <!-- ======================================================== -->
+      <div id="tab-settings" class="tab-panel hidden space-y-6">
+        <div>
+          <h2 class="text-xl font-display font-bold text-heading">Paramètres Généraux & Sécurité</h2>
+          <p class="text-xs text-muted">Configurez les identifiants administrateur et les métadonnées globales.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form id="password-form" class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle space-y-4">
+            <h3 class="font-display font-bold text-base text-heading">Changer le Mot de Passe Admin</h3>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Nouveau mot de passe</label>
+              <input type="password" id="inp-new-password" required minlength="6" placeholder="Au moins 6 caractères" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+            </div>
+            <span id="pwd-save-status" class="text-xs font-mono text-emerald-600 hidden">✅ Mot de passe mis à jour !</span>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 text-white font-display font-bold text-xs shadow">Mettre à jour le mot de passe</button>
+          </form>
+
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle space-y-4">
+            <h3 class="font-display font-bold text-base text-heading">Informations Système</h3>
+            <div class="text-xs font-mono text-slate-600 space-y-2">
+              <div class="flex justify-between border-b border-slate-100 pb-1.5"><span>Moteur Base de Données :</span> <strong class="text-slate-900">SQLite 3</strong></div>
+              <div class="flex justify-between border-b border-slate-100 pb-1.5"><span>Routage URLs :</span> <strong class="text-slate-900">/fr/ & /en/ Natives</strong></div>
+              <div class="flex justify-between border-b border-slate-100 pb-1.5"><span>Analytics :</span> <strong class="text-emerald-600">Local non-bloquant</strong></div>
+              <div class="flex justify-between"><span>Version KairoOS :</span> <strong class="text-brand-600">v0.1.0 Alpha</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MODALES JEUX, FAQ, PLUGINS, THÈMES, JALONS -->
+  <div id="modal-container" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div id="modal-box" class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h3 id="modal-title" class="font-display font-bold text-lg text-heading">Titre Modale</h3>
+        <button id="btn-close-modal" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- SCRIPT DU PANNEAU D'ADMINISTRATION PRO -->
+  <script>
+    (function() {
+      let authToken = localStorage.getItem('kairo_admin_token');
+      let currentEditLang = 'fr';
+      let allContent = {};
+
+      const loginContainer = document.getElementById('login-container');
+      const dashboardContainer = document.getElementById('dashboard-container');
+      const loginForm = document.getElementById('login-form');
+      const loginError = document.getElementById('login-error');
+
+      // 1. Initialisation Auth
+      if (authToken) {
+        verifyToken(authToken);
+      } else {
+        showLogin();
+      }
+
+      function showLogin() {
+        loginContainer.classList.remove('hidden');
+        dashboardContainer.classList.add('hidden');
+      }
+
+      function showDashboard(username) {
+        loginContainer.classList.add('hidden');
+        dashboardContainer.classList.remove('hidden');
+        loadAllData();
+      }
+
+      function verifyToken(token) {
+        fetch('/api/auth/check', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.authenticated) showDashboard();
+          else {
+            localStorage.removeItem('kairo_admin_token');
+            showLogin();
+          }
+        })
+        .catch(() => showLogin());
+      }
+
+      // Connexion
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+
+        fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            authToken = data.token;
+            localStorage.setItem('kairo_admin_token', authToken);
+            showDashboard(data.username);
+          } else {
+            loginError.classList.remove('hidden');
+          }
+        });
+      });
+
+      // Déconnexion
+      document.getElementById('btn-logout').addEventListener('click', () => {
+        localStorage.removeItem('kairo_admin_token');
+        authToken = null;
+        showLogin();
+      });
+
+      // Mode Édition Directe
+      document.getElementById('btn-open-live-edit').addEventListener('click', () => {
+        window.open('/' + currentEditLang + '/', '_blank');
+      });
+
+      // Bascule de langue d'édition dans l'admin
+      const btnLangFr = document.getElementById('btn-admin-lang-fr');
+      const btnLangEn = document.getElementById('btn-admin-lang-en');
+      const editLangIndicator = document.getElementById('edit-lang-indicator');
+
+      function setAdminEditLang(lang) {
+        currentEditLang = lang;
+        if (lang === 'fr') {
+          btnLangFr.className = 'px-3 py-1 rounded-full bg-white shadow-xs text-slate-900 transition-all font-bold';
+          btnLangEn.className = 'px-3 py-1 rounded-full text-slate-500 hover:text-slate-900 transition-all';
+          editLangIndicator.innerText = 'FR';
+        } else {
+          btnLangEn.className = 'px-3 py-1 rounded-full bg-white shadow-xs text-slate-900 transition-all font-bold';
+          btnLangFr.className = 'px-3 py-1 rounded-full text-slate-500 hover:text-slate-900 transition-all';
+          editLangIndicator.innerText = 'EN';
+        }
+        renderPageContentForm(currentPageSelected);
+      }
+
+      btnLangFr.addEventListener('click', () => setAdminEditLang('fr'));
+      btnLangEn.addEventListener('click', () => setAdminEditLang('en'));
+
+      // Navigation par onglets principaux
+      const tabs = document.querySelectorAll('.nav-tab');
+      const panels = document.querySelectorAll('.tab-panel');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => {
+            t.classList.remove('bg-slate-900', 'text-white', 'active');
+            t.classList.add('text-slate-600');
+          });
+          panels.forEach(p => p.classList.add('hidden'));
+
+          tab.classList.add('bg-slate-900', 'text-white', 'active');
+          tab.classList.remove('text-slate-600');
+
+          const target = tab.getAttribute('data-tab');
+          document.getElementById('tab-' + target).classList.remove('hidden');
+
+          if (target === 'analytics') loadAnalytics();
+          if (target === 'content') renderPageContentForm(currentPageSelected);
+          if (target === 'games') renderGames();
+          if (target === 'faq') renderFaq();
+          if (target === 'store') renderStore();
+          if (target === 'roadmap') renderRoadmap();
+        });
+      });
+
+      // 2. Chargement de toutes les données complètes
+      function loadAllData() {
+        loadAnalytics();
+        fetch('/api/content/all')
+          .then(res => res.json())
+          .then(data => {
+            allContent = data;
+            renderPageContentForm(currentPageSelected);
+            renderGames();
+            renderFaq();
+            renderStore();
+            renderRoadmap();
+          });
+      }
+
+      // --- TAB 1 : ANALYTICS ---
+      function loadAnalytics() {
+        fetch('/api/analytics/summary')
+          .then(res => res.json())
+          .then(data => {
+            document.getElementById('stat-views').innerText = data.total_views || 0;
+            document.getElementById('stat-visitors').innerText = data.unique_visitors || 0;
+            document.getElementById('stat-downloads').innerText = data.download_clicks || 0;
+            document.getElementById('stat-conversion').innerText = (data.conversion_rate || 0.0) + '%';
+
+            const topList = document.getElementById('top-clicks-list');
+            topList.innerHTML = '';
+            if (data.top_clicks && data.top_clicks.length > 0) {
+              const maxCount = Math.max(...data.top_clicks.map(c => c.count), 1);
+              data.top_clicks.forEach(item => {
+                const pct = Math.round((item.count / maxCount) * 100);
+                const div = document.createElement('div');
+                div.className = 'space-y-1';
+                div.innerHTML = `
+                  <div class="flex justify-between text-xs font-semibold">
+                    <span class="font-mono text-slate-700 truncate">${item.target}</span>
+                    <span class="text-slate-900">${item.count} clic${item.count > 1 ? 's' : ''}</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div class="bg-brand-600 h-2 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                  </div>
+                `;
+                topList.appendChild(div);
+              });
+            } else {
+              topList.innerHTML = '<div class="text-xs text-muted py-4 text-center">Aucun clic enregistré pour le moment.</div>';
+            }
+
+            const recentTable = document.getElementById('recent-events-table');
+            recentTable.innerHTML = '';
+            if (data.recent_events && data.recent_events.length > 0) {
+              data.recent_events.forEach(ev => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+                const time = (ev.created_at || '').split(' ')[1] || ev.created_at || '';
+                tr.innerHTML = `
+                  <td class="py-2 font-mono text-slate-800 font-medium">${ev.target || ev.event_type}</td>
+                  <td class="py-2 text-muted">${ev.page || '/'}</td>
+                  <td class="py-2 text-right font-mono text-slate-400">${time}</td>
+                `;
+                recentTable.appendChild(tr);
+              });
+            } else {
+              recentTable.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-muted">Aucune activité récente.</td></tr>';
+            }
+          });
+      }
+
+      document.getElementById('btn-refresh-analytics').addEventListener('click', loadAnalytics);
+
+      // --- TAB 2 : CONTENU DES PAGES ---
+      let currentPageSelected = 'home';
+      const pageSelectBtns = document.querySelectorAll('.page-select-btn');
+
+      pageSelectBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          pageSelectBtns.forEach(b => {
+            b.classList.remove('bg-white', 'text-slate-900', 'shadow-xs');
+            b.classList.add('text-slate-600');
+          });
+          btn.classList.add('bg-white', 'text-slate-900', 'shadow-xs');
+          btn.classList.remove('text-slate-600');
+          currentPageSelected = btn.getAttribute('data-page');
+          renderPageContentForm(currentPageSelected);
+        });
+      });
+
+      const pageDefinitions = {
+        home: [
+          { group: "1. En-tête & Hero Principal" },
+          { key: 'home_hero_badge', label: 'Badge d\'en-tête (Hero)', type: 'text' },
+          { key: 'version_badge', label: 'Numéro de Version KairoOS', type: 'text' },
+          { key: 'home_hero_title1', label: 'Titre Ligne 1', type: 'text' },
+          { key: 'home_hero_title2', label: 'Titre Ligne 2 (Dégradé)', type: 'text' },
+          { key: 'home_hero_desc', label: 'Description d\'accroche (Hero)', type: 'textarea' },
+          { key: 'home_cta_download', label: 'Libellé du Bouton Télécharger', type: 'text' },
+          { key: 'home_cta_github', label: 'Libellé du Bouton GitHub', type: 'text' },
+
+          { group: "2. Section « De plus près »" },
+          { key: 'home_section_details_badge', label: 'Badge Section Détails', type: 'text' },
+          { key: 'home_section_details_title', label: 'Titre Section Détails', type: 'text' },
+
+          { group: "3. Comparatif : Chaos Windows vs Pureté KairoOS" },
+          { key: 'home_comparison_chaos_title', label: 'Titre Panneau « Chaos Windows »', type: 'text' },
+          { key: 'home_comparison_chaos_desc', label: 'Description « Chaos Windows »', type: 'textarea' },
+          { key: 'home_comparison_purity_title', label: 'Titre Panneau « Pureté KairoOS »', type: 'text' },
+          { key: 'home_comparison_purity_desc', label: 'Description « Pureté KairoOS »', type: 'textarea' },
+
+          { group: "4. Section Kiosque Arcade" },
+          { key: 'home_kiosk_badge', label: 'Badge Section Kiosque', type: 'text' },
+          { key: 'home_kiosk_title', label: 'Titre Section Kiosque', type: 'text' },
+
+          { group: "5. Bannière d'Appel à l'Action Finale" },
+          { key: 'home_banner_title1', label: 'Titre 1 Appel à l\'Action', type: 'text' },
+          { key: 'home_banner_title2', label: 'Titre 2 Appel à l\'Action (Couleur)', type: 'text' },
+          { key: 'home_banner_desc', label: 'Description Appel à l\'Action', type: 'textarea' }
+        ],
+        themes: [
+          { group: "1. En-tête & Hero Thèmes" },
+          { key: 'themes_hero_badge', label: 'Badge Thèmes', type: 'text' },
+          { key: 'themes_hero_title1', label: 'Titre Thèmes Ligne 1', type: 'text' },
+          { key: 'themes_hero_title2', label: 'Titre Thèmes Ligne 2', type: 'text' },
+          { key: 'themes_hero_desc', label: 'Description Thèmes & CRT', type: 'textarea' },
+
+          { group: "2. Shaders CRT Cathodiques 15kHz" },
+          { key: 'themes_crt_badge', label: 'Badge Simulateur Shaders', type: 'text' },
+          { key: 'themes_crt_title', label: 'Titre Simulateur Shaders', type: 'text' },
+          { key: 'themes_crt_desc', label: 'Description Effets d\'Optique', type: 'textarea' }
+        ],
+        plugins: [
+          { group: "1. En-tête & Hero Plugins" },
+          { key: 'plugins_hero_badge', label: 'Badge Plugins', type: 'text' },
+          { key: 'plugins_hero_title1', label: 'Titre Plugins Ligne 1', type: 'text' },
+          { key: 'plugins_hero_title2', label: 'Titre Plugins Ligne 2', type: 'text' },
+          { key: 'plugins_hero_desc', label: 'Description Plugins & WASM', type: 'textarea' },
+
+          { group: "2. Kit de Développement & API" },
+          { key: 'plugins_sdk_title', label: 'Titre SDK Rust & WebHID', type: 'text' },
+          { key: 'plugins_sdk_desc', label: 'Description SDK Rust & WebHID', type: 'textarea' }
+        ],
+        roadmap: [
+          { group: "1. En-tête & Hero Feuille de Route" },
+          { key: 'roadmap_hero_badge', label: 'Badge Roadmap', type: 'text' },
+          { key: 'roadmap_hero_title1', label: 'Titre Roadmap Ligne 1', type: 'text' },
+          { key: 'roadmap_hero_title2', label: 'Titre Roadmap Ligne 2', type: 'text' },
+          { key: 'roadmap_hero_desc', label: 'Description Roadmap', type: 'textarea' },
+
+          { group: "2. Vision & Console Amorçable Autonome" },
+          { key: 'roadmap_vision_title', label: 'Titre Vision Console Dédiée', type: 'text' },
+          { key: 'roadmap_vision_desc', label: 'Description Vision Console Dédiée', type: 'textarea' }
+        ]
+      };
+
+      function renderPageContentForm(page, filterQuery = '') {
+        const container = document.getElementById('page-fields-container');
+        container.innerHTML = '';
+        const defs = pageDefinitions[page] || [];
+        const content = allContent.content || {};
+        const q = filterQuery.toLowerCase().trim();
+
+        let visibleCount = 0;
+        defs.forEach(def => {
+          if (def.group) {
+            if (!q) {
+              const grpDiv = document.createElement('div');
+              grpDiv.className = 'pt-5 pb-1 border-b border-slate-200';
+              grpDiv.innerHTML = `<h4 class="text-xs font-display font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-brand-600"></span><span>${def.group}</span></h4>`;
+              container.appendChild(grpDiv);
+            }
+            return;
+          }
+
+          const valObj = content[def.key] || {};
+          const val = valObj[currentEditLang] || '';
+
+          if (q && !def.key.toLowerCase().includes(q) && !def.label.toLowerCase().includes(q) && !val.toLowerCase().includes(q)) {
+            return;
+          }
+          visibleCount++;
+
+          const div = document.createElement('div');
+          div.className = 'space-y-1.5';
+          div.innerHTML = `
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-mono font-semibold text-slate-700 uppercase">${def.label}</label>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">${def.key} [${currentEditLang.toUpperCase()}]</span>
+            </div>
+            ${def.type === 'textarea' 
+              ? `<textarea data-key="${def.key}" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-500 leading-relaxed font-sans">${val}</textarea>`
+              : `<input type="text" data-key="${def.key}" value="${val}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-500 font-medium font-sans">`
+            }
+          `;
+          container.appendChild(div);
+        });
+
+        if (visibleCount === 0 && defs.length > 0) {
+          container.innerHTML = '<div class="text-xs text-muted py-6 text-center">Aucun champ ne correspond à votre recherche.</div>';
+        }
+      }
+
+      // Filtrage dynamique des champs
+      const filterInput = document.getElementById('filter-fields-input');
+      if (filterInput) {
+        filterInput.addEventListener('input', (e) => {
+          renderPageContentForm(currentPageSelected, e.target.value);
+        });
+      }
+
+      // Ajout de champ personnalisé sur la page courante
+      const btnAddCustomField = document.getElementById('btn-add-custom-field');
+      if (btnAddCustomField) {
+        btnAddCustomField.addEventListener('click', () => {
+          const html = `
+            <form class="space-y-4">
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Clé technique (ex: home_promo_banner)</label>
+                <input type="text" name="key" required placeholder="nom_de_la_cle" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Libellé d'affichage</label>
+                <input type="text" name="label" required placeholder="Texte descriptif du champ" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Type de champ</label>
+                <select name="type" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+                  <option value="text">Texte court (input)</option>
+                  <option value="textarea">Texte long (textarea)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Valeur initiale (${currentEditLang.toUpperCase()})</label>
+                <textarea name="val" rows="2" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm"></textarea>
+              </div>
+              <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+                <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Ajouter à la page</button>
+              </div>
+            </form>
+          `;
+
+          openModal('Ajouter un champ personnalisé', html, (form) => {
+            const fd = new FormData(form);
+            const k = fd.get('key').trim().replace(/[^a-zA-Z0-9_]/g, '_');
+            const lbl = fd.get('label').trim();
+            const typ = fd.get('type');
+            const v = fd.get('val').trim();
+
+            if (!pageDefinitions[currentPageSelected]) pageDefinitions[currentPageSelected] = [];
+            pageDefinitions[currentPageSelected].push({ key: k, label: lbl, type: typ });
+
+            fetch('/api/content/update', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+              body: JSON.stringify({ content: { [k]: v }, lang: currentEditLang })
+            })
+            .then(() => {
+              modalContainer.classList.add('hidden');
+              loadAllData();
+            });
+          });
+        });
+      }
+
+      function uploadImageHelper(fileInput, targetInputId, previewImgId) {
+        const file = fileInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const b64 = e.target.result;
+          fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+            body: JSON.stringify({ file_data: b64, file_name: file.name })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'ok') {
+              const inp = document.getElementById(targetInputId);
+              if (inp) inp.value = data.url;
+              const prv = document.getElementById(previewImgId);
+              if (prv) prv.src = data.url;
+            } else {
+              alert('Erreur: ' + (data.message || 'Échec upload'));
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+      window.uploadImageHelper = uploadImageHelper;
+
+      document.getElementById('pages-content-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const updates = {};
+        document.querySelectorAll('#page-fields-container [data-key]').forEach(el => {
+          const k = el.getAttribute('data-key');
+          updates[k] = el.value.trim();
+        });
+
+        const statusText = document.getElementById('page-save-status');
+        fetch('/api/content/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+          body: JSON.stringify({ content: updates, lang: currentEditLang })
+        })
+        .then(res => res.json())
+        .then(() => {
+          statusText.classList.remove('hidden');
+          setTimeout(() => statusText.classList.add('hidden'), 3000);
+          loadAllData();
+        });
+      });
+
+      // --- MODALE UNIFIÉE (JEUX, FAQ, PLUGINS, THÈMES, JALONS) ---
+      const modalContainer = document.getElementById('modal-container');
+      const modalTitle = document.getElementById('modal-title');
+      const modalBody = document.getElementById('modal-body');
+      document.getElementById('btn-close-modal').addEventListener('click', () => modalContainer.classList.add('hidden'));
+
+      function openModal(title, formHtml, submitHandler) {
+        modalTitle.innerText = title;
+        modalBody.innerHTML = formHtml;
+        modalContainer.classList.remove('hidden');
+        const form = modalBody.querySelector('form');
+        if (form) {
+          form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitHandler(form);
+          });
+        }
+      }
+
+      // --- TAB 3 : JEUX KIOSQUE ---
+      function renderGames() {
+        const grid = document.getElementById('games-grid');
+        grid.innerHTML = '';
+        const games = allContent.games || [];
+        games.forEach(g => {
+          const desc = currentEditLang === 'fr' ? (g.desc_fr || '') : (g.desc_en || '');
+          const card = document.createElement('div');
+          card.className = 'bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden flex flex-col justify-between hover:shadow-card transition-all';
+          card.innerHTML = `
+            <div class="relative aspect-[4/3] bg-slate-100 overflow-hidden">
+              <img src="${g.image}" alt="${g.title}" class="w-full h-full object-cover">
+              <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/60 text-white font-mono text-[10px] backdrop-blur-xs">${g.year}</span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-mono font-bold uppercase text-brand-600 block mb-0.5">${g.genre}</span>
+                <h4 class="font-display font-bold text-sm text-heading truncate">${g.title}</h4>
+                <p class="text-[11px] text-muted line-clamp-2 mt-1">${desc}</p>
+              </div>
+              <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                <button class="btn-edit-game px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1 cursor-pointer" data-id="${g.id}">
+                  <span class="material-symbols-outlined text-xs">edit</span>
+                  <span>Modifier</span>
+                </button>
+                <button class="btn-delete-game w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center cursor-pointer" data-id="${g.id}">
+                  <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        grid.querySelectorAll('.btn-edit-game').forEach(b => {
+          b.addEventListener('click', () => {
+            const g = games.find(item => item.id == b.getAttribute('data-id'));
+            if (g) openGameForm(g);
+          });
+        });
+
+        grid.querySelectorAll('.btn-delete-game').forEach(b => {
+          b.addEventListener('click', () => {
+            if (confirm('Supprimer ce jeu ?')) {
+              fetch('/api/games/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                body: JSON.stringify({ id: b.getAttribute('data-id') })
+              }).then(() => loadAllData());
+            }
+          });
+        });
+      }
+
+      function openGameForm(g = null) {
+        const html = `
+          <form class="space-y-4">
+            <input type="hidden" name="id" value="${g ? g.id : ''}">
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Titre du jeu</label>
+              <input type="text" name="title" required value="${g ? g.title : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Genre</label>
+                <input type="text" name="genre" required value="${g ? g.genre : 'Arcade'}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Année</label>
+                <input type="text" name="year" required value="${g ? g.year : '1998'}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
+              <textarea name="desc_fr" rows="2" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${g ? (g.desc_fr || '') : ''}</textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
+              <textarea name="desc_en" rows="2" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${g ? (g.desc_en || '') : ''}</textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Jaquette du Jeu</label>
+              <div class="flex gap-2 items-center">
+                <input type="text" name="image" id="game-image-input" required value="${g ? g.image : 'assets/img/games/mario.png'}" class="flex-1 px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-mono">
+                <label class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer shrink-0">
+                  <span>📁 Téléverser</span>
+                  <input type="file" accept="image/*" class="hidden" onchange="uploadImageHelper(this, 'game-image-input', 'game-image-preview')">
+                </label>
+              </div>
+              <div class="mt-2 h-20 w-28 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden">
+                <img id="game-image-preview" src="${g ? g.image : 'assets/img/games/mario.png'}" class="w-full h-full object-cover">
+              </div>
+            </div>
+            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+              <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le jeu</button>
+            </div>
+          </form>
+        `;
+
+        openModal(g ? 'Modifier le jeu' : 'Ajouter un jeu', html, (form) => {
+          const fd = new FormData(form);
+          const payload = {
+            id: fd.get('id') || null,
+            title: fd.get('title'),
+            genre: fd.get('genre'),
+            year: fd.get('year'),
+            desc_fr: fd.get('desc_fr'),
+            desc_en: fd.get('desc_en'),
+            image: fd.get('image'),
+            bg_image: 'assets/img/wallpapers/bg-mario.jpg'
+          };
+          fetch('/api/games/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+            body: JSON.stringify(payload)
+          }).then(() => {
+            modalContainer.classList.add('hidden');
+            loadAllData();
+          });
+        });
+      }
+
+      document.getElementById('btn-add-game').addEventListener('click', () => openGameForm());
+
+      // --- TAB 4 : FAQ BILINGUE ---
+      function renderFaq() {
+        const list = document.getElementById('faq-list');
+        list.innerHTML = '';
+        const faq = allContent.faq || [];
+        faq.forEach(f => {
+          const q = currentEditLang === 'fr' ? f.question_fr : f.question_en;
+          const a = currentEditLang === 'fr' ? f.answer_fr : f.answer_en;
+
+          const div = document.createElement('div');
+          div.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4';
+          div.innerHTML = `
+            <div class="flex-1">
+              <h4 class="font-display font-bold text-sm text-heading mb-1">${q}</h4>
+              <p class="text-xs text-body leading-relaxed line-clamp-2">${a}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button class="btn-edit-faq px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1 cursor-pointer" data-id="${f.id}">
+                <span class="material-symbols-outlined text-xs">edit</span>
+                <span>Modifier</span>
+              </button>
+              <button class="btn-delete-faq w-8 h-8 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center cursor-pointer" data-id="${f.id}">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          `;
+          list.appendChild(div);
+        });
+
+        list.querySelectorAll('.btn-edit-faq').forEach(b => {
+          b.addEventListener('click', () => {
+            const f = faq.find(item => item.id == b.getAttribute('data-id'));
+            if (f) openFaqForm(f);
+          });
+        });
+
+        list.querySelectorAll('.btn-delete-faq').forEach(b => {
+          b.addEventListener('click', () => {
+            if (confirm('Supprimer cette question FAQ ?')) {
+              fetch('/api/faq/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                body: JSON.stringify({ id: b.getAttribute('data-id') })
+              }).then(() => loadAllData());
+            }
+          });
+        });
+      }
+
+      function openFaqForm(f = null) {
+        const html = `
+          <form class="space-y-4">
+            <input type="hidden" name="id" value="${f ? f.id : ''}">
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Question (Français)</label>
+              <input type="text" name="question_fr" required value="${f ? (f.question_fr || '') : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Question (English)</label>
+              <input type="text" name="question_en" required value="${f ? (f.question_en || '') : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Réponse (Français)</label>
+              <textarea name="answer_fr" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">${f ? (f.answer_fr || '') : ''}</textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Réponse (English)</label>
+              <textarea name="answer_en" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">${f ? (f.answer_en || '') : ''}</textarea>
+            </div>
+            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+              <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer la FAQ</button>
+            </div>
+          </form>
+        `;
+
+        openModal(f ? 'Modifier la FAQ' : 'Ajouter une question FAQ', html, (form) => {
+          const fd = new FormData(form);
+          const payload = {
+            id: fd.get('id') || null,
+            question_fr: fd.get('question_fr'),
+            question_en: fd.get('question_en'),
+            answer_fr: fd.get('answer_fr'),
+            answer_en: fd.get('answer_en')
+          };
+          fetch('/api/faq/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+            body: JSON.stringify(payload)
+          }).then(() => {
+            modalContainer.classList.add('hidden');
+            loadAllData();
+          });
+        });
+      }
+
+      document.getElementById('btn-add-faq').addEventListener('click', () => openFaqForm());
+
+      // --- TAB 5 : STORE (PLUGINS & THÈMES) ---
+      const subtabPluginsBtn = document.getElementById('subtab-plugins-btn');
+      const subtabThemesBtn = document.getElementById('subtab-themes-btn');
+      const pluginsPanel = document.getElementById('store-plugins-panel');
+      const themesPanel = document.getElementById('store-themes-panel');
+
+      subtabPluginsBtn.addEventListener('click', () => {
+        subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs';
+        subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs';
+        pluginsPanel.classList.remove('hidden');
+        themesPanel.classList.add('hidden');
+      });
+
+      subtabThemesBtn.addEventListener('click', () => {
+        subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs';
+        subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs';
+        themesPanel.classList.remove('hidden');
+        pluginsPanel.classList.add('hidden');
+      });
+
+      function renderStore() {
+        // Plugins
+        const pList = document.getElementById('plugins-store-list');
+        pList.innerHTML = '';
+        (allContent.plugins || []).forEach(p => {
+          const desc = currentEditLang === 'fr' ? p.desc_fr : p.desc_en;
+          const card = document.createElement('div');
+          card.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col justify-between';
+          card.innerHTML = `
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 font-mono text-[10px] font-bold">${p.badge}</span>
+                <span class="text-xs text-muted font-mono">${p.version}</span>
+              </div>
+              <h4 class="font-display font-bold text-sm text-heading mb-1">${p.name}</h4>
+              <p class="text-xs text-body leading-relaxed mb-3">${desc}</p>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+              <span>${p.installs}</span>
+              <button class="btn-delete-plugin text-rose-600 hover:underline" data-id="${p.id}">Supprimer</button>
+            </div>
+          `;
+          pList.appendChild(card);
+        });
+
+        pList.querySelectorAll('.btn-delete-plugin').forEach(b => {
+          b.addEventListener('click', () => {
+            if (confirm('Supprimer ce plugin ?')) {
+              fetch('/api/plugins/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                body: JSON.stringify({ id: b.getAttribute('data-id') })
+              }).then(() => loadAllData());
+            }
+          });
+        });
+
+        // Themes
+        const tList = document.getElementById('themes-store-list');
+        tList.innerHTML = '';
+        (allContent.themes || []).forEach(t => {
+          const desc = currentEditLang === 'fr' ? t.desc_fr : t.desc_en;
+          const card = document.createElement('div');
+          card.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col justify-between';
+          card.innerHTML = `
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-mono text-[10px] font-bold">${t.badge}</span>
+                <span class="text-xs text-amber-500 font-bold font-mono">${t.rating}</span>
+              </div>
+              <h4 class="font-display font-bold text-sm text-heading mb-1">${t.name}</h4>
+              <p class="text-xs text-body leading-relaxed mb-3">${desc}</p>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+              <span>${t.installs}</span>
+              <button class="btn-delete-theme text-rose-600 hover:underline" data-id="${t.id}">Supprimer</button>
+            </div>
+          `;
+          tList.appendChild(card);
+        });
+
+        tList.querySelectorAll('.btn-delete-theme').forEach(b => {
+          b.addEventListener('click', () => {
+            if (confirm('Supprimer ce thème ?')) {
+              fetch('/api/themes/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                body: JSON.stringify({ id: b.getAttribute('data-id') })
+              }).then(() => loadAllData());
+            }
+          });
+        });
+      }
+
+      // Ajout de Plugin
+      document.getElementById('btn-add-plugin').addEventListener('click', () => {
+        const html = `
+          <form class="space-y-4">
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Nom du Plugin</label>
+              <input type="text" name="name" required placeholder="Ex: Twitch Chat Overlay" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Catégorie</label>
+              <input type="text" name="category" required value="INTERFACE" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
+              <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
+              <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+              <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le plugin</button>
+            </div>
+          </form>
+        `;
+        openModal('Ajouter un plugin au catalogue', html, (form) => {
+          const fd = new FormData(form);
+          fetch('/api/plugins/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+            body: JSON.stringify(Object.fromEntries(fd))
+          }).then(() => {
+            modalContainer.classList.add('hidden');
+            loadAllData();
+          });
+        });
+      });
+
+      // Ajout de Thème
+      document.getElementById('btn-add-theme').addEventListener('click', () => {
+        const html = `
+          <form class="space-y-4">
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Nom du Thème</label>
+              <input type="text" name="name" required placeholder="Ex: Synthwave 1984" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Badge</label>
+              <input type="text" name="badge" required value="RETRO" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
+              <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
+              <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+            </div>
+            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+              <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le thème</button>
+            </div>
+          </form>
+        `;
+        openModal('Ajouter un thème au catalogue', html, (form) => {
+          const fd = new FormData(form);
+          fetch('/api/themes/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+            body: JSON.stringify(Object.fromEntries(fd))
+          }).then(() => {
+            modalContainer.classList.add('hidden');
+            loadAllData();
+          });
+        });
+      });
+
+      // --- TAB 6 : ROADMAP & JALONS ---
+      function renderRoadmap() {
+        const list = document.getElementById('milestones-list');
+        list.innerHTML = '';
+        (allContent.milestones || []).forEach(m => {
+          const title = currentEditLang === 'fr' ? m.title_fr : m.title_en;
+          const desc = currentEditLang === 'fr' ? m.desc_fr : m.desc_en;
+
+          const div = document.createElement('div');
+          div.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col md:flex-row items-start md:items-center justify-between gap-4';
+          div.innerHTML = `
+            <div class="flex-1 space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="font-mono font-extrabold text-brand-600 text-sm">${m.version}</span>
+                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-mono font-bold">${m.status_badge}</span>
+                <span class="text-xs text-muted font-mono">${m.date_text}</span>
+              </div>
+              <h4 class="font-display font-bold text-base text-heading">${title}</h4>
+              <p class="text-xs text-muted leading-relaxed">${desc}</p>
+            </div>
+            <div class="flex items-center gap-4 shrink-0 w-full md:w-auto">
+              <div class="w-32">
+                <div class="flex justify-between text-[11px] font-mono mb-1">
+                  <span>Progression</span>
+                  <strong>${m.progress_percent}%</strong>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div class="bg-brand-600 h-2 rounded-full" style="width: ${m.progress_percent}%"></div>
+                </div>
+              </div>
+              <button class="btn-delete-milestone text-rose-600 hover:underline text-xs" data-id="${m.id}">Supprimer</button>
+            </div>
+          `;
+          list.appendChild(div);
+        });
+
+        list.querySelectorAll('.btn-delete-milestone').forEach(b => {
+          b.addEventListener('click', () => {
+            if (confirm('Supprimer ce jalon ?')) {
+              fetch('/api/milestones/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                body: JSON.stringify({ id: b.getAttribute('data-id') })
+              }).then(() => loadAllData());
+            }
+          });
+        });
+      }
+
+      document.getElementById('btn-add-milestone').addEventListener('click', () => {
+        const html = `
+          <form class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Version</label>
+                <input type="text" name="version" required placeholder="v1.1.0" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Échéance</label>
+                <input type="text" name="date_text" required placeholder="T1 2027" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Titre (Français)</label>
+              <input type="text" name="title_fr" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Titre (English)</label>
+              <input type="text" name="title_en" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Avancement (%)</label>
+                <input type="number" min="0" max="100" name="progress_percent" value="25" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Statut</label>
+                <input type="text" name="status_badge" value="EN COURS" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+            </div>
+            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+              <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le jalon</button>
+            </div>
+          </form>
+        `;
+        openModal('Ajouter un jalon à la Roadmap', html, (form) => {
+          const fd = new FormData(form);
+          fetch('/api/milestones/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+            body: JSON.stringify(Object.fromEntries(fd))
+          }).then(() => {
+            modalContainer.classList.add('hidden');
+            loadAllData();
+          });
+        });
+      });
+
+      // --- TAB 7 : PARAMÈTRES & MOT DE PASSE ---
+      document.getElementById('password-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newPwd = document.getElementById('inp-new-password').value;
+        const statusText = document.getElementById('pwd-save-status');
+
+        fetch('/api/admin/password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+          body: JSON.stringify({ new_password: newPwd })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            statusText.classList.remove('hidden');
+            document.getElementById('inp-new-password').value = '';
+            setTimeout(() => statusText.classList.add('hidden'), 3000);
+          } else {
+            alert(data.message || 'Erreur');
+          }
+        });
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
