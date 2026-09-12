@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-fr="Plugins & Extensions — KaïroOS" data-en="Plugins & Extensions — KaïroOS">Plugins & Extensions — KaïroOS</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#1e1b4b' },
+            coral: { 50: '#fff1f2', 100: '#ffe4e6', 500: '#f43f5e', 600: '#e11d48' },
+            canvas: '#FBFBF9',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'card': '0 20px 40px -15px rgba(0,0,0,0.05), 0 0 1px 1px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/i18n.js"></script>
+  <script src="../assets/js/components/navbar.js" defer></script>
+  <script src="../assets/js/components/footer.js" defer></script>
+  <script src="../assets/js/components/code-editor.js" defer></script>
+  <script src="../assets/js/main.js" defer></script>
+  <script src="../assets/js/router.js" defer></script>
+  <script src="../assets/js/consent.js" defer></script>
+  <script src="../assets/js/tracker.js" defer></script>
+  <script src="../assets/js/content-sync.js" defer></script>
+  <script src="../assets/js/admin-toolbar.js" defer></script>
+</head>
+<body class="bg-canvas text-body font-sans antialiased selection:bg-brand-500 selection:text-white relative bg-light-mesh min-h-screen">
+
+  <!-- NAVBAR UNIFIÉE -->
+  <kairo-navbar active="plugins"></kairo-navbar>
+
+  <main class="pt-24 sm:pt-32 pb-24 overflow-hidden">
+    
+    <!-- 1. HERO SECTION ÉPURÉE APPLE -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 pt-4 pb-16 text-center">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs font-semibold mb-6 reveal">
+          <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+          <span data-content-key="plugins_hero_badge" data-en="RUNTIME MODULAIRE WASM & RUST" data-fr="RUNTIME MODULAIRE WASM & RUST">RUNTIME MODULAIRE WASM & RUST</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-display font-extrabold text-heading tracking-tight leading-[1.12] mb-6 reveal delay-1">
+          <span data-content-key="plugins_hero_title1" data-en="Extensible." data-fr="Infiniment extensible.">Infiniment extensible.</span><br>
+          <span data-content-key="plugins_hero_title2" class="bg-gradient-to-r from-brand-600 via-indigo-600 to-coral-500 bg-clip-text text-transparent" data-en="Zero compromise on speed." data-fr="Zéro compromis sur la vitesse.">Zéro compromis sur la vitesse.</span>
+        </h1>
+
+        <p data-content-key="plugins_hero_desc" class="text-base sm:text-lg text-muted max-w-2xl mx-auto leading-relaxed mb-8 reveal delay-2" data-en="KaïroOS features an isolated, sub-millisecond plugin system. Enrich your arcade with Discord status, dynamic LED strips, cloud backup sync and custom hardware integrations without ever slowing down your gameplay." data-fr="KaïroOS intègre une architecture de plugins isolés ultra-rapides. Éclairez votre borne avec des LEDs réactives, synchronisez vos sauvegardes et partagez vos succès sur Discord sans jamais ralentir vos parties.">
+          KaïroOS intègre une architecture de plugins isolés ultra-rapides. Éclairez votre borne avec des LEDs réactives, synchronisez vos sauvegardes et partagez vos succès sur Discord sans jamais ralentir vos parties.
+        </p>
+
+        <!-- Puces techniques d'avantages Apple -->
+        <div class="flex flex-wrap items-center justify-center gap-3 text-xs font-mono text-slate-600 reveal delay-3">
+          <span class="px-3.5 py-2 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-2">
+            <span class="material-symbols-outlined text-[17px] text-emerald-500">security</span>
+            <span>Isolation Wasmtime v20</span>
+          </span>
+          <span class="px-3.5 py-2 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-2">
+            <span class="material-symbols-outlined text-[17px] text-indigo-500">speed</span>
+            <span>&lt; 1.2% Charge CPU</span>
+          </span>
+          <span class="px-3.5 py-2 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-2">
+            <span class="material-symbols-outlined text-[17px] text-amber-500">memory</span>
+            <span>Mémoire Partagée Zéro-Copie</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. EXPLORATEUR INTERACTIF DU RUNTIME & CAPACITÉS WASM (ADAPTÉ AU PLUGIN SYSTEM) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="bg-[#F5F5F7] rounded-[32px] p-6 sm:p-12 border border-slate-200/80 reveal">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div>
+            <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">01 / INSPECTEUR DE RUNTIME</span>
+            <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-3">Capacités étendues du runtime.</h2>
+            <p class="text-muted text-sm mt-1">Basculez entre les domaines d'extension pour tester le comportement du bac à sable en direct.</p>
+          </div>
+          <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-mono text-slate-600">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Wasmtime Engine · 64 Mo RAM Max</span>
+          </div>
+        </div>
+
+        <!-- Onglets interactifs adaptés aux domaines de plugins -->
+        <div class="flex flex-wrap gap-2.5 mb-6" id="plugin-tabs">
+          <button class="plugin-tab-btn px-4 py-2.5 rounded-xl font-display font-bold text-xs sm:text-sm transition-all bg-slate-900 text-white shadow-subtle flex items-center gap-2" data-domain="scraper">
+            <span class="material-symbols-outlined text-[18px] text-rose-400">auto_awesome</span>
+            <span>Médias & Jaquettes</span>
+          </button>
+          <button class="plugin-tab-btn px-4 py-2.5 rounded-xl font-display font-bold text-xs sm:text-sm transition-all bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 flex items-center gap-2" data-domain="hardware">
+            <span class="material-symbols-outlined text-[18px] text-amber-500">tune</span>
+            <span>Drivers & Contrôleurs Arcade</span>
+          </button>
+          <button class="plugin-tab-btn px-4 py-2.5 rounded-xl font-display font-bold text-xs sm:text-sm transition-all bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 flex items-center gap-2" data-domain="hud">
+            <span class="material-symbols-outlined text-[18px] text-indigo-500">trophy</span>
+            <span>HUDs & Succès Rétro</span>
+          </button>
+          <button class="plugin-tab-btn px-4 py-2.5 rounded-xl font-display font-bold text-xs sm:text-sm transition-all bg-white hover:bg-slate-50 text-slate-600 border border-slate-200/80 flex items-center gap-2" data-domain="sync">
+            <span class="material-symbols-outlined text-[18px] text-emerald-500">cloud_sync</span>
+            <span>Sync P2P Décentralisée</span>
+          </button>
+        </div>
+
+        <!-- Panneaux interactifs + Terminal WASM en direct -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          
+          <!-- Panneau Gauche : Détails du domaine sélectionné -->
+          <div class="lg:col-span-6 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle flex flex-col justify-between" id="plugin-domain-card">
+            <div>
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                <span id="domain-badge" class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-mono text-[11px] font-bold border border-rose-100">SCRAPER ASYNC</span>
+                <span id="domain-hooks" class="font-mono text-xs text-slate-500">Hook : on_rom_detected()</span>
+              </div>
+              <h3 id="domain-title" class="font-display font-bold text-2xl text-heading mb-2">Indexation Asynchrone ScreenScraper</h3>
+              <p id="domain-desc" class="text-xs sm:text-sm text-muted leading-relaxed mb-6">
+                Le plugin écoute les événements de dépôt de nouveaux fichiers ROMs et lance un hachage SHA-1 instantané en tâche de fond pour télécharger les jaquettes officielles, synopsis et fanarts sans jamais geler l'interface.
+              </p>
+              
+              <div class="grid grid-cols-2 gap-3 text-xs font-mono" id="domain-stats">
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span class="text-slate-400 block text-[10px] uppercase">Temps par ROM</span>
+                  <strong class="text-heading font-bold text-sm" id="stat-1">&lt; 12 ms</strong>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span class="text-slate-400 block text-[10px] uppercase">Mémoire Allouée</span>
+                  <strong class="text-emerald-600 font-bold text-sm" id="stat-2">18.4 Mo / 64 Mo</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
+              <button id="btn-simulate-action" type="button" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-mono text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer">
+                <span class="material-symbols-outlined text-[16px] text-amber-300">play_arrow</span>
+                <span id="btn-action-label">Simuler un scan de ROMs</span>
+              </button>
+              <span class="text-[11px] font-mono text-slate-400">Sandbox v20 · Strict POSIX</span>
+            </div>
+          </div>
+
+          <!-- Panneau Droite : Terminal de télémétrie WASM en temps réel -->
+          <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 shadow-2xl p-5 flex flex-col font-mono text-xs text-slate-300 select-none overflow-hidden min-h-[320px]">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-[11px] text-slate-400">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="text-slate-400 ml-1">wasm-sandbox.log</span>
+              </div>
+              <span class="text-emerald-400 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> LIVE IPC
+              </span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-1.5 text-[11px] leading-relaxed scrollbar-none font-mono" id="wasm-terminal">
+              <p class="text-slate-500"><span class="text-slate-600">[00:00.01]</span> [kairo:core] Wasmtime runtime initialized (heap limit = 64MB)</p>
+              <p class="text-slate-400"><span class="text-slate-600">[00:00.04]</span> [plugin:sandbox] Loaded active plugin: <span class="text-amber-300">kairo-plugin-scraper</span></p>
+              <p class="text-emerald-400"><span class="text-slate-600">[00:00.08]</span> [ipc:ringbuffer] Zero-copy mapped at 0x7ffd230000 (latency = 0.04ms)</p>
+              <p class="text-slate-400"><span class="text-slate-600">[00:00.12]</span> [plugin:scraper] Listening on hook: <span class="text-cyan-300">on_rom_detected</span></p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. LES PILIERS DU SDK DE PLUGINS (SÉCURITÉ & ARCHITECTURE TECHNIQUE) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">02 / SÉCURITÉ & CONCEPTION</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3" data-en="Built for stability. Sandboxed by default." data-fr="Bâti pour la stabilité. Isolé par défaut.">Bâti pour la stabilité. Isolé par défaut.</h2>
+        <p class="text-muted text-sm sm:text-base leading-relaxed">
+          Chaque extension s'exécute dans une bulle étanche sans accès arbitraire à vos disques ni aux processus système Windows.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between reveal delay-1">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[26px]">memory</span>
+            </div>
+            <h3 class="font-display font-bold text-base text-heading mb-2">Plafond Mémoire Strict</h3>
+            <p class="text-xs text-muted leading-relaxed">
+              Chaque extension est plafonnée à 64 Mo de RAM allouée. Tout dépassement ou fuite mémoire est stoppé net sans altérer la fluidité du jeu.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 font-mono text-[11px] text-emerald-600 font-semibold">
+            Limite : 64.0 Mo fixes
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between reveal delay-2">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[26px]">fence</span>
+            </div>
+            <h3 class="font-display font-bold text-base text-heading mb-2">Permissions Déclaratives</h3>
+            <p class="text-xs text-muted leading-relaxed">
+              Les plugins déclarent leurs besoins dans le manifest. Un plugin Discord ne peut pas lire votre disque dur, et un driver LED ne peut pas accéder à internet.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 font-mono text-[11px] text-indigo-600 font-semibold">
+            Isolation : Appels WASI filtrés
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-subtle flex flex-col justify-between reveal delay-3">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[26px]">flash_on</span>
+            </div>
+            <h3 class="font-display font-bold text-base text-heading mb-2">Communication Zéro-Copie</h3>
+            <p class="text-xs text-muted leading-relaxed">
+              La télémétrie et les boutons transitent via des ring buffers en mémoire partagée. La latence mesurée reste inférieure à 0.1 milliseconde.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 font-mono text-[11px] text-amber-600 font-semibold">
+            Latence : &lt; 0.1 ms mesurée
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CATALOGUE OFFICIEL DES EXTENSIONS VÉRIFIÉES -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">03 / CATALOGUE OFFICIEL</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3">Plugins les plus plébiscités.</h2>
+        <p class="text-muted text-sm sm:text-base leading-relaxed">
+          Toutes les extensions du registre sont signées numériquement, vérifiées et optimisées pour le plein écran arcade.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Plugin 1 : Discord RPC -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-1">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">tag</span>
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold border border-emerald-100">OFFICIEL</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Discord Rich Presence</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Diffusez votre session arcade à vos amis. Affiche l'émulateur actif, la jaquette du jeu rétro, le temps écoulé et vos meilleurs scores en direct.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>v1.2.0 · 14 Ko</span>
+            <span class="text-indigo-600 font-semibold">Installé par défaut</span>
+          </div>
+        </div>
+
+        <!-- Plugin 2 : Contrôleur LED WebHID -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-2">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-xl bg-rose-50 text-coral-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">lightbulb</span>
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold border border-emerald-100">OFFICIEL</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Illumination Dynamique WebHID</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Synchronise les bandeaux LED et boutons lumineux de votre meuble arcade (WS2812B, Pac-Drive) avec les couleurs dominantes du jeu lancé.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>v2.0.4 · 28 Ko</span>
+            <span class="text-coral-600 font-semibold">Pilote WebHID Natif</span>
+          </div>
+        </div>
+
+        <!-- Plugin 3 : RetroAchievements -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-3">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">trophy</span>
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 font-mono text-[10px] font-bold border border-brand-100">COMMUNAUTÉ</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">RetroAchievements Overlay</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Débloque vos succès rétro avec effets sonores d'arcade et notifications visuelles discrètes sans masquer l'écran de jeu.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>v0.9.8 · 32 Ko</span>
+            <span class="text-amber-600 font-semibold">DirectX 12 Hook</span>
+          </div>
+        </div>
+
+        <!-- Plugin 4 : P2P Save Sync -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-1">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">sync</span>
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold border border-emerald-100">OFFICIEL</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Sauvegardes P2P Décentralisées</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Synchronise instantanément vos cartes mémoires et sauvegardes d'états entre votre borne fixe et votre PC portable via Wi-Fi local sans cloud tiers.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>v1.0.1 · 19 Ko</span>
+            <span class="text-sky-600 font-semibold">Chiffrement AES-256</span>
+          </div>
+        </div>
+
+        <!-- Plugin 5 : Auto-Shutdown & Power -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-2">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">power_settings_new</span>
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold border border-emerald-100">OFFICIEL</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Gestionnaire d'Énergie Borne</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Met automatiquement en veille profonde les écrans après 15 min d'inactivité et éteint proprement Windows lors d'un appui prolongé sur la manette.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>v1.4.0 · 11 Ko</span>
+            <span class="text-emerald-600 font-semibold">API Win32 Safe</span>
+          </div>
+        </div>
+
+        <!-- Plugin 6 : Scraper IGDB Pro -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-subtle hover:shadow-card hover:-translate-y-1 transition-all flex flex-col justify-between reveal delay-3">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-[22px]">auto_awesome</span>
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 font-mono text-[10px] font-bold border border-brand-100">COMMUNAUTÉ</span>
+            </div>
+            <h3 class="font-display font-bold text-lg text-heading mb-1">Indexeur & Métadonnées IGDB</h3>
+            <p class="text-xs text-muted leading-relaxed mb-4">
+              Télécharge automatiquement les boîtiers 3D, dates de sortie, studios et résumés officiels dès qu'une nouvelle ROM est déposée dans vos dossiers.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>v0.8.2 · 45 Ko</span>
+            <span class="text-purple-600 font-semibold">SQLite Multithread</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. LE SDK RUST & C++ EN DÉTAIL (CODE EDITOR & API HOOKS) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="text-center max-w-2xl mx-auto mb-10 reveal">
+        <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">04 / DÉVELOPPEURS & SDK</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3">Créez votre propre plugin en 10 minutes.</h2>
+        <p class="text-muted text-sm sm:text-base leading-relaxed">
+          Avec notre bibliothèque Rust officielle <code class="px-2 py-0.5 rounded bg-slate-100 text-brand-700 font-mono text-xs">kairo-plugin-sdk</code> ou nos en-têtes C ABI, programmez des extensions natives qui s'exécutent avec un maximum de vélocité.
+        </p>
+      </div>
+
+      <!-- COMPOSANT WEB ÉDITEUR UNIFIÉ -->
+      <div class="reveal delay-1">
+        <kairo-code-editor></kairo-code-editor>
+      </div>
+    </section>
+
+    <!-- 6. COMMENT PUBLIER VOTRE PROPRE PLUGIN ? (LE PROCESSUS EN 4 ÉTAPES EXACT DU USER) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16" id="guide-publication">
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <span class="text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3 py-1 rounded-full border border-brand-100">PROCESSUS DE PUBLICATION</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold text-heading mt-4 mb-3">Comment publier votre propre plugin ?</h2>
+        <p class="text-muted text-sm sm:text-base leading-relaxed">
+          De l'écriture du premier hook à la distribution mondiale auprès des utilisateurs KaïroOS.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Step 1 -->
+        <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-subtle flex flex-col justify-between reveal delay-1">
+          <div>
+            <span class="font-mono font-extrabold text-3xl sm:text-4xl text-brand-600/30 block mb-3">01</span>
+            <h3 class="font-display font-bold text-base text-heading mb-2">Développez localement</h3>
+            <p class="text-xs text-muted leading-relaxed">
+              Clonez le modèle officiel <code class="text-slate-800 font-mono text-[11px] bg-slate-100 px-1.5 py-0.5 rounded">kairo-plugin-template</code> et écrivez vos fonctions en Rust ou TypeScript.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 font-mono text-xs text-slate-500 font-medium">
+            SDK v1.0 compatible
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-subtle flex flex-col justify-between reveal delay-2">
+          <div>
+            <span class="font-mono font-extrabold text-3xl sm:text-4xl text-brand-600/30 block mb-3">02</span>
+            <h3 class="font-display font-bold text-base text-heading mb-2">Testez en direct</h3>
+            <p class="text-xs text-muted leading-relaxed">
+              Déposez votre build dans <code class="text-slate-800 font-mono text-[11px] bg-slate-100 px-1.5 py-0.5 rounded">~/.kairo/plugins/dev/</code> et testez avec le rechargement à chaud (Hot Reload).
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 font-mono text-xs text-slate-500 font-medium">
+            Logs terminal instantanés
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-subtle flex flex-col justify-between reveal delay-3">
+          <div>
+            <span class="font-mono font-extrabold text-3xl sm:text-4xl text-brand-600/30 block mb-3">03</span>
+            <h3 class="font-display font-bold text-base text-heading mb-2">Soumettez une PR</h3>
+            <p class="text-xs text-muted leading-relaxed">
+              Ouvrez une Pull Request sur le dépôt du store KaïroOS avec votre manifest vérifié et vos métadonnées complètes.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 font-mono text-xs text-slate-500 font-medium">
+            Revue communautaire
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-subtle flex flex-col justify-between reveal delay-4">
+          <div>
+            <span class="font-mono font-extrabold text-3xl sm:text-4xl text-emerald-600/40 block mb-3">04</span>
+            <h3 class="font-display font-bold text-base text-heading mb-2">Validation & Déploiement</h3>
+            <p class="text-xs text-muted leading-relaxed">
+              Dès validation par la CI de sécurité sandboxée, votre extension devient téléchargeable en 1 clic par toute la communauté !
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 font-mono text-xs text-emerald-600 font-semibold">
+            Disponible immédiatement
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 7. CARTE BLEUE DÉVELOPPEUR CTA (EXACTEMENT COMME SUR L'IMAGE DU USER) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+      <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-[32px] p-8 sm:p-14 text-white shadow-float relative overflow-hidden reveal">
+        <!-- Ambiance lumineuse subtile -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-200 font-mono text-xs font-semibold mb-4 border border-white/15">
+            OPEN SOURCE & DÉVELOPPEURS
+          </div>
+
+          <h2 class="text-3xl sm:text-5xl font-display font-extrabold tracking-tight mb-4 leading-tight">
+            Vous avez développé une extension pour KaïroOS ?
+          </h2>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-8">
+            Rejoignez l'écosystème open source. Soumettez votre plugin sur GitHub et rendez-le accessible à des milliers de passionnés de jeux vidéo et de bornes d'arcade.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4">
+            <a class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-white text-slate-950 font-display font-bold text-sm hover:bg-slate-100 transition-all shadow-subtle hover:scale-105" href="https://github.com/KairoOS-Official/KairoOS" rel="noopener noreferrer" target="_blank">
+              <span class="material-symbols-outlined text-[20px] text-brand-600">code</span>
+              <span>Publier mon plugin sur GitHub</span>
+            </a>
+
+            <a class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-display font-bold text-sm backdrop-blur-md transition-all border border-white/15" href="https://github.com/KairoOS-Official/KairoOS#plugins" rel="noopener noreferrer" target="_blank">
+              <span class="material-symbols-outlined text-[18px] text-amber-300">terminal</span>
+              <span>Guide de démarrage Rust</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER UNIFIÉ -->
+  <kairo-footer></kairo-footer>
+
+  <!-- SCRIPT DU SIMULATEUR DE RUNTIME ET TERMINAL WASM EN DIRECT -->
+  <script>
+    window.initPluginsPage = function() {
+      const tabs = document.querySelectorAll('.plugin-tab-btn');
+      const terminal = document.getElementById('wasm-terminal');
+
+      const domainData = {
+        scraper: {
+          badge: 'SCRAPER ASYNC',
+          badgeClass: 'bg-rose-50 text-rose-700 border-rose-100',
+          hook: 'Hook : on_rom_detected()',
+          title: 'Indexation Asynchrone ScreenScraper',
+          desc: "Le plugin écoute les événements de dépôt de nouveaux fichiers ROMs et lance un hachage SHA-1 instantané en tâche de fond pour télécharger les jaquettes officielles, synopsis et fanarts sans jamais geler l'interface.",
+          stat1: '< 12 ms',
+          stat2: '18.4 Mo / 64 Mo',
+          actionLabel: 'Simuler un scan de ROMs',
+          actionLog: 'Scanning directory for new ROM hashes... 100% matched across 3,420 entries (0 dropped frames).'
+        },
+        hardware: {
+          badge: 'PILOTE WEBHID & LEDS',
+          badgeClass: 'bg-amber-50 text-amber-700 border-amber-100',
+          hook: 'Hook : on_input_event()',
+          title: 'Pilote WebHID & Micro-switch Arcade',
+          desc: "Communication native USB avec les cartes contrôleurs arcade (I-PAC, Pac-Drive, Raspberry Pico) et pilotage des LED RGB adressables synchronisées sur le rythme de la musique du jeu.",
+          stat1: '< 0.2 ms',
+          stat2: '8.1 Mo / 64 Mo',
+          actionLabel: 'Déclencher impulsion LED RGB',
+          actionLog: 'WebHID packet sent to Pac-Drive 0x04D8: RGB sequence active (0x00FF88) on P1 Buttons.'
+        },
+        hud: {
+          badge: 'OVERLAY DIRECT3D 12',
+          badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+          hook: 'Hook : on_frame_render()',
+          title: 'Affichage Tête Haute & Succès Rétro',
+          desc: "Injecte un calque transparent GPU à 120 FPS au-dessus de l'émulateur pour afficher les succès débloqués, le taux de rafraîchissement en temps réel et les alertes de tournoi.",
+          stat1: '< 0.05 ms',
+          stat2: '14.2 Mo / 64 Mo',
+          actionLabel: 'Simuler trophée débloqué',
+          actionLog: 'RetroAchievements unlock hook triggered: [Champion Street Fighter II] +50 pts!'
+        },
+        sync: {
+          badge: 'CHIFFREMENT P2P',
+          badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+          hook: 'Hook : on_game_exit()',
+          title: 'Synchronisation P2P Décentralisée',
+          desc: "Dès qu'une partie se termine, les états de sauvegarde (save states) et cartes mémoires sont chiffrés en AES-256 et synchronisés vers votre PC portable ou votre NAS local sans cloud tiers.",
+          stat1: '< 45 ms',
+          stat2: '11.0 Mo / 64 Mo',
+          actionLabel: 'Synchroniser sauvegardes locales',
+          actionLog: 'P2P handshake completed with 192.168.1.144: 4 save states synced and verified.'
+        }
+      };
+
+      tabs.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const domain = this.getAttribute('data-domain');
+          const data = domainData[domain];
+          if (!data) return;
+
+          // Switch active button
+          tabs.forEach(b => {
+            b.classList.remove('bg-slate-900', 'text-white', 'shadow-subtle');
+            b.classList.add('bg-white', 'text-slate-600');
+          });
+          this.classList.add('bg-slate-900', 'text-white', 'shadow-subtle');
+          this.classList.remove('bg-white', 'text-slate-600');
+
+          // Update content
+          const badgeEl = document.getElementById('domain-badge');
+          if (badgeEl) {
+            badgeEl.textContent = data.badge;
+            badgeEl.className = `px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold border ${data.badgeClass}`;
+          }
+          const hookEl = document.getElementById('domain-hooks');
+          if (hookEl) hookEl.textContent = data.hook;
+          const titleEl = document.getElementById('domain-title');
+          if (titleEl) titleEl.textContent = data.title;
+          const descEl = document.getElementById('domain-desc');
+          if (descEl) descEl.textContent = data.desc;
+          const stat1El = document.getElementById('stat-1');
+          if (stat1El) stat1El.textContent = data.stat1;
+          const stat2El = document.getElementById('stat-2');
+          if (stat2El) stat2El.textContent = data.stat2;
+          const actionBtn = document.getElementById('btn-action-label');
+          if (actionBtn) actionBtn.textContent = data.actionLabel;
+
+          // Terminal log entry
+          if (terminal) {
+            const now = new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random() * 90 + 10);
+            const p = document.createElement('p');
+            p.className = 'text-cyan-300';
+            p.innerHTML = `<span class="text-slate-600">[${now}]</span> [wasm:runtime] Switched active domain to <span class="text-amber-300 font-bold">${domain}</span> (isolation OK)`;
+            terminal.appendChild(p);
+            terminal.scrollTop = terminal.scrollHeight;
+          }
+        });
+      });
+
+      // Simulation Action Click
+      const btnSim = document.getElementById('btn-simulate-action');
+      btnSim?.addEventListener('click', () => {
+        const activeTab = document.querySelector('.plugin-tab-btn.bg-slate-900');
+        const domain = activeTab ? activeTab.getAttribute('data-domain') : 'scraper';
+        const data = domainData[domain];
+        if (!data || !terminal) return;
+
+        const now = new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random() * 90 + 10);
+        const p1 = document.createElement('p');
+        p1.className = 'text-amber-400';
+        p1.innerHTML = `<span class="text-slate-600">[${now}]</span> [trigger:user] Executing ${data.actionLabel}...`;
+        terminal.appendChild(p1);
+
+        setTimeout(() => {
+          const now2 = new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random() * 90 + 10);
+          const p2 = document.createElement('p');
+          p2.className = 'text-emerald-400';
+          p2.innerHTML = `<span class="text-slate-600">[${now2}]</span> [success] ${data.actionLog}`;
+          terminal.appendChild(p2);
+          terminal.scrollTop = terminal.scrollHeight;
+          if (typeof window.showToast === 'function') {
+            window.showToast('Action simulée avec succès dans la sandbox !');
+          }
+        }, 300);
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', window.initPluginsPage);
+    } else {
+      window.initPluginsPage();
+    }
+  </script>
+
+</body>
+</html>

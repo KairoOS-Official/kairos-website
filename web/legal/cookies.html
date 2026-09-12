@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-en="Cookie & Storage Management · KaïroOS" data-fr="Gestion des Cookies & du Stockage · KaïroOS">Gestion des Cookies & du Stockage · KaïroOS</title>
+  <meta name="description" content="Gestion des cookies, stockage local et préférences de confidentialité du site KaïroOS.">
+  <link rel="icon" type="image/png" href="assets/img/logo.png">
+
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <!-- Tailwind CSS & Main CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            coral: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              500: '#f43f5e',
+              600: '#e11d48',
+            },
+            canvas: '#FBFBF9',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)',
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/components/navbar.js" defer></script>
+  <script src="assets/js/components/footer.js" defer></script>
+  <script src="assets/js/consent.js" defer></script>
+</head>
+<body class="bg-[#FBFBF9] font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
+
+  <!-- Navigation -->
+  <kairo-navbar></kairo-navbar>
+
+  <main class="w-full pt-32 sm:pt-40 pb-20 flex-1">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Fil d'Ariane & Badge -->
+      <div class="mb-8 space-y-3">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50/80 border border-amber-200/80 text-amber-800 font-mono text-xs font-semibold shadow-xs">
+          <span class="material-symbols-outlined text-sm text-amber-600">cookie</span>
+          <span data-en="ePrivacy Directive & Local Storage" data-fr="Directive ePrivacy & Stockage Local">Directive ePrivacy & Stockage Local</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-heading tracking-tight font-display" data-en="Cookie & Storage Management" data-fr="Gestion des Cookies & du Stockage">
+          Gestion des Cookies & du Stockage
+        </h1>
+        <p class="text-sm sm:text-base text-muted max-w-3xl leading-relaxed" data-en="Detailed inventory of cookies and local storage mechanisms used on KaïroOS, and tools to update your preferences anytime." data-fr="Inventaire exhaustif des traceurs et mécanismes de stockage local utilisés sur KaïroOS, et outil interactif pour modifier vos choix à tout moment.">
+          Inventaire exhaustif des traceurs et mécanismes de stockage local utilisés sur KaïroOS, et outil interactif pour modifier vos choix à tout moment.
+        </p>
+      </div>
+
+      <!-- Panneau Interactif : Statut et Modification Directe -->
+      <div class="p-6 sm:p-8 bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/80 shadow-subtle mb-10 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all hover:border-slate-300">
+        <div class="space-y-2 text-center sm:text-left">
+          <div class="flex items-center justify-center sm:justify-start gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-600 animate-pulse"></span>
+            <h2 class="font-display font-bold text-base sm:text-lg text-heading" data-en="Your Current Privacy Status" data-fr="Votre Statut Actuel de Confidentialité">
+              Votre Statut Actuel de Confidentialité
+            </h2>
+          </div>
+          <p id="current-consent-status" class="text-xs sm:text-sm font-mono text-muted">
+            Vérification de vos préférences en cours...
+          </p>
+        </div>
+        <button type="button" id="btn-reopen-cookie-settings" class="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-display font-bold text-xs sm:text-sm transition-all shadow-sm hover:shadow-md flex items-center gap-2.5 shrink-0 cursor-pointer group">
+          <span class="material-symbols-outlined text-base group-hover:rotate-45 transition-transform">tune</span>
+          <span data-en="Change my preferences" data-fr="Modifier mes préférences">Modifier mes préférences</span>
+        </button>
+      </div>
+
+      <div class="space-y-10">
+
+        <!-- 1. Qu'est-ce qu'un cookie / stockage ? -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">database</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="1. Why Web Storage (localStorage & sessionStorage)?" data-fr="1. Pourquoi le stockage local (localStorage & sessionStorage) ?">
+              1. Pourquoi le stockage local (localStorage & sessionStorage) ?
+            </h3>
+          </div>
+          <p class="text-xs sm:text-sm text-body leading-relaxed" data-en="KaïroOS prioritizes modern Web Storage standards rather than third-party HTTP tracking cookies. Data remains isolated on your device and is not automatically transmitted with every network request, drastically reducing bandwidth and protecting your privacy." data-fr="La plateforme web KaïroOS privilégie les technologies modernes de Web Storage (localStorage et sessionStorage) plutôt que des cookies tiers intrusifs. Ces données restent isolées sur votre propre appareil et ne sont pas envoyées systématiquement dans les en-têtes HTTP de chaque requête, réduisant l'empreinte réseau et préservant votre intimité numérique.">
+            La plateforme web KaïroOS privilégie les technologies modernes de <strong>Web Storage</strong> (localStorage et sessionStorage) plutôt que des cookies tiers intrusifs. Ces données restent isolées sur votre propre appareil et ne sont pas envoyées systématiquement dans les en-têtes HTTP de chaque requête, réduisant l'empreinte réseau et préservant votre intimité numérique.
+          </p>
+        </section>
+
+        <!-- 2. Inventaire des cookies & stockages -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">inventory_2</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="2. Complete Storage Inventory" data-fr="2. Inventaire exhaustif des clés de stockage">
+              2. Inventaire exhaustif des clés de stockage
+            </h3>
+          </div>
+
+          <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-200 bg-slate-50/80 font-mono text-slate-700 uppercase tracking-wider">
+                    <th class="py-3.5 px-4">Clé / Identifiant</th>
+                    <th class="py-3.5 px-4">Moteur</th>
+                    <th class="py-3.5 px-4">Finalité exacte</th>
+                    <th class="py-3.5 px-4">Durée</th>
+                    <th class="py-3.5 px-4">Régime juridique</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-600">
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">kairo_consent_v1</td>
+                    <td class="py-3.5 px-4 font-mono text-slate-500">localStorage</td>
+                    <td class="py-3.5 px-4">Mémorise votre choix relatif aux traceurs d'analyse (acceptation ou refus).</td>
+                    <td class="py-3.5 px-4 font-mono">6 mois</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-mono text-[11px] font-semibold border border-slate-200/60">Exempté (technique)</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">kairo_pref_lang</td>
+                    <td class="py-3.5 px-4 font-mono text-slate-500">localStorage</td>
+                    <td class="py-3.5 px-4">Conserve votre choix de langue (Français ou Anglais) pour les prochaines visites.</td>
+                    <td class="py-3.5 px-4 font-mono">12 mois</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-mono text-[11px] font-semibold border border-slate-200/60">Exempté (fonctionnel)</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">kairo_cached_content</td>
+                    <td class="py-3.5 px-4 font-mono text-slate-500">localStorage</td>
+                    <td class="py-3.5 px-4">Mise en cache locale des textes d'interface pour accélérer l'affichage.</td>
+                    <td class="py-3.5 px-4 font-mono">Persistant</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-mono text-[11px] font-semibold border border-slate-200/60">Exempté (technique)</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">kairo_admin_token & user</td>
+                    <td class="py-3.5 px-4 font-mono text-slate-500">localStorage</td>
+                    <td class="py-3.5 px-4">Jeton cryptographique de session pour l'accès réservé au tableau de bord administrateur.</td>
+                    <td class="py-3.5 px-4 font-mono">Session</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-mono text-[11px] font-semibold border border-slate-200/60">Exempté (sécurité)</span></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors bg-amber-50/30">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">kairo_session_id</td>
+                    <td class="py-3.5 px-4 font-mono text-slate-500">sessionStorage</td>
+                    <td class="py-3.5 px-4">Identifiant pseudo-anonyme de session pour comptabiliser les pages vues et les clics de téléchargement.</td>
+                    <td class="py-3.5 px-4 font-mono">Fermeture onglet</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 font-mono text-[11px] font-bold border border-amber-200">Soumis à consentement</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Aucune régie publicitaire -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">verified</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="3. Zero Ads, Zero Data Brokering" data-fr="3. Zéro publicité ciblée, zéro revente de données">
+              3. Zéro publicité ciblée, zéro revente de données
+            </h3>
+          </div>
+          <p class="text-xs sm:text-sm text-body leading-relaxed" data-en="We do not integrate any advertising trackers (such as Google Ads, Meta Pixel, TikTok, Criteo). If you decline analytics measurement, no tracking identifier is generated, telemetry remains strictly off, and your experience across KaïroOS remains 100% complete and unrestricted." data-fr="Nous n'intégrons aucune régie publicitaire ni réseau de reciblage (Google Ads, Meta Pixel, TikTok, Criteo). Si vous refusez la mesure d'audience, aucun identifiant n'est créé, la télémétrie est totalement désactivée et vous conservez l'accès intégral à tous les contenus, téléchargements et fonctionnalités du site sans aucune contrepartie.">
+            Nous n'intégrons aucune régie publicitaire ni réseau de reciblage (Google Ads, Meta Pixel, TikTok, Criteo). Si vous refusez la mesure d'audience, <strong>aucun identifiant n'est créé</strong>, la télémétrie est totalement désactivée et vous conservez l'accès intégral à tous les contenus, téléchargements et fonctionnalités du site sans aucune contrepartie.
+          </p>
+        </section>
+
+        <!-- 4. Liens et navigation juridique -->
+        <div class="pt-4 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200/80">
+          <div class="flex items-center gap-3">
+            <a href="legal/mentions-legales" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/80 text-heading font-semibold text-xs transition-colors shadow-xs">
+              <span class="material-symbols-outlined text-base">gavel</span>
+              <span data-en="Legal Notice" data-fr="Mentions Légales">Mentions Légales</span>
+            </a>
+            <a href="legal/confidentialite" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/80 text-heading font-semibold text-xs transition-colors shadow-xs">
+              <span class="material-symbols-outlined text-base">policy</span>
+              <span data-en="Privacy Policy" data-fr="Politique de Confidentialité">Politique de Confidentialité</span>
+            </a>
+          </div>
+          <a href="./" class="text-xs font-mono text-muted hover:text-heading flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span data-en="Back to Home" data-fr="Retour à l'accueil">Retour à l'accueil</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Pied de page -->
+  <kairo-footer></kairo-footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const statusEl = document.getElementById('current-consent-status');
+      const btn = document.getElementById('btn-reopen-cookie-settings');
+
+      function updateStatusDisplay() {
+        if (!statusEl) return;
+        const raw = localStorage.getItem('kairo_consent_v1');
+        if (!raw) {
+          statusEl.innerHTML = '<span class="text-amber-600 font-bold">Statut : Non d&eacute;fini</span> &mdash; Aucun traceur d\'audience n\'est activ&eacute;.';
+          return;
+        }
+        try {
+          const val = JSON.parse(raw);
+          if (val.analytics) {
+            statusEl.innerHTML = '<span class="text-emerald-600 font-bold">&check; Mesure d\'audience activ&eacute;e</span> &mdash; Merci de contribuer &agrave; l\'am&eacute;lioration du projet.';
+          } else {
+            statusEl.innerHTML = '<span class="text-slate-700 font-bold">&cross; Mesure d\'audience refus&eacute;e</span> &mdash; T&eacute;l&eacute;m&eacute;trie totalement d&eacute;sactiv&eacute;e.';
+          }
+        } catch(e) {
+          statusEl.textContent = 'Statut : Non défini';
+        }
+      }
+
+      updateStatusDisplay();
+
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (window.openCookieSettings) {
+            window.openCookieSettings();
+          }
+        });
+      }
+
+      window.addEventListener('kairo_consent_updated', updateStatusDisplay);
+    });
+  </script>
+</body>
+</html>

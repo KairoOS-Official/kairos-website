@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-en="Legal Notice · KaïroOS" data-fr="Mentions Légales · KaïroOS">Mentions Légales · KaïroOS</title>
+  <meta name="description" content="Mentions légales, identification de l'éditeur, hébergement et licence MIT du projet KaïroOS.">
+  <link rel="icon" type="image/png" href="assets/img/logo.png">
+
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <!-- Tailwind CSS & Main CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            coral: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              500: '#f43f5e',
+              600: '#e11d48',
+            },
+            canvas: '#FBFBF9',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)',
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/components/navbar.js" defer></script>
+  <script src="assets/js/components/footer.js" defer></script>
+  <script src="assets/js/consent.js" defer></script>
+</head>
+<body class="bg-[#FBFBF9] font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
+
+  <!-- Navigation -->
+  <kairo-navbar></kairo-navbar>
+
+  <main class="w-full pt-32 sm:pt-40 pb-20 flex-1">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Fil d'Ariane & Badge -->
+      <div class="mb-8 space-y-3">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand-50 border border-brand-200/80 text-brand-800 font-mono text-xs font-semibold shadow-xs">
+          <span class="material-symbols-outlined text-sm text-brand-600">gavel</span>
+          <span data-en="Legal Information & Publishing" data-fr="Informations Légales & Éditeur">Informations Légales & Éditeur</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-heading tracking-tight font-display" data-en="Legal Notice" data-fr="Mentions Légales">
+          Mentions Légales
+        </h1>
+        <p class="text-sm sm:text-base text-muted max-w-3xl leading-relaxed" data-en="Identification of the publisher, infrastructure hosting provider, and intellectual property terms applicable to KaïroOS." data-fr="Identification de l'éditeur de la plateforme, de l'hébergeur de l'infrastructure et cadre de propriété intellectuelle applicable au projet KaïroOS.">
+          Identification de l'éditeur de la plateforme, de l'hébergeur de l'infrastructure et cadre de propriété intellectuelle applicable au projet KaïroOS.
+        </p>
+      </div>
+
+      <div class="space-y-10">
+
+        <!-- 1. Éditeur de la plateforme -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">person</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="1. Website Publisher" data-fr="1. Éditeur de la Plateforme">
+              1. Éditeur de la Plateforme
+            </h2>
+          </div>
+          <p class="text-xs sm:text-sm text-body leading-relaxed" data-en="The website kairos-website is published as part of the independent, open-source community initiative KaïroOS." data-fr="Le site officiel KaïroOS est édité dans le cadre d'un projet communautaire, indépendant et open source.">
+            Le site officiel KaïroOS est édité dans le cadre d'un projet communautaire, indépendant et open source.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono bg-slate-50/80 p-5 rounded-2xl border border-slate-200/70">
+            <div>
+              <span class="text-muted block mb-1">Projet / Organisation :</span>
+              <strong class="text-slate-900 font-semibold text-sm">KaïroOS Core Team</strong>
+            </div>
+            <div>
+              <span class="text-muted block mb-1">Dépôt Officiel :</span>
+              <a href="https://github.com/KairoOS-Official/KairoOS" target="_blank" rel="noopener" class="text-brand-600 hover:underline font-semibold">github.com/KairoOS-Official/KairoOS</a>
+            </div>
+            <div>
+              <span class="text-muted block mb-1">Contact Email :</span>
+              <span class="text-slate-900 font-semibold">contact@kairoos.org (ou via issues GitHub)</span>
+            </div>
+            <div>
+              <span class="text-muted block mb-1">Statut Juridique :</span>
+              <span class="text-slate-900 font-semibold">Projet Logiciel Libre Communautaire</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Hébergeur -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">dns</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="2. Hosting Provider" data-fr="2. Hébergement de l'Infrastructure">
+              2. Hébergement de l'Infrastructure
+            </h2>
+          </div>
+          <p class="text-xs sm:text-sm text-body leading-relaxed" data-en="The servers, APIs, and infrastructure powering the KaïroOS website are hosted by:" data-fr="Les serveurs et l'infrastructure assurant la mise en ligne du site web et des APIs sont hébergés par :">
+            Les serveurs et l'infrastructure assurant la mise en ligne du site web et des APIs sont hébergés par :
+          </p>
+          <div class="text-xs font-mono bg-slate-50/80 p-5 rounded-2xl border border-slate-200/70 space-y-3">
+            <div>
+              <span class="text-muted block mb-1">Raison Sociale de l'Hébergeur :</span>
+              <strong class="text-slate-900 font-semibold text-sm">Serveur Dédié / Cloud Autonome (VPS Linux)</strong>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <div>
+                <span class="text-muted block mb-1">Localisation / Datacenter :</span>
+                <span class="text-slate-900 font-semibold">Union Européenne / France</span>
+              </div>
+              <div>
+                <span class="text-muted block mb-1">Infrastructure :</span>
+                <span class="text-slate-900 font-semibold">Environnement privé et sécurisé</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Licence & Propriété Intellectuelle -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">copyright</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="3. License & Intellectual Property" data-fr="3. Licence Communautaire & Propriété Intellectuelle">
+              3. Licence Communautaire & Propriété Intellectuelle
+            </h2>
+          </div>
+          <div class="space-y-4 text-xs sm:text-sm text-body leading-relaxed">
+            <p data-en="The source code of KaïroOS is distributed under the KaïroOS Community & Noncommercial License. It is 100% free and accessible for personal, private, and domestic gaming setups. Mandatory attribution and brand integrity apply: rebranding or white-labeling is strictly prohibited. Commercial operations (pre-installed arcade cabinets, coin-op/tokens, public venues) require an official KaïroOS Pro Operator License." data-fr="Le code source du projet KaïroOS est mis à disposition sous Licence Communautaire Non-Commerciale. Son utilisation est 100% gratuite et ouverte pour les particuliers, à des fins personnelles et privées à domicile. L'attribution est obligatoire et le renommage (rebranding / white-labeling) est formellement interdit. Tout usage commercial (bornes vendues préinstallées, monnayeurs à jetons/pièces, bars gaming) requiert obligatoirement une Licence Commerciale KaïroOS Pro.">
+              Le code source du projet KaïroOS est mis à disposition sous <strong>Licence Communautaire Non-Commerciale</strong>. Son utilisation est <strong>100% gratuite et ouverte pour les particuliers</strong>, à des fins personnelles et privées à domicile. L'attribution est obligatoire et le renommage (rebranding / white-labeling) est formellement interdit. Tout usage commercial (bornes vendues préinstallées, monnayeurs à jetons/pièces, bars gaming) requiert obligatoirement une <strong>Licence Commerciale KaïroOS Pro</strong>.
+            </p>
+            <div class="p-5 rounded-2xl bg-amber-50/70 border border-amber-200/70 text-amber-950 text-xs leading-relaxed space-y-1.5 shadow-xs">
+              <strong class="font-bold flex items-center gap-1.5 font-display text-sm text-amber-900">
+                <span class="material-symbols-outlined text-base text-amber-700">info</span>
+                Marques, éditeurs et constructeurs tiers
+              </strong>
+              <p data-en="All registered trademarks, console names, logos, and game franchises mentioned on this platform (including Nintendo, Sony PlayStation, Sega, Steam, Microsoft Xbox) remain the sole property of their respective owners. KaïroOS is an independent software development project with no commercial endorsement, sponsorship, or official affiliation with these companies." data-fr="Toutes les marques déposées, noms de constructeurs, consoles de jeu, logos et licences vidéoludiques mentionnés sur cette plateforme (notamment Nintendo, Sony PlayStation, Sega, Steam, Microsoft Xbox) demeurent la propriété exclusive de leurs ayants droit respectifs. KaïroOS est un projet indépendant sans affiliation commerciale, parrainage ni approbation officielle de ces entités.">
+                Toutes les marques déposées, noms de constructeurs, consoles de jeu, logos et licences vidéoludiques mentionnés sur cette plateforme (notamment Nintendo, Sony PlayStation, Sega, Steam, Microsoft Xbox) demeurent la propriété exclusive de leurs ayants droit respectifs. KaïroOS est un projet indépendant sans affiliation commerciale, parrainage ni approbation officielle de ces entités.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Données personnelles & Liens -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">security</span>
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="4. Privacy & Cookies" data-fr="4. Protection des Données & Cookies">
+              4. Protection des Données & Cookies
+            </h2>
+          </div>
+          <p class="text-xs sm:text-sm text-body leading-relaxed" data-en="For comprehensive information regarding the collection, legal bases, and protection of personal data, please review our dedicated policies:" data-fr="Pour toute précision concernant la collecte de données, les bases juridiques et l'exercice de vos droits, nous vous invitons à consulter nos pages dédiées :">
+            Pour toute précision concernant la collecte de données, les bases juridiques et l'exercice de vos droits, nous vous invitons à consulter nos pages dédiées :
+          </p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <a href="legal/confidentialite" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-xs transition-colors shadow-sm">
+              <span class="material-symbols-outlined text-base">policy</span>
+              <span data-en="Privacy Policy" data-fr="Politique de Confidentialité">Politique de Confidentialité</span>
+            </a>
+            <a href="legal/cookies" class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors">
+              <span class="material-symbols-outlined text-base">cookie</span>
+              <span data-en="Cookie Management" data-fr="Gestion des Cookies">Gestion des Cookies</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- Liens et navigation juridique -->
+        <div class="pt-4 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200/80">
+          <div class="flex items-center gap-3">
+            <a href="legal/confidentialite" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/80 text-heading font-semibold text-xs transition-colors shadow-xs">
+              <span class="material-symbols-outlined text-base">policy</span>
+              <span data-en="Privacy Policy" data-fr="Politique de Confidentialité">Politique de Confidentialité</span>
+            </a>
+            <a href="legal/cookies" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/80 text-heading font-semibold text-xs transition-colors shadow-xs">
+              <span class="material-symbols-outlined text-base">cookie</span>
+              <span data-en="Cookie Management" data-fr="Gestion des Cookies">Gestion des Cookies</span>
+            </a>
+          </div>
+          <a href="./" class="text-xs font-mono text-muted hover:text-heading flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span data-en="Back to Home" data-fr="Retour à l'accueil">Retour à l'accueil</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Pied de page -->
+  <kairo-footer></kairo-footer>
+</body>
+</html>

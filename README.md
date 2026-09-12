@@ -8,27 +8,24 @@ Site de présentation de KaïroOS, le frontend d'arcade moderne et 100% personna
 
 ---
 
-## 📦 Structure
+## 📦 Structure du Projet
 
-```
+```text
 kairos-website/
-├── index.html                    ← Page d'accueil (bilingue FR/EN)
-├── pages/
-│   ├── roadmap.html              ← Feuille de route publique
-│   ├── plugins.html              ← Guide plugins & extensions
-│   └── themes.html               ← Thèmes & personnalisation
-├── assets/
-│   └── images/                   ← Screenshots previews
-│       ├── home-preview.png
-│       ├── roadmap-preview.png
-│       ├── plugins-preview.png
-│       └── themes-preview.png
-├── Source/                       ← Sources originales (à garder)
-│   ├── kairoos_accueil_site_pur/
-│   ├── kairoos_feuille_de_route_roadmap/
-│   ├── kairoos_plugins_extensions_store_guide_de_publication/
-│   ├── kairoos_th_mes_personnalisation/
-│   └── luminous_editorial_tech/  ← Design system (DESIGN.md)
+├── data/                  ← Base de données SQLite (kairoos.db) & migrations
+├── src/                   ← Backend Python modulaire
+│   ├── app/               ← Serveur HTTP et gestionnaire de requêtes (server.py)
+│   ├── data/              ← Connexion base SQLite et migrations (db.py, migrations.py)
+│   ├── routes/            ← Routes API & contrôleurs (public, admin, content, roadmap)
+│   └── services/          ← Métier & sécurité (auth, ban, security, upload)
+├── web/                   ← Frontend moderne découplé
+│   ├── index.html         ← Page d'accueil officielle (bilingue FR/EN)
+│   ├── admin/             ← Panneau d'administration & modération
+│   ├── plugins/           ← Guide plugins, SDK & extensions
+│   ├── roadmap/           ← Feuille de route interactive & votes réels
+│   ├── themes/            ← Simulateur de thèmes & palettes
+│   └── assets/            ← Web Components, CSS, i18n, images & uploads
+├── server.py              ← Point d'entrée exécutable minimal
 └── README.md
 ```
 
@@ -89,11 +86,12 @@ Chaque page est un fichier HTML autonome (CSS inline via Tailwind CDN).
 ## 🚀 Lancement
 
 ```bash
-# Ouvrir directement
-open index.html
+# Lancement du serveur complet (API + Pages Web statiques)
+python server.py
 
-# Ou avec un serveur local
-npx serve .
+# Administration en ligne de commande
+python server.py --admin-list
+python server.py --admin-create <username> --password <mot_de_passe> --role superadmin
 ```
 
 ---
