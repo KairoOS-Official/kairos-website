@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/img/logo.png?v=2" alt="KaïroOS" width="160" />
+</p>
+
 # 🕹️ KaïroOS — Site Web Officiel
 
 Site de présentation de KaïroOS, le frontend d'arcade moderne et 100% personnalisable.
