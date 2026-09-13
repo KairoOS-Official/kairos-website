@@ -150,6 +150,54 @@ def handle_public_get(req, raw_path, client_ip):
         """)
         device_stats = [dict(row) for row in cursor.fetchall()]
 
+        # Transitions de consentement (changements d'avis enregistrés)
+        cursor.execute("SELECT COUNT(*) as c FROM analytics_events WHERE event_type = 'consent' AND meta_json LIKE '%\"transition\": \"accepted_to_refused\"%'")
+        revoked_count = cursor.fetchone()['c'] # Ont retiré leur consentement (-1 acceptation)
+
+        cursor.execute("SELECT COUNT(*) as c FROM analytics_events WHERE event_type = 'consent' AND meta_json LIKE '%\"transition\": \"refused_to_accepted\"%'")
+        granted_count = cursor.fetchone()['c'] # Ont accepté après coup (+1 acceptation)
+
+        # Téléchargements par session
+        cursor.execute("""
+            SELECT session_id, COUNT(*) as cnt 
+            FROM analytics_events 
+            WHERE target = 'download_button' 
+            GROUP BY session_id
+        """)
+        dl_sessions = cursor.fetchall()
+        unique_download_sessions = len(dl_sessions)
+        avg_downloads_per_session = round(dl_clicks / unique_download_sessions, 2) if unique_download_sessions > 0 else 0.0
+        multi_download_sessions = sum(1 for r in dl_sessions if r['cnt'] > 1)
+
+        # Durée moyenne passée sur le site et par page (en secondes)
+        cursor.execute("SELECT AVG(duration_seconds) as avg_d, MAX(duration_seconds) as max_d FROM page_views WHERE duration_seconds > 0")
+        dur_row = cursor.fetchone()
+        avg_page_duration = round(dur_row['avg_d'] or 0, 1) if dur_row else 0.0
+
+        # Durée totale moyenne estimée par session (somme des durées par session)
+        cursor.execute("""
+            SELECT AVG(total_session_time) as avg_session_time FROM (
+                SELECT session_id, SUM(duration_seconds) as total_session_time 
+                FROM page_views 
+                WHERE duration_seconds > 0 
+                GROUP BY session_id
+            )
+        """)
+        session_dur_row = cursor.fetchone()
+        avg_session_duration = round(session_dur_row['avg_session_time'] or 0, 1) if session_dur_row else 0.0
+
+        # Fréquentation détaillée par page (vues + temps moyen passé par page)
+        cursor.execute("""
+            SELECT page, COUNT(*) as views_count, 
+                   COUNT(DISTINCT session_id) as visitors_count,
+                   ROUND(AVG(CASE WHEN duration_seconds > 0 THEN duration_seconds ELSE NULL END), 1) as avg_duration
+            FROM page_views 
+            GROUP BY page 
+            ORDER BY views_count DESC 
+            LIMIT 10
+        """)
+        pages_breakdown = [dict(row) for row in cursor.fetchall()]
+
         conn.close()
         req.send_json({
             "total_views": total_views,
@@ -160,6 +208,14 @@ def handle_public_get(req, raw_path, client_ip):
             "consent_accepted": consent_accepted,
             "consent_refused": consent_refused,
             "consent_rate": consent_rate,
+            "consent_revoked": revoked_count,
+            "consent_granted_after": granted_count,
+            "download_unique_sessions": unique_download_sessions,
+            "avg_downloads_per_session": avg_downloads_per_session,
+            "multi_download_sessions": multi_download_sessions,
+            "avg_page_duration": avg_page_duration,
+            "avg_session_duration": avg_session_duration,
+            "pages_breakdown": pages_breakdown,
             "os_stats": os_stats,
             "browser_stats": browser_stats,
             "device_stats": device_stats,
@@ -290,9 +346,11 @@ def handle_public_post(req, path, payload, client_ip):
     elif path in ('/api/track/refusal', '/api/track/consent-stat'):
         # Compteur statistique anonyme sans rétention de session ni d'adresse IP
         choice = payload.get('choice', 'consent_refused') if path == '/api/track/consent-stat' else 'consent_refused'
+        transition = payload.get('transition', 'initial')
+        meta_json = json.dumps({"transition": transition})
         conn = get_db()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address) VALUES ('consent', ?, '/', 'anon', '{}', 'ANON')", (choice,))
+        cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address) VALUES ('consent', ?, '/', 'anon', ?, 'ANON')", (choice, meta_json))
         conn.commit()
         conn.close()
         req.send_json({"status": "consent_stat_recorded"})
@@ -303,7 +361,8 @@ def handle_public_post(req, path, payload, client_ip):
         target = payload.get('target', 'unknown')
         page = payload.get('page', '/')
         session_id = payload.get('session_id', 'anon')
-        meta_json = json.dumps(payload.get('meta', {}))
+        meta = payload.get('meta', {})
+        meta_json = json.dumps(meta)
 
         ua = req.headers.get('User-Agent', '')
         os_name, browser_name, device_type = parse_user_agent(ua)
@@ -313,8 +372,23 @@ def handle_public_post(req, path, payload, client_ip):
         cursor = conn.cursor()
         if event_type == 'page_view':
             referrer = sanitize_referrer(payload.get('referrer', ''))
-            cursor.execute("INSERT INTO page_views (page, session_id, referrer, ip_address, os, browser, device) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            cursor.execute("INSERT INTO page_views (page, session_id, referrer, ip_address, os, browser, device, duration_seconds) VALUES (?, ?, ?, ?, ?, ?, ?, 0)",
                            (page, session_id, referrer, anon_ip, os_name, browser_name, device_type))
+        elif event_type == 'page_duration':
+            duration_sec = int(meta.get('duration_seconds', 0))
+            if duration_sec > 0:
+                # Mettre à jour la dernière page vue de cette session
+                cursor.execute("""
+                    UPDATE page_views 
+                    SET duration_seconds = ? 
+                    WHERE id = (
+                        SELECT id FROM page_views 
+                        WHERE session_id = ? AND page = ? 
+                        ORDER BY id DESC LIMIT 1
+                    )
+                """, (duration_sec, session_id, page))
+                cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address, os, browser, device, duration_seconds) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                               ('page_duration', str(duration_sec), page, session_id, meta_json, anon_ip, os_name, browser_name, device_type, duration_sec))
         else:
             cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address, os, browser, device) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                            (event_type, target, page, session_id, meta_json, anon_ip, os_name, browser_name, device_type))

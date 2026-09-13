@@ -31,17 +31,40 @@
   }
 
   function saveConsent(analyticsAllowed) {
+    const prevConsent = getSavedConsent();
+    const hadPrevious = prevConsent !== null;
+    const prevAnalytics = hadPrevious ? Boolean(prevConsent.analytics) : null;
+    const nextAnalytics = Boolean(analyticsAllowed);
+
+    let choiceType = 'consent_accepted';
+    if (!nextAnalytics) {
+      choiceType = 'consent_refused';
+    }
+
+    let transition = 'initial';
+    if (hadPrevious) {
+      if (prevAnalytics && !nextAnalytics) {
+        transition = 'accepted_to_refused'; // -1 acceptation, +1 refus
+      } else if (!prevAnalytics && nextAnalytics) {
+        transition = 'refused_to_accepted'; // +1 acceptation, -1 refus
+      } else if (nextAnalytics) {
+        transition = 'renew_accepted';
+      } else {
+        transition = 'renew_refused';
+      }
+    }
+
     const consent = {
       timestamp: Date.now(),
-      analytics: Boolean(analyticsAllowed),
+      analytics: nextAnalytics,
       version: 1
     };
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
     } catch(e) {}
 
-    // Envoi anonyme des statistiques de consentement (sans IP ni traceur nominatif)
-    sendAnonymousConsentStat(analyticsAllowed ? 'consent_accepted' : 'consent_refused');
+    // Envoi anonyme des statistiques de consentement avec transition
+    sendAnonymousConsentStat(choiceType, transition);
 
     // Si refus, purger l'identifiant de session existant éventuel
     if (!analyticsAllowed) {
@@ -57,9 +80,9 @@
     closeModal();
   }
 
-  function sendAnonymousConsentStat(choice) {
+  function sendAnonymousConsentStat(choice, transition = 'initial') {
     try {
-      const payload = JSON.stringify({ choice: choice });
+      const payload = JSON.stringify({ choice: choice, transition: transition });
       if (navigator.sendBeacon) {
         navigator.sendBeacon('/api/track/consent-stat', new Blob([payload], { type: 'application/json' }));
       } else {

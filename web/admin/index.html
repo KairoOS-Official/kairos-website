@@ -274,19 +274,23 @@
               <span class="material-symbols-outlined text-emerald-600 text-lg">download</span>
             </div>
             <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-downloads">0</div>
-            <div class="text-[11px] text-slate-500 font-medium mt-2">Téléchargements demandés</div>
+            <div class="text-[11px] text-slate-500 font-medium mt-2">
+              <span id="stat-downloads-sessions">0</span> session(s) (<span id="stat-downloads-avg">0.0</span>/sess)
+            </div>
           </div>
           <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle">
             <div class="flex items-center justify-between text-muted mb-2">
-              <span class="text-xs font-mono uppercase font-semibold">Taux de Conversion</span>
-              <span class="material-symbols-outlined text-amber-500 text-lg">percent</span>
+              <span class="text-xs font-mono uppercase font-semibold">Temps Moyen sur le Site</span>
+              <span class="material-symbols-outlined text-amber-500 text-lg">timer</span>
             </div>
-            <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-conversion">0.0%</div>
-            <div class="text-[11px] text-muted font-medium mt-2">Téléchargements / Visites</div>
+            <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-avg-session-duration">0s</div>
+            <div class="text-[11px] text-muted font-medium mt-2">
+              Moyenne par page : <strong id="stat-avg-page-duration">0s</strong>
+            </div>
           </div>
         </div>
 
-        <!-- STATISTIQUES DE CONSENTEMENT RGPD / ePrivacy -->
+        <!-- STATISTIQUES DE CONSENTEMENT RGPD / ePrivacy AVEC ÉVOLUTIONS -->
         <div class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-subtle space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -294,19 +298,19 @@
                 <span class="material-symbols-outlined text-sm">verified_user</span>
               </div>
               <div>
-                <h3 class="text-sm font-display font-bold text-heading">Transparence & Choix de Consentement Visiteurs</h3>
-                <p class="text-[11px] text-muted">Mesure anonymisée du taux d'acceptation et de refus du bandeau ePrivacy.</p>
+                <h3 class="text-sm font-display font-bold text-heading">Transparence & Évolution des Consentements</h3>
+                <p class="text-[11px] text-muted">Mesure anonymisée avec suivi des changements d'avis (retraits / ajouts ultérieurs).</p>
               </div>
             </div>
             <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold">100% Conforme CNIL</span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-1">
             <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100 flex items-center justify-between">
               <div>
-                <span class="text-[10px] font-mono uppercase font-bold text-emerald-800">Consentements Acceptés</span>
+                <span class="text-[10px] font-mono uppercase font-bold text-emerald-800">Consentements Actifs</span>
                 <div class="text-2xl font-display font-extrabold text-emerald-700 mt-1" id="stat-consent-accepted">0</div>
-                <span class="text-[10px] text-emerald-600 font-medium">Télémétrie active</span>
+                <span class="text-[10px] text-emerald-600 font-medium">Télémétrie autorisée</span>
               </div>
               <span class="material-symbols-outlined text-3xl text-emerald-300">check_circle</span>
             </div>
@@ -320,14 +324,50 @@
               <span class="material-symbols-outlined text-3xl text-slate-300">block</span>
             </div>
 
+            <div class="p-4 rounded-2xl bg-rose-50/70 border border-rose-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase font-bold text-rose-800">Retraits de Consentement (-1)</span>
+                <div class="text-2xl font-display font-extrabold text-rose-700 mt-1" id="stat-consent-revoked">0</div>
+                <span class="text-[10px] text-rose-600 font-medium">Ont désactivé le suivi</span>
+              </div>
+              <span class="material-symbols-outlined text-3xl text-rose-300">do_not_disturb_on</span>
+            </div>
+
             <div class="p-4 rounded-2xl bg-brand-50/60 border border-brand-100 flex items-center justify-between">
               <div>
-                <span class="text-[10px] font-mono uppercase font-bold text-brand-800">Taux d'Acceptation Global</span>
-                <div class="text-2xl font-display font-extrabold text-brand-700 mt-1" id="stat-consent-rate">0.0%</div>
-                <span class="text-[10px] text-brand-600 font-medium">Visiteurs soutenant l'analyse</span>
+                <span class="text-[10px] font-mono uppercase font-bold text-brand-800">Acceptés après coup (+1)</span>
+                <div class="text-2xl font-display font-extrabold text-brand-700 mt-1" id="stat-consent-granted-after">0</div>
+                <span class="text-[10px] text-brand-600 font-medium">Taux global : <strong id="stat-consent-rate">0.0%</strong></span>
               </div>
-              <span class="material-symbols-outlined text-3xl text-brand-300">donut_large</span>
+              <span class="material-symbols-outlined text-3xl text-brand-300">add_circle</span>
             </div>
+          </div>
+        </div>
+
+        <!-- STATISTIQUES DES PAGES & TEMPS DE CONSULTATION -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-display font-bold text-base text-heading">Pages les plus consultées & Temps passé</h3>
+              <p class="text-xs text-muted">Surveillance de l'intérêt visiteur par page (durée moyenne de lecture et visites uniques).</p>
+            </div>
+            <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-100 text-slate-600 font-bold">Agrégation anonyme</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-sans">
+              <thead>
+                <tr class="border-b border-slate-200 text-muted font-mono uppercase text-[10px]">
+                  <th class="py-2.5 px-3">Page</th>
+                  <th class="py-2.5 px-3 text-center">Vues totales</th>
+                  <th class="py-2.5 px-3 text-center">Visiteurs uniques</th>
+                  <th class="py-2.5 px-3 text-right">Temps moyen passé</th>
+                </tr>
+              </thead>
+              <tbody id="pages-breakdown-table" class="divide-y divide-slate-100">
+                <tr><td colspan="4" class="py-4 text-center text-muted">Chargement des données de pages...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -1483,15 +1523,62 @@
             document.getElementById('stat-views').innerText = data.total_views || 0;
             document.getElementById('stat-visitors').innerText = data.unique_visitors || 0;
             document.getElementById('stat-downloads').innerText = data.download_clicks || 0;
-            document.getElementById('stat-conversion').innerText = (data.conversion_rate || 0.0) + '%';
 
-            // Statistiques de consentement ePrivacy
+            const elDlSess = document.getElementById('stat-downloads-sessions');
+            const elDlAvg = document.getElementById('stat-downloads-avg');
+            if (elDlSess) elDlSess.innerText = data.download_unique_sessions || 0;
+            if (elDlAvg) elDlAvg.innerText = data.avg_downloads_per_session || '0.0';
+
+            // Durées moyennes de visite
+            function formatDuration(sec) {
+              if (!sec || sec <= 0) return '0s';
+              sec = Math.round(sec);
+              if (sec < 60) return sec + 's';
+              const m = Math.floor(sec / 60);
+              const s = sec % 60;
+              return m + 'm ' + (s > 0 ? s + 's' : '');
+            }
+
+            const elAvgSess = document.getElementById('stat-avg-session-duration');
+            const elAvgPage = document.getElementById('stat-avg-page-duration');
+            if (elAvgSess) elAvgSess.innerText = formatDuration(data.avg_session_duration);
+            if (elAvgPage) elAvgPage.innerText = formatDuration(data.avg_page_duration);
+
+            // Statistiques de consentement ePrivacy & transitions
             const elAcc = document.getElementById('stat-consent-accepted');
             const elRef = document.getElementById('stat-consent-refused');
             const elRate = document.getElementById('stat-consent-rate');
+            const elRevoked = document.getElementById('stat-consent-revoked');
+            const elGranted = document.getElementById('stat-consent-granted-after');
             if (elAcc) elAcc.innerText = data.consent_accepted || 0;
             if (elRef) elRef.innerText = data.consent_refused || 0;
             if (elRate) elRate.innerText = (data.consent_rate || 0.0) + '%';
+            if (elRevoked) elRevoked.innerText = data.consent_revoked || 0;
+            if (elGranted) elGranted.innerText = data.consent_granted_after || 0;
+
+            // Rendu Tableau Pages & Temps de consultation
+            const pagesTable = document.getElementById('pages-breakdown-table');
+            if (pagesTable) {
+              pagesTable.innerHTML = '';
+              if (data.pages_breakdown && data.pages_breakdown.length > 0) {
+                data.pages_breakdown.forEach(p => {
+                  const tr = document.createElement('tr');
+                  tr.className = 'hover:bg-slate-50/80 transition-colors';
+                  tr.innerHTML = `
+                    <td class="py-2.5 px-3 font-mono text-slate-900 font-semibold flex items-center gap-2">
+                      <span class="material-symbols-outlined text-sm text-brand-600">article</span>
+                      <span>${p.page}</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-800">${p.views_count}</td>
+                    <td class="py-2.5 px-3 text-center font-mono text-slate-600">${p.visitors_count}</td>
+                    <td class="py-2.5 px-3 text-right font-mono font-semibold text-brand-700">${formatDuration(p.avg_duration)}</td>
+                  `;
+                  pagesTable.appendChild(tr);
+                });
+              } else {
+                pagesTable.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-muted">Aucune consultation enregistrée.</td></tr>';
+              }
+            }
 
             // Rendu OS Stats
             const osList = document.getElementById('stat-os-list');

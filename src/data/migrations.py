@@ -282,6 +282,9 @@ def init_db():
     if 'device' not in cols_pv:
         cursor.execute("ALTER TABLE page_views ADD COLUMN device TEXT DEFAULT 'desktop'")
 
+    if 'duration_seconds' not in cols_pv:
+        cursor.execute("ALTER TABLE page_views ADD COLUMN duration_seconds INTEGER DEFAULT 0")
+
     cursor.execute("PRAGMA table_info(analytics_events)")
     cols_ae = [r[1] for r in cursor.fetchall()]
     if 'ip_address' not in cols_ae:
@@ -292,6 +295,8 @@ def init_db():
         cursor.execute("ALTER TABLE analytics_events ADD COLUMN browser TEXT DEFAULT 'Inconnu'")
     if 'device' not in cols_ae:
         cursor.execute("ALTER TABLE analytics_events ADD COLUMN device TEXT DEFAULT 'desktop'")
+    if 'duration_seconds' not in cols_ae:
+        cursor.execute("ALTER TABLE analytics_events ADD COLUMN duration_seconds INTEGER DEFAULT 0")
 
     # 12. Banned IPs Table (Système de Bannissement Temporaire / Définitif & Granulaire)
     cursor.execute("""
