@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <form id="login-form" class="space-y-4" method="post" action="#" novalidate>
+      <form id="login-form" class="space-y-4" onsubmit="return false;" novalidate>
         <div>
           <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1.5" for="username">Identifiant Administrateur</label>
           <input id="username" type="text" required placeholder="Nom d'utilisateur" autocomplete="username" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
@@ -4887,6 +4887,8 @@
               toast(data.message || 'Erreur');
             }
           });
+        });
+      }
       // ========================================================
       // LOGIQUE V7 : CONSERVATION DES DONNÉES & EXPIRATION RGPD (50%)
       // ========================================================
