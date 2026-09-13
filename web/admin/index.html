@@ -997,6 +997,61 @@
             </div>
           </div>
 
+          <!-- SECTION CONSERVATION DES DONNÉES & EXPIRATION RGPD (50% D'AVANCE) -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle space-y-4 md:col-span-2">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-emerald-600 text-xl">auto_delete</span>
+                  <h3 class="font-display font-bold text-base text-heading">Conservation des Données & Expirations Programmées</h3>
+                </div>
+                <p class="text-xs text-muted">
+                  <strong>Politique Ultra-Protectrice :</strong> Les données sont officiellement annoncées au maximum légal mais <u>supprimées automatiquement deux fois plus tôt</u> (ex: 3 ans max légal &rarr; supprimé au bout d'1 an et demi).
+                </p>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button id="btn-refresh-retention" type="button" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer">
+                  <span class="material-symbols-outlined text-xs">sync</span>
+                  <span>Actualiser</span>
+                </button>
+                <button id="btn-purge-expired-now" type="button" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer">
+                  <span class="material-symbols-outlined text-xs">cleaning_services</span>
+                  <span>Purger les données expirées</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+              <table class="w-full text-left text-xs font-sans border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-mono uppercase text-[10px]">
+                    <th class="py-3 px-4">Catégorie de données</th>
+                    <th class="py-3 px-4 text-center">Volume stocké</th>
+                    <th class="py-3 px-4">Délai Légal Annoncé</th>
+                    <th class="py-3 px-4">Suppression Réelle (50%)</th>
+                    <th class="py-3 px-4">Plus ancien élément</th>
+                    <th class="py-3 px-4">Prochaine expiration</th>
+                    <th class="py-3 px-4 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="retention-table-tbody" class="divide-y divide-slate-100">
+                  <tr><td colspan="7" class="py-6 text-center text-muted font-mono">Chargement du calendrier d'expiration...</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <div class="text-[11px] text-slate-500 font-mono flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-sm text-emerald-600">verified</span>
+                <span>Conformité RGPD Art. 5.1.e & ePrivacy garantie.</span>
+              </div>
+              <button id="btn-reset-all-platform-data" type="button" class="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1.5 cursor-pointer">
+                <span class="material-symbols-outlined text-sm text-rose-600">delete_forever</span>
+                <span>Réinitialisation Intégrale (Tout Effacer)</span>
+              </button>
+            </div>
+          </div>
+
           <form id="password-form" class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle space-y-4">
             <h3 class="font-display font-bold text-base text-heading">Changer le Mot de Passe de la Session Active</h3>
             <div>
@@ -1467,7 +1522,7 @@
           if (target === 'store') renderStore();
           if (target === 'users') { loadUsers(); loadBans(); loadAppeals(); }
           if (target === 'roadmap') renderRoadmap();
-          if (target === 'settings') { loadSecurityConfig(); loadAdmins(); loadAuditLogs(); }
+          if (target === 'settings') { loadSecurityConfig(); loadAdmins(); loadAuditLogs(); loadDataRetention(); }
         });
       });
 
@@ -1479,6 +1534,7 @@
         loadSecurityConfig();
         loadAdmins();
         loadAuditLogs();
+        loadDataRetention();
         fetch('/api/content/all')
           .then(res => res.json())
           .then(data => {
@@ -4831,6 +4887,105 @@
               toast(data.message || 'Erreur');
             }
           });
+      // ========================================================
+      // LOGIQUE V7 : CONSERVATION DES DONNÉES & EXPIRATION RGPD (50%)
+      // ========================================================
+      function loadDataRetention() {
+        const tbody = document.getElementById('retention-table-tbody');
+        if (!tbody) return;
+
+        fetch('/api/admin/data/retention', {
+          headers: { 'Authorization': 'Bearer ' + authToken }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok' && data.retention) {
+            tbody.innerHTML = '';
+            data.retention.forEach(item => {
+              const tr = document.createElement('tr');
+              tr.className = 'hover:bg-slate-50 transition-colors';
+
+              const oldestDisplay = item.oldest_record ? item.oldest_record.split('.')[0] : '<span class="text-slate-400 italic">Aucun</span>';
+              let expireDisplay = '<span class="text-slate-400 italic">—</span>';
+              if (item.next_expiration) {
+                const daysBadge = item.days_remaining !== null 
+                  ? `<span class="ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${item.days_remaining <= 7 ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'}">dans ${item.days_remaining}j</span>` 
+                  : '';
+                expireDisplay = `<span class="font-mono text-slate-800 font-semibold">${item.next_expiration.split(' ')[0]}</span> ${daysBadge}`;
+              }
+
+              tr.innerHTML = `
+                <td class="py-3 px-4 font-semibold text-slate-900">
+                  <div class="flex items-center gap-2">
+                    <span class="font-display font-bold">${item.label}</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600">${item.category}</span>
+                  </div>
+                  <span class="text-[10px] text-muted font-sans">${item.legal_basis}</span>
+                </td>
+                <td class="py-3 px-4 text-center font-mono font-bold text-slate-800">${item.total_records}</td>
+                <td class="py-3 px-4 font-mono text-slate-500">${item.stated_duration}</td>
+                <td class="py-3 px-4">
+                  <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono font-bold text-[11px]">
+                    ${item.effective_days > 0 ? item.effective_days + ' jours' : 'Immédiat'}
+                  </span>
+                </td>
+                <td class="py-3 px-4 font-mono text-xs text-slate-600">${oldestDisplay}</td>
+                <td class="py-3 px-4">${expireDisplay}</td>
+                <td class="py-3 px-4 text-right">
+                  <button type="button" class="btn-purge-category px-3 py-1 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 font-bold text-xs cursor-pointer transition-colors" data-scope="${item.key}">
+                    Effacer
+                  </button>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+
+            // Bind des boutons d'effacement par catégorie
+            document.querySelectorAll('.btn-purge-category').forEach(btn => {
+              btn.addEventListener('click', (e) => {
+                const scope = e.currentTarget.getAttribute('data-scope');
+                if (confirm(`Confirmez-vous la réinitialisation de cette catégorie de données (${scope}) ?`)) {
+                  purgeDataScope(scope);
+                }
+              });
+            });
+          }
+        });
+      }
+
+      function purgeDataScope(scope) {
+        fetch('/api/admin/data/purge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+          body: JSON.stringify({ scope: scope })
+        })
+        .then(res => res.json())
+        .then(data => {
+          toast(data.message || 'Action exécutée.');
+          loadDataRetention();
+          if (scope === 'analytics' || scope === 'all') loadAnalytics();
+          if (scope === 'community' || scope === 'all') loadCommunity();
+          if (scope === 'appeals' || scope === 'all') { loadAppeals(); loadUsers(); }
+          if (scope === 'logs' || scope === 'all') loadAuditLogs();
+        });
+      }
+
+      const btnRefreshRetention = document.getElementById('btn-refresh-retention');
+      if (btnRefreshRetention) btnRefreshRetention.addEventListener('click', loadDataRetention);
+
+      const btnPurgeExpiredNow = document.getElementById('btn-purge-expired-now');
+      if (btnPurgeExpiredNow) {
+        btnPurgeExpiredNow.addEventListener('click', () => {
+          purgeDataScope('expired');
+        });
+      }
+
+      const btnResetAllPlatform = document.getElementById('btn-reset-all-platform-data');
+      if (btnResetAllPlatform) {
+        btnResetAllPlatform.addEventListener('click', () => {
+          if (confirm("ATTENTION : Vous êtes sur le point de supprimer TOUTES les données et statistiques enregistrées (analytics, vues, idées, votes, recours, journaux de sécurité).\n\nCette action est irréversible. Confirmez-vous la réinitialisation complète ?")) {
+            purgeDataScope('all');
+          }
         });
       }
 

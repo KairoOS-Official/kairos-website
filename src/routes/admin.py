@@ -2,6 +2,7 @@ import json
 import sqlite3
 from src.data.db import get_db
 from src.services.auth import verify_token, get_token_user, hash_password
+from src.services.security import get_data_retention_overview, purge_expired_gdpr_data
 
 def handle_admin_get(req, raw_path, query):
     conn = get_db()
@@ -341,6 +342,16 @@ def handle_admin_get(req, raw_path, query):
         known_ips = [dict(r) for r in cursor.fetchall()]
         conn.close()
         req.send_json({"status": "ok", "bans": bans, "known_ips": known_ips})
+        return True
+
+    elif raw_path == '/api/admin/data/retention':
+        if not verify_token(req.headers, 'settings'):
+            conn.close()
+            req.send_json({"status": "unauthorized"}, status=401)
+            return True
+        conn.close()
+        overview = get_data_retention_overview()
+        req.send_json({"status": "ok", "retention": overview})
         return True
 
     conn.close()
@@ -730,6 +741,64 @@ def handle_admin_post(req, path, payload):
         conn.commit()
         conn.close()
         req.send_json({"status": "ok", "message": f"Mot de passe modifié avec succès pour '{target_username}'."})
+        return True
+
+    elif path == '/api/admin/data/purge':
+        if not verify_token(req.headers, 'settings'):
+            conn.close()
+            req.send_json({"status": "unauthorized", "message": "Permission insuffisante."}, status=403)
+            return True
+
+        scope = payload.get('scope', 'expired') # 'expired', 'analytics', 'community', 'appeals', 'logs', 'all'
+
+        if scope == 'expired':
+            conn.close()
+            purge_expired_gdpr_data()
+            return req.send_json({"status": "ok", "message": "Purge automatique des données expirées exécutée avec succès."})
+
+        elif scope == 'analytics':
+            cursor.execute("DELETE FROM page_views")
+            cursor.execute("DELETE FROM analytics_events")
+            conn.commit()
+            conn.close()
+            return req.send_json({"status": "ok", "message": "Toutes les données analytics et pages vues ont été réinitialisées."})
+
+        elif scope == 'community':
+            cursor.execute("DELETE FROM community_proposals")
+            cursor.execute("DELETE FROM feature_suggestions")
+            conn.commit()
+            conn.close()
+            return req.send_json({"status": "ok", "message": "Toutes les idées et suggestions communautaires ont été purgées."})
+
+        elif scope == 'appeals':
+            cursor.execute("DELETE FROM ban_appeals")
+            cursor.execute("DELETE FROM chat_messages")
+            conn.commit()
+            conn.close()
+            return req.send_json({"status": "ok", "message": "Tous les recours et messages de discussion ont été purgés."})
+
+        elif scope == 'logs':
+            cursor.execute("DELETE FROM admin_login_logs")
+            cursor.execute("DELETE FROM security_notifications")
+            conn.commit()
+            conn.close()
+            return req.send_json({"status": "ok", "message": "Les journaux d'audit et notifications de sécurité ont été vidés."})
+
+        elif scope == 'all':
+            cursor.execute("DELETE FROM page_views")
+            cursor.execute("DELETE FROM analytics_events")
+            cursor.execute("DELETE FROM community_proposals")
+            cursor.execute("DELETE FROM feature_suggestions")
+            cursor.execute("DELETE FROM ban_appeals")
+            cursor.execute("DELETE FROM chat_messages")
+            cursor.execute("DELETE FROM admin_login_logs")
+            cursor.execute("DELETE FROM security_notifications")
+            conn.commit()
+            conn.close()
+            return req.send_json({"status": "ok", "message": "Réinitialisation intégrale effectuée : toutes les statistiques et données utilisateurs ont été effacées."})
+
+        conn.close()
+        req.send_json({"status": "error", "message": "Action inconnue."}, status=400)
         return True
 
     conn.close()

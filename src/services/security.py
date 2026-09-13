@@ -120,38 +120,158 @@ def get_admin_forbidden_page_html(client_ip):
 </body>
 </html>"""
 
+# Durées de conservation officielles (Affichées publiquement) vs Durées réelles divisées par 2 (Principe de minimisation stricte)
+DATA_RETENTION_POLICIES = [
+    {
+        "key": "analytics",
+        "label": "Télémétrie & Pages Vues",
+        "category": "Mesure d'audience",
+        "legal_basis": "Consentement (Art. 6.1.a)",
+        "stated_duration": "13 mois (395 jours)",
+        "effective_days": 197,  # 13 mois divisé par 2 (~6.5 mois)
+        "tables": ["page_views", "analytics_events"],
+        "date_column": "created_at"
+    },
+    {
+        "key": "community",
+        "label": "Boîte à Idées & Suggestions",
+        "category": "Contributions",
+        "legal_basis": "Consentement (Art. 6.1.a)",
+        "stated_duration": "3 ans (1095 jours)",
+        "effective_days": 547,  # 3 ans divisé par 2 (1.5 an / 18 mois)
+        "tables": ["community_proposals", "feature_suggestions"],
+        "date_column": "created_at"
+    },
+    {
+        "key": "appeals",
+        "label": "Recours & Chat d'assistance",
+        "category": "Modération",
+        "legal_basis": "Intérêt légitime (Art. 6.1.f)",
+        "stated_duration": "12 mois (365 jours)",
+        "effective_days": 182,  # 12 mois divisé par 2 (6 mois)
+        "tables": ["ban_appeals", "chat_messages"],
+        "date_column": "created_at"
+    },
+    {
+        "key": "logs",
+        "label": "Journaux d'Audit & Tentatives",
+        "category": "Sécurité",
+        "legal_basis": "Intérêt légitime (Art. 6.1.f)",
+        "stated_duration": "6 mois (180 jours)",
+        "effective_days": 90,   # 6 mois divisé par 2 (3 mois)
+        "tables": ["admin_login_logs", "security_notifications"],
+        "date_column": "created_at"
+    },
+    {
+        "key": "bans_temp",
+        "label": "Bans Temporaires Échus",
+        "category": "Sanctions",
+        "legal_basis": "Intérêt légitime (Art. 6.1.f)",
+        "stated_duration": "Durée de la sanction",
+        "effective_days": 0,    # Immédiatement à expiration
+        "tables": ["banned_ips"],
+        "date_column": "expires_at"
+    }
+]
+
 def purge_expired_gdpr_data():
     """
-    Purge automatique conforme aux durées de conservation énoncées dans la Politique de Confidentialité (RGPD Art. 5.1.e) :
-    - Événements analytics & pages vues : max 13 mois
-    - Recours archivés / traités : max 12 mois
-    - Messages de chat visiteur résolus : max 12 mois
-    - Bans temporaires expirés : levée automatique
-    - Journaux de tentatives admin : max 6 mois
+    Purge automatique ultra-protectrice (Minimisation RGPD Art. 5.1.c et 5.1.e) :
+    Les données sont légalement annoncées avec une durée maximale, mais supprimées
+    systématiquement deux fois plus tôt pour une confidentialité maximale.
+    - Analytics / Pages vues : Annoncé 13 mois -> Supprimé à 6.5 mois (197 jours)
+    - Idées / Suggestions : Annoncé 3 ans -> Supprimé à 1.5 an (547 jours)
+    - Recours / Chat : Annoncé 12 mois -> Supprimé à 6 mois (182 jours)
+    - Journaux de connexion admin : Annoncé 6 mois -> Supprimé à 3 mois (90 jours)
+    - Bans temporaires échus : Levée immédiate
     """
     try:
         conn = get_db()
         cursor = conn.cursor()
 
-        # 1. Purge des pages vues et événements > 13 mois (395 jours)
-        cursor.execute("DELETE FROM page_views WHERE created_at < datetime('now', '-395 days')")
-        cursor.execute("DELETE FROM analytics_events WHERE created_at < datetime('now', '-395 days')")
+        # 1. Analytics & Vues : Supprimé à 197 jours (~6.5 mois, annoncé 13 mois)
+        cursor.execute("DELETE FROM page_views WHERE created_at < datetime('now', '-197 days')")
+        cursor.execute("DELETE FROM analytics_events WHERE created_at < datetime('now', '-197 days')")
 
-        # 2. Purge des recours clôturés ou anciens > 12 mois (365 jours)
-        cursor.execute("DELETE FROM ban_appeals WHERE created_at < datetime('now', '-365 days')")
+        # 2. Idées et suggestions communautaires : Supprimé à 547 jours (~1.5 an, annoncé 3 ans)
+        cursor.execute("DELETE FROM community_proposals WHERE created_at < datetime('now', '-547 days')")
+        cursor.execute("DELETE FROM feature_suggestions WHERE created_at < datetime('now', '-547 days')")
 
-        # 3. Purge des messages de chat > 12 mois
-        cursor.execute("DELETE FROM chat_messages WHERE created_at < datetime('now', '-365 days')")
+        # 3. Recours et chat : Supprimé à 182 jours (6 mois, annoncé 12 mois)
+        cursor.execute("DELETE FROM ban_appeals WHERE created_at < datetime('now', '-182 days')")
+        cursor.execute("DELETE FROM chat_messages WHERE created_at < datetime('now', '-182 days')")
 
-        # 4. Nettoyage des bans temporaires échus
+        # 4. Bans temporaires échus
         cursor.execute("DELETE FROM banned_ips WHERE ban_type = 'temp' AND expires_at IS NOT NULL AND expires_at < datetime('now')")
 
-        # 5. Logs de sécurité admin > 6 mois (180 jours)
-        cursor.execute("DELETE FROM admin_login_logs WHERE created_at < datetime('now', '-180 days')")
-        cursor.execute("DELETE FROM security_notifications WHERE created_at < datetime('now', '-180 days')")
+        # 5. Logs admin & notifications : Supprimé à 90 jours (3 mois, annoncé 6 mois)
+        cursor.execute("DELETE FROM admin_login_logs WHERE created_at < datetime('now', '-90 days')")
+        cursor.execute("DELETE FROM security_notifications WHERE created_at < datetime('now', '-90 days')")
 
         conn.commit()
         conn.close()
     except Exception as e:
         print("Erreur purge_expired_gdpr_data:", e)
+
+def get_data_retention_overview():
+    """
+    Calcule pour chaque catégorie de données :
+    - Nombre d'enregistrements actuels
+    - Date du plus ancien enregistrement
+    - Date d'expiration programmée du plus ancien
+    - Temps restant en jours / heures avant auto-suppression
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+    overview = []
+
+    for policy in DATA_RETENTION_POLICIES:
+        total_count = 0
+        oldest_ts = None
+        for table in policy["tables"]:
+            try:
+                date_col = policy["date_column"]
+                cursor.execute(f"SELECT COUNT(*) as c, MIN({date_col}) as oldest FROM {table}")
+                row = cursor.fetchone()
+                if row:
+                    total_count += row['c'] or 0
+                    ts = row['oldest']
+                    if ts and (oldest_ts is None or ts < oldest_ts):
+                        oldest_ts = ts
+            except Exception:
+                pass
+
+        expires_at = None
+        days_remaining = None
+        if oldest_ts and policy["effective_days"] > 0:
+            try:
+                from datetime import datetime, timedelta
+                # SQLite timestamp parsing
+                clean_ts = oldest_ts.split('.')[0].replace('Z', '')
+                if 'T' in clean_ts:
+                    old_dt = datetime.fromisoformat(clean_ts)
+                else:
+                    old_dt = datetime.strptime(clean_ts, "%Y-%m-%d %H:%M:%S")
+                exp_dt = old_dt + timedelta(days=policy["effective_days"])
+                expires_at = exp_dt.strftime("%Y-%m-%d %H:%M:%S")
+                diff = exp_dt - datetime.now()
+                days_remaining = max(0, diff.days)
+            except Exception:
+                pass
+
+        overview.append({
+            "key": policy["key"],
+            "label": policy["label"],
+            "category": policy["category"],
+            "legal_basis": policy["legal_basis"],
+            "stated_duration": policy["stated_duration"],
+            "effective_days": policy["effective_days"],
+            "total_records": total_count,
+            "oldest_record": oldest_ts,
+            "next_expiration": expires_at,
+            "days_remaining": days_remaining
+        })
+
+    conn.close()
+    return overview
 
