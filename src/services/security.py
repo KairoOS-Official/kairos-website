@@ -119,3 +119,39 @@ def get_admin_forbidden_page_html(client_ip):
   </div>
 </body>
 </html>"""
+
+def purge_expired_gdpr_data():
+    """
+    Purge automatique conforme aux durées de conservation énoncées dans la Politique de Confidentialité (RGPD Art. 5.1.e) :
+    - Événements analytics & pages vues : max 13 mois
+    - Recours archivés / traités : max 12 mois
+    - Messages de chat visiteur résolus : max 12 mois
+    - Bans temporaires expirés : levée automatique
+    - Journaux de tentatives admin : max 6 mois
+    """
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        # 1. Purge des pages vues et événements > 13 mois (395 jours)
+        cursor.execute("DELETE FROM page_views WHERE created_at < datetime('now', '-395 days')")
+        cursor.execute("DELETE FROM analytics_events WHERE created_at < datetime('now', '-395 days')")
+
+        # 2. Purge des recours clôturés ou anciens > 12 mois (365 jours)
+        cursor.execute("DELETE FROM ban_appeals WHERE created_at < datetime('now', '-365 days')")
+
+        # 3. Purge des messages de chat > 12 mois
+        cursor.execute("DELETE FROM chat_messages WHERE created_at < datetime('now', '-365 days')")
+
+        # 4. Nettoyage des bans temporaires échus
+        cursor.execute("DELETE FROM banned_ips WHERE ban_type = 'temp' AND expires_at IS NOT NULL AND expires_at < datetime('now')")
+
+        # 5. Logs de sécurité admin > 6 mois (180 jours)
+        cursor.execute("DELETE FROM admin_login_logs WHERE created_at < datetime('now', '-180 days')")
+        cursor.execute("DELETE FROM security_notifications WHERE created_at < datetime('now', '-180 days')")
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print("Erreur purge_expired_gdpr_data:", e)
+

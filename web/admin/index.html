@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Administration Complète & Analytics — KaïroOS</title>
   
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
@@ -287,6 +283,51 @@
             </div>
             <div class="text-2xl sm:text-3xl font-display font-extrabold text-heading" id="stat-conversion">0.0%</div>
             <div class="text-[11px] text-muted font-medium mt-2">Téléchargements / Visites</div>
+          </div>
+        </div>
+
+        <!-- STATISTIQUES DE CONSENTEMENT RGPD / ePrivacy -->
+        <div class="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-subtle space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-sm">verified_user</span>
+              </div>
+              <div>
+                <h3 class="text-sm font-display font-bold text-heading">Transparence & Choix de Consentement Visiteurs</h3>
+                <p class="text-[11px] text-muted">Mesure anonymisée du taux d'acceptation et de refus du bandeau ePrivacy.</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold">100% Conforme CNIL</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+            <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase font-bold text-emerald-800">Consentements Acceptés</span>
+                <div class="text-2xl font-display font-extrabold text-emerald-700 mt-1" id="stat-consent-accepted">0</div>
+                <span class="text-[10px] text-emerald-600 font-medium">Télémétrie active</span>
+              </div>
+              <span class="material-symbols-outlined text-3xl text-emerald-300">check_circle</span>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase font-bold text-slate-700">Refus de Télémétrie</span>
+                <div class="text-2xl font-display font-extrabold text-slate-800 mt-1" id="stat-consent-refused">0</div>
+                <span class="text-[10px] text-slate-500 font-medium">Aucun cookie déposé</span>
+              </div>
+              <span class="material-symbols-outlined text-3xl text-slate-300">block</span>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-brand-50/60 border border-brand-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase font-bold text-brand-800">Taux d'Acceptation Global</span>
+                <div class="text-2xl font-display font-extrabold text-brand-700 mt-1" id="stat-consent-rate">0.0%</div>
+                <span class="text-[10px] text-brand-600 font-medium">Visiteurs soutenant l'analyse</span>
+              </div>
+              <span class="material-symbols-outlined text-3xl text-brand-300">donut_large</span>
+            </div>
           </div>
         </div>
 
@@ -1398,6 +1439,14 @@
             document.getElementById('stat-visitors').innerText = data.unique_visitors || 0;
             document.getElementById('stat-downloads').innerText = data.download_clicks || 0;
             document.getElementById('stat-conversion').innerText = (data.conversion_rate || 0.0) + '%';
+
+            // Statistiques de consentement ePrivacy
+            const elAcc = document.getElementById('stat-consent-accepted');
+            const elRef = document.getElementById('stat-consent-refused');
+            const elRate = document.getElementById('stat-consent-rate');
+            if (elAcc) elAcc.innerText = data.consent_accepted || 0;
+            if (elRef) elRef.innerText = data.consent_refused || 0;
+            if (elRate) elRate.innerText = (data.consent_rate || 0.0) + '%';
 
             const topList = document.getElementById('top-clicks-list');
             topList.innerHTML = '';
@@ -3405,16 +3454,22 @@
           return;
         }
 
-        tbody.innerHTML = '';
-        filtered.forEach(u => {
+        let anonCounter = 0;
+        filtered.forEach((u, index) => {
           const tr = document.createElement('tr');
           tr.className = 'hover:bg-slate-50/70 transition-colors text-xs font-sans';
 
+          const isAnon = (!u.ip_address || u.ip_address === '0.0.0.0' || u.ip_address === 'ANON');
+          if (isAnon) anonCounter++;
+          const displayIp = isAnon ? `Visiteur Anonyme #${anonCounter}` : u.ip_address;
+
           // Statut de sanction
           let banBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Actif / Libre</span>';
-          if (u.is_banned) {
+          if (isAnon) {
+            banBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono text-[10px] font-semibold">🔒 Anonymat RGPD</span>';
+          } else if (u.is_banned) {
             const b = u.ban_details;
-            if (b.block_all) {
+            if (b && b.block_all) {
               banBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[10px] font-bold animate-pulse"><span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>Banni Intégral</span>';
             } else {
               banBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-mono text-[10px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>Restreint</span>';
@@ -3433,8 +3488,8 @@
           tr.innerHTML = `
             <td class="py-3.5 px-4 font-mono">
               <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full ${u.is_banned ? 'bg-rose-500' : 'bg-emerald-500'}"></span>
-                <span class="font-bold text-slate-900 text-sm">${u.ip_address}</span>
+                <span class="w-2.5 h-2.5 rounded-full ${isAnon ? 'bg-slate-400' : (u.is_banned ? 'bg-rose-500' : 'bg-emerald-500')}"></span>
+                <span class="font-bold text-slate-900 text-sm ${isAnon ? 'text-indigo-600 font-sans' : ''}">${displayIp}</span>
               </div>
               ${identities.length > 0 ? `<div class="mt-1">${identities.join(' &bull; ')}</div>` : ''}
               <div class="text-[10px] text-slate-400 mt-0.5">Dernière activité: ${u.last_seen || 'Inconnue'}</div>

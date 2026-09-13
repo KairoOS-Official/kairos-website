@@ -1,10 +1,36 @@
+# Byte-compiled / optimized files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# OS / Editor files
 .DS_Store
 Thumbs.db
-.gitignore.d/
+ehthumbs.db
+.vscode/
+.idea/
 
-# Local data & logs
+# Local databases & Runtime state (CRITICAL: Never publish kairoos.db or live user/admin data)
+data/kairoos.db
+data/kairoos.db*
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Logs & Audit
 data/logs/
 data/*.txt
+logs/
+*.log
+
+# Secrets & Local environments
+.env
+.env.*
+!.env.example
+
+# Scratch and build caches
 scratch/
+.system_generated/

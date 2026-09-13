@@ -3,6 +3,8 @@
    Design System : Luminous Editorial Tech
    ========================================================================== */
 
+@import url('fonts.css');
+
 @layer base {
   html {
     scroll-behavior: smooth;

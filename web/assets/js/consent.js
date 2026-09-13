@@ -40,14 +40,14 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
     } catch(e) {}
 
+    // Envoi anonyme des statistiques de consentement (sans IP ni traceur nominatif)
+    sendAnonymousConsentStat(analyticsAllowed ? 'consent_accepted' : 'consent_refused');
+
     // Si refus, purger l'identifiant de session existant éventuel
     if (!analyticsAllowed) {
       try {
         sessionStorage.removeItem('kairo_session_id');
       } catch(e) {}
-
-      // Informer le serveur de manière anonyme du refus (+1 refus, sans IP ni identifiant)
-      sendAnonymousRefusal();
     }
 
     // Déclencher l'événement pour les composants et trackers
@@ -57,13 +57,13 @@
     closeModal();
   }
 
-  function sendAnonymousRefusal() {
+  function sendAnonymousConsentStat(choice) {
     try {
-      const payload = JSON.stringify({ event_type: 'refusal' });
+      const payload = JSON.stringify({ choice: choice });
       if (navigator.sendBeacon) {
-        navigator.sendBeacon('/api/track/refusal', new Blob([payload], { type: 'application/json' }));
+        navigator.sendBeacon('/api/track/consent-stat', new Blob([payload], { type: 'application/json' }));
       } else {
-        fetch('/api/track/refusal', {
+        fetch('/api/track/consent-stat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: payload,
@@ -71,8 +71,6 @@
         }).catch(() => {});
       }
     } catch(e) {}
-  }
-
   function renderBanner() {
     if (document.getElementById('kairo-consent-banner')) return;
 

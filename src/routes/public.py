@@ -106,6 +106,16 @@ def handle_public_get(req, raw_path, client_ip):
         """)
         recent_events = [dict(row) for row in cursor.fetchall()]
 
+        # Statistiques de consentement ePrivacy (totalement anonymisées)
+        cursor.execute("SELECT COUNT(*) as c FROM analytics_events WHERE (event_type = 'consent' AND target = 'consent_accepted')")
+        consent_accepted = cursor.fetchone()['c']
+
+        cursor.execute("SELECT COUNT(*) as c FROM analytics_events WHERE (event_type = 'consent' AND target = 'consent_refused') OR (event_type = 'refusal')")
+        consent_refused = cursor.fetchone()['c']
+
+        total_consent_actions = consent_accepted + consent_refused
+        consent_rate = round((consent_accepted / total_consent_actions * 100), 1) if total_consent_actions > 0 else 0.0
+
         total_views = views_row['total_views']
         conv_rate = round((dl_clicks / total_views * 100), 1) if total_views > 0 else 0.0
 
@@ -116,6 +126,9 @@ def handle_public_get(req, raw_path, client_ip):
             "download_clicks": dl_clicks,
             "total_clicks": total_clicks,
             "conversion_rate": conv_rate,
+            "consent_accepted": consent_accepted,
+            "consent_refused": consent_refused,
+            "consent_rate": consent_rate,
             "top_clicks": top_clicks,
             "recent_events": recent_events
         })
@@ -196,14 +209,15 @@ def handle_public_post(req, path, payload, client_ip):
         req.send_json({"status": "ok", "message": "Message transmis à l'administrateur."})
         return True
 
-    elif path == '/api/track/refusal':
-        # Compteur anonyme de refus sans IP ni session
+    elif path in ('/api/track/refusal', '/api/track/consent-stat'):
+        # Compteur statistique anonyme sans rétention de session ni d'adresse IP
+        choice = payload.get('choice', 'consent_refused') if path == '/api/track/consent-stat' else 'consent_refused'
         conn = get_db()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address) VALUES ('refusal', 'consent_refused', '/', 'anon', '{}', '0.0.0.0')")
+        cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address) VALUES ('consent', ?, '/', 'anon', '{}', 'ANON')", (choice,))
         conn.commit()
         conn.close()
-        req.send_json({"status": "refusal_recorded"})
+        req.send_json({"status": "consent_stat_recorded"})
         return True
 
     elif path == '/api/track':

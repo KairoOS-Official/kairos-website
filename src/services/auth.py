@@ -1,10 +1,11 @@
+import os
 import json
 import hashlib
 import secrets
 from src.data.db import get_db
 
-DEFAULT_ADMIN_USERNAME = 'admin'
-DEFAULT_ADMIN_PASSWORD = 'KairoOS-Admin-2026!'
+DEFAULT_ADMIN_USERNAME = os.environ.get('KAIRO_ADMIN_USER', 'admin')
+DEFAULT_ADMIN_PASSWORD = os.environ.get('KAIRO_ADMIN_PASS', '')
 
 def hash_password(password: str, salt: str = "kairo_salt_2026") -> str:
     return hashlib.sha256((password + salt).encode('utf-8')).hexdigest()

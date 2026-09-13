@@ -16,7 +16,7 @@ from src.services.auth import (
 )
 from src.services.security import (
     check_admin_ip_allowed, apply_automatic_security_sanction,
-    get_admin_forbidden_page_html, FAILED_LOGINS
+    get_admin_forbidden_page_html, FAILED_LOGINS, purge_expired_gdpr_data
 )
 from src.services.ban import (
     is_ip_completely_banned, get_banned_page_html
@@ -37,11 +37,45 @@ from src.routes.admin import (
     handle_admin_get, handle_admin_post
 )
 
+import mimetypes
+
 PORT = 3000
 
+# Ensure proper MIME types for web fonts and assets
+mimetypes.add_type('font/woff2', '.woff2')
+mimetypes.add_type('font/ttf', '.ttf')
+mimetypes.add_type('font/otf', '.otf')
+mimetypes.add_type('font/woff', '.woff')
+
 class KairoRequestHandler(http.server.SimpleHTTPRequestHandler):
+    extensions_map = http.server.SimpleHTTPRequestHandler.extensions_map.copy()
+    extensions_map.update({
+        '.woff2': 'font/woff2',
+        '.woff': 'font/woff',
+        '.ttf': 'font/ttf',
+        '.otf': 'font/otf',
+        '.css': 'text/css; charset=utf-8',
+        '.js': 'application/javascript; charset=utf-8',
+        '.svg': 'image/svg+xml',
+    })
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=WEB_DIR, **kwargs)
+
+    def guess_type(self, path):
+        if path.endswith('.woff2'):
+            return 'font/woff2'
+        if path.endswith('.ttf'):
+            return 'font/ttf'
+        if path.endswith('.otf'):
+            return 'font/otf'
+        if path.endswith('.woff'):
+            return 'font/woff'
+        if path.endswith('.css'):
+            return 'text/css; charset=utf-8'
+        if path.endswith('.js'):
+            return 'application/javascript; charset=utf-8'
+        return super().guess_type(path)
 
     def get_client_ip(self):
         xff = self.headers.get('X-Forwarded-For', '')
@@ -408,6 +442,10 @@ def main(argv=None):
         sys.exit(0)
 
     init_db()
+    try:
+        purge_expired_gdpr_data()
+    except Exception as e:
+        print("Avertissement purge RGPD:", e)
     with ThreadedTCPServer(("", PORT), KairoRequestHandler) as httpd:
         print(f"KaïroOS Multilingual Server running on http://localhost:{PORT}")
         httpd.serve_forever()

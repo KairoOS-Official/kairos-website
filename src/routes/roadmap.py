@@ -198,8 +198,8 @@ def handle_roadmap_post(req, path, payload, client_ip):
             return True
 
         email_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        if not email or not re.match(email_pattern, email):
-            req.send_json({"status": "error", "message": "Une adresse email valide est obligatoire pour soumettre une idée (ex: contact@domaine.com)."}, status=400)
+        if email and not re.match(email_pattern, email):
+            req.send_json({"status": "error", "message": "Le format de l'adresse email est invalide (ex: contact@domaine.com). Laissez le champ vide si vous ne souhaitez pas en renseigner."}, status=400)
             return True
 
         conn = get_db()

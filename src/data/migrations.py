@@ -94,11 +94,11 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS admin_security_config (
         id INTEGER PRIMARY KEY,
-        access_mode TEXT DEFAULT 'all',
+        access_mode TEXT DEFAULT 'whitelist',
         allowed_ips TEXT DEFAULT '127.0.0.1,::1'
     )
     """)
-    cursor.execute("INSERT OR IGNORE INTO admin_security_config (id, access_mode, allowed_ips) VALUES (1, 'all', '127.0.0.1,::1')")
+    cursor.execute("INSERT OR IGNORE INTO admin_security_config (id, access_mode, allowed_ips) VALUES (1, 'whitelist', '127.0.0.1,::1')")
 
     # 2. Analytics Events & Page Views
     cursor.execute("""
@@ -315,16 +315,12 @@ def init_db():
 
     # --- SEEDING INITIAL DATA ---
 
-    # Default Admin
+    # Default Admin Seed (Only if admin credentials supplied via env or CLI on initial clean setup)
     cursor.execute("SELECT COUNT(*) FROM admin_users")
     admin_count = cursor.fetchone()[0]
-    if admin_count == 0:
+    if admin_count == 0 and DEFAULT_ADMIN_PASSWORD:
         cursor.execute("INSERT INTO admin_users (username, password_hash, role, permissions) VALUES (?, ?, ?, ?)",
                        (DEFAULT_ADMIN_USERNAME, hash_password(DEFAULT_ADMIN_PASSWORD), 'superadmin', '["all"]'))
-    else:
-        # Align the default seeded account with the known password referenced by project docs and UI.
-        cursor.execute("UPDATE admin_users SET password_hash = ?, role = COALESCE(role, 'superadmin'), permissions = COALESCE(permissions, '[\"all\"]') WHERE username = ?",
-                       (hash_password(DEFAULT_ADMIN_PASSWORD), DEFAULT_ADMIN_USERNAME))
 
     # Seed Multilingual Content
     content_seeds = [
