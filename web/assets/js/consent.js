@@ -78,36 +78,36 @@
 
     const banner = document.createElement('div');
     banner.id = 'kairo-consent-banner';
-    banner.className = 'fixed bottom-4 left-3 right-3 sm:left-6 sm:right-auto sm:max-w-md z-[9999] animate-fade-in font-sans pb-[env(safe-area-inset-bottom,0px)]';
+    banner.className = 'fixed bottom-3 left-3 right-3 sm:bottom-5 sm:left-6 sm:right-auto sm:max-w-md z-[9999] animate-fade-in font-sans pb-[env(safe-area-inset-bottom,0px)]';
     banner.innerHTML = `
-      <div class="bg-white/98 backdrop-blur-xl rounded-3xl p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.25)] border border-slate-200 text-slate-800 space-y-4">
-        <div class="flex items-start gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0 shadow-xs">
-            <span class="material-symbols-outlined text-xl">cookie</span>
+      <div class="bg-white/92 backdrop-blur-md rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-lg border border-slate-200/90 text-slate-800 space-y-2.5 sm:space-y-3.5">
+        <div class="flex items-start gap-2.5 sm:gap-3">
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-lg sm:text-xl">cookie</span>
           </div>
-          <div class="space-y-1">
-            <h4 class="font-display font-bold text-sm text-slate-900">Respect de votre vie privée</h4>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Nous utilisons une mesure d'audience anonymisée hébergée localement pour comprendre l'usage du site et guider le développement de KaïroOS. Aucun traceur publicitaire n'est utilisé.
+          <div class="space-y-0.5 sm:space-y-1">
+            <h4 class="font-display font-bold text-xs sm:text-sm text-slate-900">Respect de votre vie privée</h4>
+            <p class="text-[11px] sm:text-xs text-slate-600 leading-snug sm:leading-relaxed">
+              Nous mesurons l'audience de manière anonyme pour améliorer KaïroOS. Aucun traceur publicitaire n'est utilisé.
             </p>
           </div>
         </div>
 
-        <div class="flex items-center gap-2 text-[11px] font-mono text-slate-500">
+        <div class="flex items-center gap-2 text-[10px] sm:text-[11px] font-mono text-slate-500">
           <a href="/legal/cookies" class="underline hover:text-brand-600 transition-colors">Détail des cookies</a>
           <span>·</span>
-          <a href="/legal/confidentialite" class="underline hover:text-brand-600 transition-colors">Politique de confidentialité</a>
+          <a href="/legal/confidentialite" class="underline hover:text-brand-600 transition-colors">Confidentialité</a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-          <button type="button" id="btn-consent-refuse" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors cursor-pointer text-center">
-            Tout refuser
+        <div class="grid grid-cols-3 gap-1.5 sm:gap-2 pt-0.5">
+          <button type="button" id="btn-consent-refuse" class="w-full px-2 py-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-[11px] sm:text-xs transition-colors cursor-pointer text-center">
+            Refuser
           </button>
-          <button type="button" id="btn-consent-customize" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition-colors cursor-pointer text-center">
-            Personnaliser
+          <button type="button" id="btn-consent-customize" class="w-full px-2 py-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-medium text-[11px] sm:text-xs transition-colors cursor-pointer text-center">
+            Régler
           </button>
-          <button type="button" id="btn-consent-accept" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer text-center">
-            Tout accepter
+          <button type="button" id="btn-consent-accept" class="w-full px-2 py-2 sm:px-3 sm:py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-[11px] sm:text-xs transition-colors cursor-pointer text-center">
+            Accepter
           </button>
         </div>
       </div>
