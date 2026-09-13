@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feuille de Route & Roadmap — KaïroOS</title>
+  <meta name="description" content="Feuille de route officielle de KaïroOS, le frontend d'arcade et de salon open source sous Windows. Visualisation rapide des jalons, boîte à idées communautaire et votes réels par IP.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              200: '#C7D2FE',
+              300: '#A5B4FC',
+              400: '#818CF8',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+              800: '#3730A3',
+              900: '#312E81',
+            },
+            coral: {
+              400: '#FB7185',
+              500: '#F43F5E',
+              600: '#E11D48',
+            },
+            surface: {
+              subtle: '#F8FAFC',
+              muted: '#F1F5F9',
+              dark: '#0B0F19'
+            },
+            heading: '#0F172A',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          boxShadow: {
+            'subtle': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+            'card': '0 12px 32px -4px rgba(15, 23, 42, 0.08)',
+            'float': '0 20px 48px -8px rgba(79, 70, 229, 0.18)',
+            '2xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F1F5F9;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+    .vote-card {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .vote-card:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+
+  <!-- Composants Web partagés & Télémétrie -->
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/components/navbar.js" defer></script>
+  <script src="assets/js/components/footer.js" defer></script>
+  <script src="assets/js/consent.js" defer></script>
+  <script src="assets/js/tracker.js" defer></script>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="bg-surface-subtle text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- En-tête Navigation -->
+  <kairo-navbar active="roadmap"></kairo-navbar>
+
+  <main class="min-h-screen pt-28 pb-20">
+
+    <!-- 1. HERO SECTION ÉPURÉE -->
+    <section class="max-w-5xl mx-auto px-4 sm:px-8 pt-6 pb-10 text-center">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200/60 font-mono text-xs font-bold tracking-wide uppercase mb-5 shadow-2xs">
+        <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+        <span>FEUILLE DE ROUTE OFFICIELLE</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl font-display font-extrabold tracking-tight text-heading leading-[1.15] mb-5">
+        Feuille de Route.<br>
+        <span class="bg-gradient-to-r from-brand-600 via-indigo-600 to-coral-500 bg-clip-text text-transparent">Visualisation claire, détails à la demande.</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-muted max-w-2xl mx-auto leading-relaxed mb-6">
+        Retrouvez les versions majeures de KaïroOS en un coup d'œil. Cliquez sur le <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-xs font-bold">i</span> pour déplier la spécification technique complète ou proposez vos propres idées.
+      </p>
+
+      <!-- Stats et Liens -->
+      <div class="flex flex-wrap items-center justify-center gap-3 text-xs font-mono">
+        <span class="px-3.5 py-2 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-2 text-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Alpha v0.1.0 En Ligne</span>
+        </span>
+        <a href="#section-vote" class="px-3.5 py-2 rounded-2xl bg-brand-50 text-brand-700 hover:bg-brand-100 border border-brand-200/80 font-bold transition-all shadow-xs flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">how_to_vote</span>
+          <span>Voter sur les priorités</span>
+        </a>
+        <a href="#section-propose" class="px-3.5 py-2 rounded-2xl bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200/80 font-bold transition-all shadow-xs flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">lightbulb</span>
+          <span>Proposer une idée</span>
+        </a>
+        <a href="https://github.com/KairoOS-Official/KairoOS/blob/main/docs/ROADMAP.md" target="_blank" rel="noopener" class="px-3.5 py-2 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-bold transition-all shadow-xs flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+          <span>docs/ROADMAP.md (GitHub)</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. CHRONOLOGIE DES JALONS OFFICIELS (VISUALISATION RAPIDE & ÉPURÉE) -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-8 py-8">
+      <div class="space-y-10 relative before:absolute before:inset-0 before:left-6 md:before:left-1/2 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-brand-500 before:via-slate-300 before:to-slate-100">
+
+        <!-- JALON 1 : v0.1.0 ALPHA -->
+        <div class="relative flex flex-col md:flex-row items-center gap-6">
+          <div class="md:w-1/2 flex justify-start md:justify-end">
+            <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-emerald-500 shadow-card max-w-md w-full">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-mono text-xs font-bold border border-emerald-200 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>LIVRÉ & VALIDÉ</span>
+                </span>
+                <span class="text-xs font-mono text-slate-400 font-bold">T1 2026</span>
+              </div>
+
+              <h3 class="text-xl font-display font-bold text-heading mb-1.5">v0.1.0 Alpha — Fondations & Architecture</h3>
+              <p class="text-xs text-muted leading-relaxed mb-4">
+                Core Rust autonome avec base SQLite kairo.db, scanner multi-consoles et interface React 19 + Tauri 2 100% pensée pour la manette.
+              </p>
+              
+              <!-- Barre de progression -->
+              <div class="space-y-1.5 mb-4">
+                <div class="flex items-center justify-between text-[11px] font-mono">
+                  <span class="text-slate-500">Statut de la release</span>
+                  <span class="text-emerald-600 font-bold">100% Terminé</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="w-full h-full bg-emerald-500 rounded-full"></div>
+                </div>
+              </div>
+
+              <!-- Puces résumées rapides -->
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Core Rust SQLite</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">React 19 + Tauri 2</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">3 Thèmes CSS</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">PWA Remote</span>
+              </div>
+
+              <!-- Bouton d'accès au détail (i) -->
+              <button type="button" class="btn-info-detail w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 border border-slate-200/80 transition-all cursor-pointer" data-target="v0.1.0">
+                <span class="material-symbols-outlined text-sm text-emerald-600">info</span>
+                <span>Voir les détails techniques complets</span>
+              </button>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-emerald-500 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">check</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 2 : v0.2.0 BÊTA -->
+        <div class="relative flex flex-col md:flex-row-reverse items-center gap-6">
+          <div class="md:w-1/2 flex justify-start">
+            <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-brand-400 shadow-card max-w-md w-full">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="px-3 py-1 rounded-full bg-brand-50 text-brand-700 font-mono text-xs font-bold border border-brand-200 flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                  <span>EN COURS · PRIORITÉS IMMÉDIATES</span>
+                </span>
+                <span class="text-xs font-mono text-brand-600 font-bold">T2 2026</span>
+              </div>
+
+              <h3 class="text-xl font-display font-bold text-heading mb-1.5">v0.2.0 Bêta — Enrichissement Média & UX</h3>
+              <p class="text-xs text-muted leading-relaxed mb-4">
+                Scraping ScreenScraper automatique (jaquettes 3D, vidéos 30s), gestion multi-disques .m3u et overlay transparent en jeu.
+              </p>
+              
+              <div class="space-y-1.5 mb-4">
+                <div class="flex items-center justify-between text-[11px] font-mono">
+                  <span class="text-slate-500">Avancement</span>
+                  <span class="text-brand-600 font-bold">65% En Développement</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="w-[65%] h-full bg-brand-600 rounded-full"></div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">ScreenScraper HD</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Multi-Disques .m3u</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Overlay In-Game</span>
+              </div>
+
+              <button type="button" class="btn-info-detail w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 border border-slate-200/80 transition-all cursor-pointer" data-target="v0.2.0">
+                <span class="material-symbols-outlined text-sm text-brand-600">info</span>
+                <span>Voir les détails techniques complets</span>
+              </button>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-brand-600 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">sync</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 3 : v0.3.0 -->
+        <div class="relative flex flex-col md:flex-row items-center gap-6">
+          <div class="md:w-1/2 flex justify-start md:justify-end">
+            <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-subtle max-w-md w-full">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-mono text-xs font-bold border border-indigo-100">
+                  <span>MOYEN TERME · PLANIFIÉ</span>
+                </span>
+                <span class="text-xs font-mono text-slate-400 font-bold">T3 2026</span>
+              </div>
+
+              <h3 class="text-xl font-display font-bold text-heading mb-1.5">v0.3.0 — Communauté, Succès & Cloud</h3>
+              <p class="text-xs text-muted leading-relaxed mb-4">
+                Succès RetroAchievements en direct, synchronisation Cloud multi-services (Google Drive, Nextcloud) et statistiques de jeux.
+              </p>
+
+              <div class="space-y-1.5 mb-4">
+                <div class="flex items-center justify-between text-[11px] font-mono">
+                  <span class="text-slate-500">Phase d'architecture</span>
+                  <span class="text-indigo-600 font-bold">25% Défini</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="w-[25%] h-full bg-indigo-500 rounded-full"></div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">RetroAchievements</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Cloud Save Sync</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Temps de jeu</span>
+              </div>
+
+              <button type="button" class="btn-info-detail w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 border border-slate-200/80 transition-all cursor-pointer" data-target="v0.3.0">
+                <span class="material-symbols-outlined text-sm text-indigo-600">info</span>
+                <span>Voir les détails techniques complets</span>
+              </button>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-indigo-500 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">military_tech</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 4 : v1.0.0 -->
+        <div class="relative flex flex-col md:flex-row-reverse items-center gap-6">
+          <div class="md:w-1/2 flex justify-start">
+            <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-subtle max-w-md w-full">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-700 font-mono text-xs font-bold border border-amber-200">
+                  <span>VISION VERSION STABLE</span>
+                </span>
+                <span class="text-xs font-mono text-slate-400 font-bold">Fin 2026</span>
+              </div>
+
+              <h3 class="text-xl font-display font-bold text-heading mb-1.5">v1.0.0 — Écosystème & Extensibilité</h3>
+              <p class="text-xs text-muted leading-relaxed mb-4">
+                Store de plugins WASM/Rust sandboxé, mode kiosque verrouillé pour salons d'exposition et traduction multilingue native.
+              </p>
+
+              <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Plugins WASM</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Kiosque Salon</span>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold">Multilingue</span>
+              </div>
+
+              <button type="button" class="btn-info-detail w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-700 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 border border-slate-200/80 transition-all cursor-pointer" data-target="v1.0.0">
+                <span class="material-symbols-outlined text-sm text-amber-600">info</span>
+                <span>Voir les détails techniques complets</span>
+              </button>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-amber-500 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">extension</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+        <!-- JALON 5 : CROSS-PLATFORM -->
+        <div class="relative flex flex-col md:flex-row items-center gap-6">
+          <div class="md:w-1/2 flex justify-start md:justify-end">
+            <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-7 shadow-float max-w-md w-full">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="px-3 py-1 rounded-full bg-brand-500/30 text-brand-300 font-mono text-xs font-bold border border-brand-400/30">
+                  <span>ARCHITECTURE MULTI-OS</span>
+                </span>
+                <span class="text-xs font-mono text-slate-400 font-bold">2027</span>
+              </div>
+
+              <h3 class="text-xl font-display font-bold text-white mb-1.5">Vision Cross-Platform & CLI Headless</h3>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Support Linux et SteamOS (session Gamescope 60/90Hz) et binaire console léger <code>kairo-cli</code> sans Webview.
+              </p>
+
+              <div class="grid grid-cols-2 gap-2 text-[11px] font-mono mb-4">
+                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-emerald-400 font-bold">Win 10/11: 10/10</div>
+                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-yellow-400 font-bold">Linux: 7.5/10</div>
+                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-yellow-400 font-bold">macOS: 7/10</div>
+                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-rose-400 font-bold">Android PWA</div>
+              </div>
+
+              <button type="button" class="btn-info-detail w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center justify-center gap-2 border border-white/10 transition-all cursor-pointer" data-target="cross-platform">
+                <span class="material-symbols-outlined text-sm text-brand-400">info</span>
+                <span>Voir la matrice & spécifications OS</span>
+              </button>
+            </div>
+          </div>
+          <div class="absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-slate-900 border-4 border-white shadow-md flex items-center justify-center text-white z-10">
+            <span class="material-symbols-outlined text-[16px]">terminal</span>
+          </div>
+          <div class="md:w-1/2 hidden md:block"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. VOTEZ POUR LES PROCHAINES PRIORITÉS (AVEC PROPOSITION DE COMPLÉMENTS) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-8 py-12" id="section-vote">
+      <div class="bg-[#F8FAFC] rounded-[36px] p-6 sm:p-12 border border-slate-200/90 shadow-card">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <div class="inline-flex items-center gap-2 text-xs font-mono font-bold tracking-widest uppercase text-brand-600 bg-brand-50 px-3.5 py-1.5 rounded-full border border-brand-200/80 mb-3 shadow-2xs">
+            <span class="material-symbols-outlined text-[16px]">how_to_vote</span>
+            <span>VOTES COMMUNAUTAIRES</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-display font-extrabold text-heading mb-2">Votez pour ce qui arrive.</h2>
+          <p class="text-xs sm:text-sm text-muted mb-4 leading-relaxed">
+            1 vote unique par adresse IP publique. Vous pouvez aussi <strong>proposer des modifications ou idées supplémentaires</strong> directement associées à chaque proposition.
+          </p>
+
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <div id="ip-notice-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-mono text-slate-600 shadow-2xs">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span data-fr="Votre IP Publique : " data-en="Your Public IP: ">Votre IP Publique : </span><strong id="client-ip-display" class="text-slate-900 font-bold">Détection...</strong>
+            </div>
+
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200/80 text-[11px] font-mono text-slate-500">
+              <span class="material-symbols-outlined text-xs text-brand-600">shield</span>
+              <span data-fr="IP retenue pour limiter à 1 vote/personne (Art. 6.1.f RGPD)" data-en="IP stored to enforce 1 vote/person (Art. 6.1.f GDPR)">IP retenue pour limiter à 1 vote/personne (Art. 6.1.f RGPD)</span>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-500 mt-3 max-w-xl mx-auto leading-normal" data-fr="ℹ️ Information RGPD : En votant, votre adresse IP et votre User-Agent sont enregistrés pour garantir la sincérité du scrutin et prévenir la fraude aux votes (base légale : intérêt légitime). Aucune utilisation publicitaire ni revente. Consultez notre <a href='legal/confidentialite' class='underline text-brand-600 hover:text-brand-800'>politique de confidentialité</a>." data-en="ℹ️ GDPR Notice: When casting a vote, your IP address and User-Agent are recorded to ensure vote integrity and prevent ballot-stuffing (legal basis: legitimate interest). No advertising use or sale. View our <a href='legal/confidentialite' class='underline text-brand-600 hover:text-brand-800'>privacy policy</a>.">
+            ℹ️ <strong>Information RGPD :</strong> En votant, votre adresse IP et votre User-Agent sont enregistrés pour garantir la sincérité du scrutin et prévenir la fraude aux votes (base légale : intérêt légitime). Aucune utilisation publicitaire ni revente. Consultez notre <a href="legal/confidentialite" class="underline text-brand-600 hover:text-brand-800">politique de confidentialité</a>.
+          </p>
+        </div>
+
+        <!-- GRILLE DES CARTES DE VOTES -->
+        <div id="vote-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="col-span-full py-12 text-center font-mono text-xs text-muted">
+            <span class="material-symbols-outlined animate-spin text-2xl text-brand-600 mb-2">progress_activity</span>
+            <p>Chargement des fonctionnalités...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. BOÎTE À IDÉES GRAND FORMAT : PROPOSER UNE NOUVELLE IDÉE POUR KAÏROOS -->
+    <section id="section-propose" class="mt-20 pt-16 border-t border-slate-200/80 px-4 sm:px-8">
+      <div class="max-w-6xl mx-auto">
+        
+        <!-- En-tête grand format -->
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-mono font-bold uppercase tracking-wider mb-4 shadow-xs">
+            <span class="material-symbols-outlined text-base text-amber-600">lightbulb</span>
+            <span>Boîte à Idées Communautaire</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-display font-black text-heading tracking-tight leading-tight">
+            Votre vision. Notre code.<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-600 to-brand-600">Façonnez l'avenir de KaïroOS.</span>
+          </h2>
+          <p class="text-sm sm:text-base text-muted mt-4 leading-relaxed">
+            KaïroOS est un projet 100% open source. Vous rêvez d'un émulateur spécifique, d'un shader CRT immersif, d'une compatibilité manette exotique ou d'un mode kiosque sur-mesure ? Soumettez votre proposition.
+          </p>
+        </div>
+
+        <!-- Grille Principale 2 Colonnes -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          <!-- Colonne Gauche : Guide & Étapes (5 cols) -->
+          <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 via-slate-950 to-indigo-950 text-white rounded-3xl p-8 sm:p-10 flex flex-col justify-between shadow-float relative overflow-hidden border border-slate-800">
+            <div class="absolute -top-24 -right-24 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 space-y-8">
+              <div>
+                <span class="text-xs font-mono text-amber-400 font-bold uppercase tracking-widest">Processus Collaboratif</span>
+                <h3 class="text-2xl font-display font-bold mt-1">Comment votre idée devient réalité</h3>
+              </div>
+
+              <!-- 3 Étapes Illustrées -->
+              <div class="space-y-6 text-xs sm:text-sm">
+                <div class="flex items-start gap-4">
+                  <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 font-mono font-bold flex items-center justify-center shrink-0 text-sm">
+                    1
+                  </div>
+                  <div>
+                    <strong class="text-white block font-display text-sm">Formulez & Renseignez votre Email</strong>
+                    <span class="text-slate-400 leading-relaxed">Votre adresse email est obligatoire afin de vous notifier directement dès que l'équipe examine votre proposition.</span>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-8 h-8 rounded-xl bg-brand-500/20 border border-brand-500/40 text-brand-300 font-mono font-bold flex items-center justify-center shrink-0 text-sm">
+                    2
+                  </div>
+                  <div>
+                    <strong class="text-white block font-display text-sm">Revue Technique & Modération</strong>
+                    <span class="text-slate-400 leading-relaxed">Les mainteneurs évaluent la faisabilité sur le Core Rust et l'architecture frontend dans le panneau d'administration.</span>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono font-bold flex items-center justify-center shrink-0 text-sm">
+                    3
+                  </div>
+                  <div>
+                    <strong class="text-white block font-display text-sm">Publication au Vote Public</strong>
+                    <span class="text-slate-400 leading-relaxed">Dès son approbation, l'idée est propulsée dans la grille de vote officiel pour que toute la communauté puisse la soutenir.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative z-10 pt-8 mt-8 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span class="flex items-center gap-1.5 text-emerald-400 font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Système Ouvert
+              </span>
+              <span>Licence MIT</span>
+            </div>
+          </div>
+
+          <!-- Colonne Droite : Formulaire Spacieux & Email Requis (7 cols) -->
+          <div class="lg:col-span-7 bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-card flex flex-col justify-between">
+            <form id="form-community-proposal" class="space-y-5">
+              
+              <div>
+                <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-1.5" for="inp-prop-title">
+                  Titre de votre proposition <span class="text-rose-600">*</span>
+                </label>
+                <input type="text" id="inp-prop-title" required placeholder="Ex: Support des manettes Switch Joy-Con et rumble haptique" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none transition-all">
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-1.5" for="inp-prop-category">
+                    Catégorie <span class="text-rose-600">*</span>
+                  </label>
+                  <select id="inp-prop-category" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none bg-white">
+                    <option value="GAMEPLAY">GAMEPLAY & MANETTES</option>
+                    <option value="UX / MÉDIA">UX & MÉDIAS (Scraping, Vidéos)</option>
+                    <option value="MOTEUR">MOTEUR & ÉMULATEURS</option>
+                    <option value="CLOUD">CLOUD & SAUVEGARDES</option>
+                    <option value="THÈMES">THÈMES & SHADERS CRT</option>
+                    <option value="SYSTÈME">PORTABILITÉ LINUX / DECK</option>
+                    <option value="ARCADE PRO">BORNE & MODE KIOSK</option>
+                    <option value="GÉNÉRAL" selected>AUTRE / GÉNÉRAL</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-1.5" for="inp-prop-author">
+                    Votre Pseudo / Nom (Optionnel)
+                  </label>
+                  <input type="text" id="inp-prop-author" placeholder="Ex: Alex_Arcade" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none">
+                </div>
+              </div>
+
+              <!-- Champ EMAIL OPTIONNEL avec explication rassurante & RGPD -->
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <label class="block text-xs font-mono font-bold text-slate-800 uppercase" for="inp-prop-email">
+                    Adresse Email de Suivi <span class="text-slate-400 font-normal">(Optionnel)</span>
+                  </label>
+                  <span class="text-[11px] font-mono text-slate-500 font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs text-brand-600">mail</span>
+                    Notifications facultatives
+                  </span>
+                </div>
+                <input type="email" id="inp-prop-email" placeholder="votre.email@exemple.com (optionnel)" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-medium focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none transition-all">
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                  <strong>Information RGPD :</strong> L'email est facultatif et sert uniquement à vous notifier si vous souhaitez suivre votre proposition. Il ne sera jamais publié, cédé ni revendu (conservation : 3 ans max). Vous pouvez exercer vos droits d'accès et d'effacement à tout moment (voir notre <a href="legal/confidentialite" target="_blank" class="underline text-brand-600 hover:text-brand-800">Politique de Confidentialité</a>).
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-1.5" for="inp-prop-desc">
+                  Description détaillée & Cas d'usage concret <span class="text-rose-600">*</span>
+                </label>
+                <textarea id="inp-prop-desc" rows="5" required placeholder="Expliquez en détail le fonctionnement souhaité, pourquoi cette fonctionnalité est utile, comment elle doit se comporter à la manette..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none transition-all leading-relaxed"></textarea>
+              </div>
+
+              <div id="proposal-error-alert" class="hidden p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium flex items-center gap-2">
+                <span class="material-symbols-outlined text-base text-rose-600">error</span>
+                <span id="proposal-error-msg">Une erreur est survenue.</span>
+              </div>
+
+              <div class="pt-2">
+                <button type="submit" id="btn-submit-proposal" class="w-full py-4 px-6 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-display font-bold text-sm sm:text-base transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2.5">
+                  <span class="material-symbols-outlined text-xl">rocket_launch</span>
+                  <span>Soumettre ma proposition à l'équipe</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST DE NOTIFICATION -->
+  <div id="vote-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-card bg-slate-900/90 text-white px-5 py-3.5 rounded-2xl shadow-float flex items-center gap-3 text-xs font-medium border border-slate-700">
+      <span id="vote-toast-icon" class="material-symbols-outlined text-emerald-400 text-lg">check_circle</span>
+      <span id="vote-toast-message">Action effectuée avec succès !</span>
+    </div>
+  </div>
+
+  <!-- MODALE UNIFIÉE (i) DE DÉTAILS TECHNIQUES COMPLETS -->
+  <div id="roadmap-info-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+          <div class="flex items-center gap-2.5">
+            <span id="modal-info-badge" class="px-3 py-1 rounded-full font-mono text-xs font-bold uppercase bg-brand-50 text-brand-700 border border-brand-100">Jalon</span>
+            <h3 id="modal-info-title" class="font-display font-bold text-lg sm:text-xl text-heading">Titre du Jalon</h3>
+          </div>
+          <button id="btn-close-info-modal" type="button" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        <div id="modal-info-body" class="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed"></div>
+      </div>
+
+      <div class="mt-8 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <a id="modal-info-github-link" href="https://github.com/KairoOS-Official/KairoOS/blob/main/docs/ROADMAP.md" target="_blank" rel="noopener" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-sm">
+          <span class="material-symbols-outlined text-sm">open_in_new</span>
+          <span>Consulter docs/ROADMAP.md sur GitHub</span>
+        </a>
+        <button id="btn-modal-copy-snippet" type="button" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-sm">content_copy</span>
+          <span id="modal-copy-label">Copier l'extrait</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE D'AJOUT DE COMPLÉMENT / MODIFICATION SUR UNE IDÉE EXISTANTE -->
+  <div id="suggestion-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase text-brand-600">COMPLÉMENT / MODIFICATION</span>
+          <h3 id="suggestion-modal-feature-title" class="font-display font-bold text-base text-heading">Titre de la fonctionnalité</h3>
+        </div>
+        <button id="btn-close-sug-modal" type="button" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-muted mb-4">
+        Vous avez une idée pour enrichir cette proposition, une modification ou un cas d'usage précis à suggérer ? Laissez votre note ci-dessous.
+      </p>
+
+      <form id="form-feature-suggestion" class="space-y-4">
+        <input type="hidden" id="inp-sug-feature-id" value="">
+        <div>
+          <label class="block text-xs font-mono font-semibold text-slate-700 uppercase mb-1">Votre suggestion ou modification *</label>
+          <textarea id="inp-sug-text" rows="3" required placeholder="Ex: Il faudrait également penser à supporter les formats .chd pour la compression des jeux multi-CD..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-brand-500 focus:outline-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-mono font-semibold text-slate-700 uppercase mb-1">Votre Pseudo (Optionnel)</label>
+          <input type="text" id="inp-sug-author" placeholder="Ex: RetroLover" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-brand-500 focus:outline-none">
+        </div>
+        <p class="text-[10px] text-slate-400 font-mono leading-tight">
+          Votre adresse IP est utilisée de manière sécurisée pour prévenir le spam (intérêt légitime, voir <a href="/legal/confidentialite" target="_blank" class="underline text-brand-600">confidentialité</a>).
+        </p>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="btn-cancel-sug" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">Annuler</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-xs shadow">Envoyer le complément</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pied de page -->
+  <kairo-footer></kairo-footer>
+
+  <!-- SCRIPT CLIENT ROADMAP -->
+  <script>
+    (function() {
+      // BASE OFFICIELLE DES DÉTAILS ISSUS DE docs/ROADMAP.md
+      const ROADMAP_SPECS = {
+        'v0.1.0': {
+          badge: 'LIVRÉ & VALIDÉ · v0.1.0 Alpha',
+          title: 'v0.1.0 Alpha — Fondations & Architecture',
+          contentHtml: `
+            <div class="space-y-4">
+              <p class="text-slate-600">Cette phase initiale a posé l'ensemble des fondations techniques, la séparation hermétique des environnements et l'architecture modulaire.</p>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-slate-900 flex items-center gap-1.5 font-mono text-xs text-emerald-600">
+                  <span class="material-symbols-outlined text-sm">database</span>
+                  <span>Core Rust Autonome (kairo-core)</span>
+                </div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li><strong>kairo.db :</strong> Moteur SQLite optimisé avec migrations automatiques et indexation.</li>
+                  <li><strong>Scanner multi-consoles :</strong> Détection récursive SNES, N64, GameCube, Wii, Switch, PS1, PS2, PS3, Arcade, Windows.</li>
+                  <li><strong>Sous-dossiers dédiés :</strong> &lt;system&gt;/&lt;Game Title&gt;/&lt;rom_file&gt;, metadata.json, media/ (jaquettes, fond, vidéos).</li>
+                  <li><strong>Superviseur de processus :</strong> PID tracking, détection de fermeture, reprise automatique du frontend.</li>
+                  <li><strong>Module AppPaths :</strong> Séparation stricte mode Portable (builds/portable/) et Installé (%APPDATA%\kairo-os\).</li>
+                </ul>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-slate-900 flex items-center gap-1.5 font-mono text-xs text-emerald-600">
+                  <span class="material-symbols-outlined text-sm">sports_esports</span>
+                  <span>Frontend Arcade Réactif (kairo-ui — React 19 + Tauri 2)</span>
+                </div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li>Navigation 100% Gamepad / Joystick sans souris ni clavier (hook useGamepad).</li>
+                  <li>Interface plein écran sans bordure, masquage complet de la barre des tâches et curseur.</li>
+                  <li>Système de sons d'interface arcade interactifs (bips de navigation, validation, lancement).</li>
+                  <li>Fiche détaillée de lancement avec arguments CLI, émulateur custom, core LibRetro.</li>
+                </ul>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-slate-900 flex items-center gap-1.5 font-mono text-xs text-emerald-600">
+                  <span class="material-symbols-outlined text-sm">palette</span>
+                  <span>Moteur CSS & 3 Layouts</span>
+                </div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li>3 Layouts officiels : kairo-default, kairo-hub et kairo-console (Steam Big Picture).</li>
+                  <li>Raccourci d'urgence : Touche Suppr pour quitter instantanément n'importe quel jeu bloqué.</li>
+                  <li>Community Store relié à l'API GitHub KairoOS-Official/kairos-themes.</li>
+                </ul>
+              </div>
+            </div>
+          `
+        },
+        'v0.2.0': {
+          badge: 'EN COURS · v0.2.0 Bêta (T2 2026)',
+          title: 'v0.2.0 Bêta — Enrichissement Multimédia & UX',
+          contentHtml: `
+            <div class="space-y-4">
+              <p class="text-slate-600">Automatiser l'embellissement visuel de la bibliothèque et la gestion avancée des jeux multi-disques.</p>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-brand-700 font-mono text-xs">Scraping Automatique ScreenScraper HD</div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li>Authentification compte ScreenScraper, gestion quotas journaliers et rate-limiting.</li>
+                  <li>Jaquettes 2D/3D, logos Wheel transparents et vidéos trailers 30s autoplay.</li>
+                  <li>Mise en cache locale pour un affichage 60 FPS hors-ligne instantané.</li>
+                </ul>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-brand-700 font-mono text-xs">Gestion Multi-Disques (.m3u) & Overlay In-Game</div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li>Détection et regroupement automatique des jeux multi-CD (PS1, Dreamcast, Saturn, GC).</li>
+                  <li>Éjection et insertion du disque virtuel à la manette directement en jeu.</li>
+                  <li>Menu contextuel superposé via combo Home ou Select+Start (Save/Load States, remap boutons).</li>
+                </ul>
+              </div>
+            </div>
+          `
+        },
+        'v0.3.0': {
+          badge: 'PLANIFIÉ · v0.3.0 (T3 2026)',
+          title: 'v0.3.0 — Communauté, Succès & Cloud',
+          contentHtml: `
+            <div class="space-y-4">
+              <p class="text-slate-600">Interconnexion communautaire, succès rétro et synchronisation des sauvegardes.</p>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-indigo-700 font-mono text-xs">RetroAchievements & Cloud Save Sync</div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li>Toasts visuels et carillons sonores arcade lors du déblocage de succès en jeu.</li>
+                  <li>Synchronisation automatique des .srm vers Google Drive, OneDrive et Nextcloud/WebDAV.</li>
+                  <li>Suivi précis du temps de jeu et statistiques de complétion sur kairo-remote.</li>
+                </ul>
+              </div>
+            </div>
+          `
+        },
+        'v1.0.0': {
+          badge: 'VISION · v1.0.0 (Fin 2026)',
+          title: 'v1.0.0 — Écosystème & Extensibilité',
+          contentHtml: `
+            <div class="space-y-4">
+              <p class="text-slate-600">Store d'extensions WebAssembly, mode kiosque ultra-sécurisé et internationalisation intégrale.</p>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-amber-700 font-mono text-xs">Plugins WASM & Mode Kiosk Salon</div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li>Extensions isolées en WebAssembly (lecteur chiptune, widgets météo, scrapers).</li>
+                  <li>Verrouillage des touches Windows (Alt+Tab, Ctrl+Alt+Suppr, touche Windows) et monnayeur virtuel.</li>
+                  <li>Traduction native en Français, Anglais, Espagnol, Japonais, Allemand et Portugais.</li>
+                </ul>
+              </div>
+            </div>
+          `
+        },
+        'cross-platform': {
+          badge: 'ARCHITECTURE MULTI-OS',
+          title: 'Vision Cross-Platform & Binaire Headless (kairo-cli)',
+          contentHtml: `
+            <div class="space-y-4">
+              <p class="text-slate-600">Portabilité Linux et macOS préparée grâce à Tauri 2 et à la séparation modulaire.</p>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-slate-900 font-mono text-xs">Adaptations Linux/macOS</div>
+                <ul class="list-disc pl-5 space-y-1 text-xs text-slate-600">
+                  <li><strong>P0 Critique :</strong> paths.rs ($XDG_CONFIG_HOME), rdev à la place de windows-sys, suppression des suffixes .exe.</li>
+                  <li><strong>P1 Important :</strong> xdg-open/open, crate zip sans PowerShell, détection universelle node.</li>
+                  <li><strong>P2 Secondaire :</strong> scripts de build .deb / AppImage / .dmg.</li>
+                </ul>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="font-bold text-slate-900 font-mono text-xs">Commandes CLI (kairo-cli)</div>
+                <p class="text-xs text-slate-600"><code>kairo-cli list</code>, <code>launch &lt;id&gt;</code>, <code>scan</code>, <code>settings</code>, <code>plugins</code>, <code>themes</code>.</p>
+              </div>
+            </div>
+          `
+        }
+      };
+
+      // MODALE (i)
+      const modal = document.getElementById('roadmap-info-modal');
+      const modalBadge = document.getElementById('modal-info-badge');
+      const modalTitle = document.getElementById('modal-info-title');
+      const modalBody = document.getElementById('modal-info-body');
+      const btnCloseModal = document.getElementById('btn-close-info-modal');
+      const btnCopySnippet = document.getElementById('btn-modal-copy-snippet');
+      const copyLabel = document.getElementById('modal-copy-label');
+      let currentSnippet = '';
+
+      function openInfoModal(key, customData = null) {
+        let spec = ROADMAP_SPECS[key];
+        if (!spec && customData) spec = customData;
+        if (!spec) return;
+
+        modalBadge.textContent = spec.badge || 'Spécification';
+        modalTitle.textContent = spec.title || 'Détails Techniques';
+        modalBody.innerHTML = spec.contentHtml || '';
+        currentSnippet = spec.title + '\n\n' + modalBody.innerText;
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeInfoModal() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      if (btnCloseModal) btnCloseModal.addEventListener('click', closeInfoModal);
+      if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeInfoModal(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeInfoModal(); });
+
+      if (btnCopySnippet) {
+        btnCopySnippet.addEventListener('click', () => {
+          if (!currentSnippet) return;
+          navigator.clipboard.writeText(currentSnippet).then(() => {
+            copyLabel.textContent = '✓ Copié !';
+            setTimeout(() => { copyLabel.textContent = "Copier l'extrait"; }, 2000);
+          });
+        });
+      }
+
+      document.querySelectorAll('.btn-info-detail').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const target = btn.getAttribute('data-target');
+          if (target) openInfoModal(target);
+        });
+      });
+
+      // TOAST
+      const toast = document.getElementById('vote-toast');
+      const toastMsg = document.getElementById('vote-toast-message');
+      const toastIcon = document.getElementById('vote-toast-icon');
+
+      function showToast(message, isSuccess = true) {
+        if (!toast) return;
+        toastMsg.textContent = message;
+        toastIcon.textContent = isSuccess ? 'check_circle' : 'info';
+        toastIcon.className = isSuccess ? 'material-symbols-outlined text-emerald-400 text-lg' : 'material-symbols-outlined text-amber-400 text-lg';
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 4500);
+      }
+
+      // MODALE DE COMPLÉMENT SUR UNE IDÉE
+      const sugModal = document.getElementById('suggestion-modal');
+      const sugFeatureTitle = document.getElementById('suggestion-modal-feature-title');
+      const inpSugFeatureId = document.getElementById('inp-sug-feature-id');
+      const formSug = document.getElementById('form-feature-suggestion');
+      const btnCloseSug = document.getElementById('btn-close-sug-modal');
+      const btnCancelSug = document.getElementById('btn-cancel-sug');
+
+      function openSuggestionModal(featureId, featureTitle) {
+        inpSugFeatureId.value = featureId;
+        sugFeatureTitle.textContent = featureTitle;
+        document.getElementById('inp-sug-text').value = '';
+        sugModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeSuggestionModal() {
+        sugModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      if (btnCloseSug) btnCloseSug.addEventListener('click', closeSuggestionModal);
+      if (btnCancelSug) btnCancelSug.addEventListener('click', closeSuggestionModal);
+      if (sugModal) sugModal.addEventListener('click', (e) => { if (e.target === sugModal) closeSuggestionModal(); });
+
+      if (formSug) {
+        formSug.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const fid = inpSugFeatureId.value;
+          const text = document.getElementById('inp-sug-text').value;
+          const author = document.getElementById('inp-sug-author').value;
+
+          fetch('/api/roadmap/features/suggest', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ feature_id: fid, suggestion_text: text, author: author })
+          })
+          .then(async response => {
+            const res = await response.json().catch(() => ({}));
+            closeSuggestionModal();
+            if (response.status === 403 || res.status === 'banned') {
+              if (window.triggerSanctionAlert) {
+                window.triggerSanctionAlert('Ajouter un complement d\'idee', res.ban || res);
+              } else {
+                alert(res.message || 'Vous ne pouvez pas faire ca : vous avez ete sanctionne !');
+              }
+              return;
+            }
+            showToast(res.message || 'Votre complement a ete transmis !', res.status === 'ok');
+          })
+          .catch(() => {
+            showToast('Erreur lors de la transmission.', false);
+          });
+        });
+      }
+
+      // CHARGEMENT DES FONCTIONNALITÉS ET VOTES
+      const voteGrid = document.getElementById('vote-grid');
+      const clientIpDisplay = document.getElementById('client-ip-display');
+
+      function getTagIcon(tag) {
+        tag = (tag || '').toUpperCase();
+        if (tag.includes('MÉDIA') || tag.includes('UX')) return 'movie';
+        if (tag.includes('GAMEPLAY')) return 'sports_esports';
+        if (tag.includes('MOTEUR')) return 'memory';
+        if (tag.includes('COMMUNAUTÉ')) return 'military_tech';
+        if (tag.includes('CLOUD')) return 'cloud_sync';
+        if (tag.includes('SYSTÈME')) return 'devices';
+        if (tag.includes('ARCHITECTURE')) return 'terminal';
+        if (tag.includes('ARCADE')) return 'storefront';
+        return 'stars';
+      }
+
+      let isLoadingVotingFeatures = false;
+
+      function loadVotingFeatures() {
+        const grid = document.getElementById('vote-grid');
+        const ipDisplay = document.getElementById('client-ip-display');
+        if (!grid) return;
+
+        isLoadingVotingFeatures = true;
+
+        const _abortCtrl = new AbortController();
+        const _timeoutId = setTimeout(() => _abortCtrl.abort(), 30000); // 30s timeout
+
+        fetch('/api/roadmap/features', { signal: _abortCtrl.signal })
+          .then(res => {
+            clearTimeout(_timeoutId);
+            if (!res.ok) throw new Error('Erreur HTTP ' + res.status);
+            return res.json();
+          })
+          .then(data => {
+            isLoadingVotingFeatures = false;
+            if (!data || data.status !== 'ok') {
+              throw new Error((data && data.message) || 'Réponse invalide');
+            }
+
+            if (data.client_ip && ipDisplay) {
+              const ip = data.client_ip;
+              ipDisplay.textContent = ip;
+              // Mark local/loopback IPs
+              const badge = document.getElementById('ip-notice-badge');
+              if (badge && (ip === '127.0.0.1' || ip === '::1' || ip.startsWith('192.168.') || ip.startsWith('10.'))) {
+                const dot = badge.querySelector('.rounded-full');
+                if (dot) { dot.className = 'w-2 h-2 rounded-full bg-amber-400'; }
+              } else if (badge) {
+                const dot = badge.querySelector('.rounded-full');
+                if (dot) { dot.className = 'w-2 h-2 rounded-full bg-emerald-500'; }
+              }
+            }
+
+            const currentLang = (window.kairoI18n && (window.kairoI18n.lang || (window.kairoI18n.getLang && window.kairoI18n.getLang()))) || 'fr';
+            grid.innerHTML = '';
+
+            const features = data.features || [];
+            if (features.length === 0) {
+              grid.innerHTML = `
+                <div class="col-span-full py-12 text-center font-mono text-xs text-muted">
+                  <span class="material-symbols-outlined text-3xl text-slate-400 mb-2">inbox</span>
+                  <p>Aucune fonctionnalité disponible pour le vote actuellement.</p>
+                </div>
+              `;
+              return;
+            }
+
+            features.forEach(feat => {
+              const title = currentLang === 'en' ? (feat.title_en || feat.title_fr) : feat.title_fr;
+              const desc = currentLang === 'en' ? (feat.desc_en || feat.desc_fr) : feat.desc_fr;
+              const icon = getTagIcon(feat.tag);
+              const hasVoted = Boolean(feat.has_voted);
+
+              const card = document.createElement('div');
+              card.className = `vote-card bg-white rounded-3xl p-5 border transition-all flex flex-col justify-between select-none ${hasVoted ? 'border-brand-500 bg-brand-50/20 shadow-subtle' : 'border-slate-200/80 shadow-subtle hover:border-brand-300'}`;
+              card.setAttribute('data-id', feat.id);
+
+              card.innerHTML = `
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="w-9 h-9 rounded-xl ${hasVoted ? 'bg-emerald-50 text-emerald-600' : 'bg-brand-50 text-brand-600'} flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[18px]">${icon}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold uppercase">${feat.tag || 'PROJET'}</span>
+                      <button type="button" class="btn-card-info w-6 h-6 rounded-full bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-500 flex items-center justify-center transition-colors cursor-pointer" title="Détails techniques GitHub">
+                        <span class="material-symbols-outlined text-[14px]">info</span>
+                      </button>
+                    </div>
+                  </div>
+                  <h4 class="font-display font-bold text-sm text-heading mb-1">${title}</h4>
+                  <p class="text-xs text-muted leading-relaxed mb-3 line-clamp-2">${desc}</p>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-mono font-bold text-brand-600 vote-count">${feat.votes_count || 0} votes</span>
+                    <button type="button" class="btn-submit-vote px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${hasVoted ? 'bg-emerald-600 text-white pointer-events-none' : 'bg-slate-900 text-white hover:bg-brand-600 shadow-sm'}" data-id="${feat.id}" title="${hasVoted ? 'Vous avez déjà voté avec cette adresse IP' : '1 vote unique enregistré par adresse IP (sécurité & intégrité RGPD)'}">
+                      ${hasVoted ? '✓ Voté' : 'Voter'}
+                    </button>
+                  </div>
+                  <button type="button" class="btn-open-sug w-full py-1.5 rounded-lg bg-slate-50 hover:bg-amber-50 hover:text-amber-800 text-slate-600 font-mono text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer" data-id="${feat.id}">
+                    <span class="material-symbols-outlined text-xs">add_comment</span>
+                    <span>Proposer un complément</span>
+                  </button>
+                </div>
+              `;
+
+              // Bouton (i) de la carte
+              const btnInfo = card.querySelector('.btn-card-info');
+              if (btnInfo) {
+                btnInfo.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  openInfoModal(null, {
+                    badge: `VOTE COMMUNAUTAIRE · ${feat.tag || 'PROJET'}`,
+                    title: title,
+                    contentHtml: `
+                      <div class="space-y-4">
+                        <p class="text-slate-700 text-sm leading-relaxed">${desc}</p>
+                        <div class="p-3.5 rounded-2xl bg-brand-50/60 border border-brand-100 text-xs space-y-1.5">
+                          <div class="font-mono font-bold text-brand-700">Spécification Technique Officielle</div>
+                          <p class="text-slate-600">Cette fonctionnalité est documentée dans la feuille de route du dépôt officiel <strong>KairoOS-Official/KairoOS</strong> (fichier <code>docs/ROADMAP.md</code>).</p>
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                          <span>Compteur actuel vérifié :</span>
+                          <strong class="text-brand-600">${feat.votes_count || 0} votes</strong>
+                        </div>
+                      </div>
+                    `
+                  });
+                });
+              }
+
+              // Bouton proposition complément
+              const btnSug = card.querySelector('.btn-open-sug');
+              if (btnSug) {
+                btnSug.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  openSuggestionModal(feat.id, title);
+                });
+              }
+
+              // Bouton Voter
+              const btnVote = card.querySelector('.btn-submit-vote');
+              if (!hasVoted && btnVote) {
+                btnVote.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  submitVote(feat.id, card, btnVote);
+                });
+              }
+
+              grid.appendChild(card);
+            });
+          })
+          .catch(err => {
+            clearTimeout(_timeoutId);
+            isLoadingVotingFeatures = false;
+            console.error('Erreur chargement votes roadmap:', err);
+            const isTimeout = err && (err.name === 'AbortError' || err.name === 'TimeoutError');
+            const errMsg = isTimeout
+              ? 'Connexion impossible — Délai de 30 secondes dépassé. Le serveur ne répond pas.'
+              : (err.message || 'Erreur réseau ou indisponibilité momentanée');
+            grid.innerHTML = `
+              <div class="col-span-full py-10 text-center font-mono text-xs text-rose-600 bg-rose-50/60 rounded-2xl border border-rose-200 p-6">
+                <span class="material-symbols-outlined text-3xl text-rose-500 mb-2">${isTimeout ? 'wifi_off' : 'sync_problem'}</span>
+                <p class="font-bold mb-1 text-sm">${isTimeout ? 'Connexion impossible' : 'Impossible de charger les votes'}</p>
+                <p class="text-slate-500 text-[11px] mb-4">${errMsg}</p>
+                <button type="button" id="btn-retry-votes" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-sans font-bold text-xs shadow cursor-pointer transition-colors inline-flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm">refresh</span>
+                  <span>Réessayer</span>
+                </button>
+              </div>
+            `;
+            const retryBtn = document.getElementById('btn-retry-votes');
+            if (retryBtn) {
+              retryBtn.addEventListener('click', () => {
+                grid.innerHTML = `
+                  <div class="col-span-full py-12 text-center font-mono text-xs text-muted">
+                    <span class="material-symbols-outlined animate-spin text-2xl text-brand-600 mb-2">progress_activity</span>
+                    <p>Chargement des fonctionnalités...</p>
+                  </div>
+                `;
+                loadVotingFeatures();
+              });
+            }
+          });
+      }
+      window.loadVotingFeatures = loadVotingFeatures;
+
+      function submitVote(featureId, cardEl, btnEl) {
+        fetch('/api/roadmap/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ feature_id: featureId })
+        })
+        .then(async response => {
+          const res = await response.json().catch(() => ({}));
+          if (response.status === 403 || res.status === 'banned') {
+            if (window.triggerSanctionAlert) {
+              window.triggerSanctionAlert('Voter pour une fonctionnalite', res.ban || res);
+            } else {
+              alert(res.message || 'Vous ne pouvez pas faire ca : vous avez ete sanctionne !');
+            }
+            return;
+          }
+          if (res.status === 'ok') {
+            cardEl.classList.add('border-brand-500', 'bg-brand-50/20');
+            const countEl = cardEl.querySelector('.vote-count');
+            if (countEl) countEl.textContent = res.votes_count + ' votes';
+            if (btnEl) {
+              btnEl.textContent = '✓ Voté';
+              btnEl.className = 'btn-submit-vote px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white pointer-events-none';
+            }
+            showToast(res.message || 'Votre vote a été pris en compte !', true);
+          } else if (res.status === 'already_voted') {
+            if (btnEl) {
+              btnEl.textContent = '✓ Voté';
+              btnEl.className = 'btn-submit-vote px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white pointer-events-none';
+            }
+            showToast(res.message, false);
+          } else {
+            showToast(res.message || 'Erreur lors du vote', false);
+          }
+        })
+        .catch(() => {
+          showToast('Erreur de connexion au serveur.', false);
+        });
+      }
+
+      // SOUMISSION D'UNE NOUVELLE IDÉE (BOÎTE À IDÉES GRAND FORMAT + EMAIL OBLIGATOIRE)
+      const formProposal = document.getElementById('form-community-proposal');
+      const propErrorAlert = document.getElementById('proposal-error-alert');
+      const propErrorMsg = document.getElementById('proposal-error-msg');
+
+      if (formProposal) {
+        formProposal.addEventListener('submit', (e) => {
+          e.preventDefault();
+          if (propErrorAlert) propErrorAlert.classList.add('hidden');
+
+          const title = document.getElementById('inp-prop-title').value.trim();
+          const category = document.getElementById('inp-prop-category').value;
+          const desc = document.getElementById('inp-prop-desc').value.trim();
+          const author = document.getElementById('inp-prop-author').value.trim();
+          const email = document.getElementById('inp-prop-email').value.trim();
+
+          const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+          if (email && !emailPattern.test(email)) {
+            if (propErrorAlert && propErrorMsg) {
+              propErrorMsg.textContent = 'L\'adresse email saisie est invalide (ex: contact@domaine.com). Laissez le champ vide si vous ne souhaitez pas en renseigner.';
+              propErrorAlert.classList.remove('hidden');
+            }
+            showToast('Adresse email invalide.', false);
+            return;
+          }
+
+          fetch('/api/roadmap/propose', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: title, category: category, description: desc, author: author, email: email })
+          })
+          .then(async response => {
+            const data = await response.json().catch(() => ({}));
+            if (response.status === 403 || data.status === 'banned') {
+              if (window.triggerSanctionAlert) {
+                window.triggerSanctionAlert('Proposer une idee de fonctionnalite', data.ban || data);
+              } else {
+                alert(data.message || 'Vous ne pouvez pas faire ca : vous avez ete sanctionne !');
+              }
+              return;
+            }
+            if (response.ok && data.status === 'ok') {
+              formProposal.reset();
+              showToast(data.message, true);
+            } else {
+              if (propErrorAlert && propErrorMsg) {
+                propErrorMsg.textContent = data.message || 'Erreur lors de la soumission.';
+                propErrorAlert.classList.remove('hidden');
+              }
+              showToast(data.message || 'Erreur lors de la soumission.', false);
+            }
+          })
+          .catch(() => {
+            if (propErrorAlert && propErrorMsg) {
+              propErrorMsg.textContent = 'Erreur de connexion au serveur.';
+              propErrorAlert.classList.remove('hidden');
+            }
+            showToast('Erreur de connexion au serveur.', false);
+          });
+        });
+      }
+
+      // Initial load with AbortController timeout (30s max)
+      let _votesInitDone = false;
+      function initVotes() {
+        if (!_votesInitDone) {
+          _votesInitDone = true;
+          loadVotingFeatures();
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initVotes);
+      } else {
+        initVotes();
+      }
+
+      // On language change reload votes (skip first call which is the init call)
+      let _langChangeCount = 0;
+      if (window.kairoI18n) {
+        window.kairoI18n.onChange(() => {
+          _langChangeCount++;
+          if (_langChangeCount > 1) { loadVotingFeatures(); }
+        });
+      }
+    })();
+  </script>
+
+  <script src="/assets/js/ban-system.js?v=6"></script>
+</body>
+</html>

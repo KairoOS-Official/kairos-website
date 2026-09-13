@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-en="Privacy Policy & GDPR · KaïroOS" data-fr="Politique de Confidentialité & RGPD · KaïroOS">Politique de Confidentialité & RGPD · KaïroOS</title>
+  <meta name="description" content="Politique de confidentialité, transparence et protection des données personnelles (RGPD) du projet KaïroOS.">
+  <link rel="icon" type="image/png" href="assets/img/logo.png">
+
+  <!-- Google Fonts & Icons -->
+
+  <!-- Tailwind CSS & Main CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            coral: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              500: '#f43f5e',
+              600: '#e11d48',
+            },
+            canvas: '#FBFBF9',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)',
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/components/navbar.js" defer></script>
+  <script src="assets/js/components/footer.js" defer></script>
+  <script src="assets/js/consent.js" defer></script>
+</head>
+<body class="bg-[#FBFBF9] font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
+
+  <!-- Navigation -->
+  <kairo-navbar></kairo-navbar>
+
+  <main class="w-full pt-32 sm:pt-40 pb-20 flex-1">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Fil d'Ariane & Badge -->
+      <div class="mb-8 space-y-3">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 font-mono text-xs font-semibold shadow-xs">
+          <span class="material-symbols-outlined text-sm text-emerald-600">verified_user</span>
+          <span data-en="GDPR Compliance & Data Protection" data-fr="Conformité RGPD & Protection des Données">Conformité RGPD & Protection des Données</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-heading tracking-tight font-display" data-en="Privacy Policy" data-fr="Politique de Confidentialité">
+          Politique de Confidentialité
+        </h1>
+        <p class="text-sm sm:text-base text-muted max-w-3xl leading-relaxed" data-en="Transparent overview of data collected, legal bases, retention periods, and how to exercise your rights under the GDPR." data-fr="Présentation claire et transparente des données traitées, des bases juridiques, des durées de conservation et de vos droits selon le Règlement Général sur la Protection des Données (RGPD).">
+          Présentation claire et transparente des données traitées, des bases juridiques, des durées de conservation et de vos droits selon le Règlement Général sur la Protection des Données (RGPD).
+        </p>
+      </div>
+
+      <!-- Bandeau Éthique -->
+      <div class="p-6 rounded-3xl bg-brand-50/70 border border-brand-200/70 text-slate-700 text-xs sm:text-sm leading-relaxed space-y-2 mb-10 shadow-subtle">
+        <div class="flex items-center gap-2 text-brand-900 font-display font-bold text-sm sm:text-base">
+          <span class="material-symbols-outlined text-brand-600">shield</span>
+          <span data-en="Our Open-Source Ethical Commitment" data-fr="Notre engagement éthique & open source">Notre engagement éthique & open source</span>
+        </div>
+        <p data-en="KaïroOS is an independent, community-driven open-source project. We do not sell, rent, monetize, or profile your personal data. Data processing is strictly limited to ensuring the security of the infrastructure, preventing abuse, and anonymously understanding community interests." data-fr="KaïroOS est un projet libre et communautaire. Nous ne commercialisons, ne louons et ne profilons aucune de vos données personnelles. Les traitements sont rigoureusement limités à la sécurité de l'infrastructure, à la protection contre la fraude et à la mesure anonymisée de l'intérêt porté au projet.">
+          KaïroOS est un projet libre et communautaire. Nous ne commercialisons, ne louons et ne profilons aucune de vos données personnelles. Les traitements sont rigoureusement limités à la sécurité de l'infrastructure, à la protection contre la fraude et à la mesure anonymisée de l'intérêt porté au projet.
+        </p>
+      </div>
+
+      <div class="space-y-10">
+
+        <!-- 1. Tableau récapitulatif RGPD -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">table_chart</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="1. Personal Data Inventory" data-fr="1. Tableau récapitulatif des données collectées">
+              1. Tableau récapitulatif des données collectées
+            </h3>
+          </div>
+
+          <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-200 bg-slate-50/80 font-mono text-slate-700 uppercase tracking-wider">
+                    <th class="py-3.5 px-4">Donnée traitée</th>
+                    <th class="py-3.5 px-4">Finalité du traitement</th>
+                    <th class="py-3.5 px-4">Base légale (RGPD)</th>
+                    <th class="py-3.5 px-4">Durée de conservation</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-600">
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Adresse IP tronquée (/24 ou /48)</td>
+                    <td class="py-3.5 px-4">Statistiques de fréquentation anonymisées (pays, volume de requêtes).</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 font-mono text-[11px] font-bold border border-emerald-200">Consentement</span> (Art. 6.1.a)</td>
+                    <td class="py-3.5 px-4 font-mono">13 mois max</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Adresse IP brute (empreinte de vote)</td>
+                    <td class="py-3.5 px-4">Garantie de l'intégrité des votes sur la roadmap (règle stricte d'1 vote par IP pour contrer le bourrage d'urne).</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 font-mono text-[11px] font-bold border border-amber-200">Intérêt légitime</span> (Art. 6.1.f)</td>
+                    <td class="py-3.5 px-4 font-mono">Durée du cycle de vote</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Adresse IP (journal des bans & abus)</td>
+                    <td class="py-3.5 px-4">Sécurisation du serveur, blocage des attaques automatisées et protection de l'espace d'administration.</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 font-mono text-[11px] font-bold border border-amber-200">Intérêt légitime</span> (Art. 6.1.f)</td>
+                    <td class="py-3.5 px-4 font-mono">6 à 12 mois</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">sessionStorage (kairo_session_id)</td>
+                    <td class="py-3.5 px-4">Comptabilisation du parcours et des clics de téléchargement de release au cours d'une session.</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 font-mono text-[11px] font-bold border border-emerald-200">Consentement</span> (Art. 6.1.a)</td>
+                    <td class="py-3.5 px-4 font-mono">Fin de session (onglet)</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Email, pseudo, titre de proposition</td>
+                    <td class="py-3.5 px-4">Boîte à idées publique, soumission de fonctionnalités et contact de notification.</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 font-mono text-[11px] font-bold border border-emerald-200">Consentement</span> (Art. 6.1.a)</td>
+                    <td class="py-3.5 px-4 font-mono">3 ans après soumission</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Messages de recours & chat d'assistance</td>
+                    <td class="py-3.5 px-4">Instruction des contestations de bannissement et modération de l'espace participatif.</td>
+                    <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 font-mono text-[11px] font-bold border border-amber-200">Intérêt légitime</span> (Art. 6.1.f)</td>
+                    <td class="py-3.5 px-4 font-mono">12 mois</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Bases légales -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">balance</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="2. Detailed Legal Bases" data-fr="2. Justification des Bases Légales">
+              2. Justification des Bases Légales
+            </h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
+            <div class="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 space-y-2">
+              <div class="flex items-center gap-2 text-slate-900 font-bold font-display text-sm">
+                <span class="material-symbols-outlined text-emerald-600 text-base">check_circle</span>
+                <span>A. Le Consentement (Art. 6.1.a)</span>
+              </div>
+              <p>
+                S'applique aux mesures d'audience et de télémétrie ainsi qu'à l'envoi volontaire de propositions sur la feuille de route. Vous pouvez retirer votre consentement à tout moment via la page <a href="legal/cookies" class="text-brand-600 font-semibold underline">Gestion des cookies</a>.
+              </p>
+            </div>
+            <div class="p-5 rounded-2xl bg-slate-50/80 border border-slate-200/70 space-y-2">
+              <div class="flex items-center gap-2 text-slate-900 font-bold font-display text-sm">
+                <span class="material-symbols-outlined text-amber-600 text-base">security</span>
+                <span>B. L'Intérêt Légitime (Art. 6.1.f)</span>
+              </div>
+              <p>
+                S'applique à la sécurité du serveur, au blocage des attaques par force brute contre l'administration et à l'intégrité démocratique des votes (1 vote par IP pour garantir que la communauté décide équitablement).
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Vos Droits RGPD -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">how_to_reg</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="3. Your GDPR Rights & How to Exercise Them" data-fr="3. Vos Droits & Modalités d'Exercice">
+              3. Vos Droits & Modalités d'Exercice
+            </h3>
+          </div>
+          <p class="text-xs sm:text-sm text-body leading-relaxed">
+            Conformément aux dispositions du Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants sur vos informations personnelles :
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200/70 space-y-1">
+              <strong class="text-slate-900 font-bold block">Droit d'accès (Article 15)</strong>
+              <p class="text-muted">Obtenir la confirmation que des données sont traitées et en recevoir une copie intégrale.</p>
+            </div>
+            <div class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200/70 space-y-1">
+              <strong class="text-slate-900 font-bold block">Droit de rectification (Article 16)</strong>
+              <p class="text-muted">Exiger la mise à jour ou la correction de données inexactes ou incomplètes.</p>
+            </div>
+            <div class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200/70 space-y-1">
+              <strong class="text-slate-900 font-bold block">Droit à l'effacement (Article 17)</strong>
+              <p class="text-muted">Demander la suppression de vos emails ou idées soumises dans les conditions prévues par la loi.</p>
+            </div>
+            <div class="p-4 bg-slate-50/80 rounded-2xl border border-slate-200/70 space-y-1">
+              <strong class="text-slate-900 font-bold block">Droit d'opposition (Article 21)</strong>
+              <p class="text-muted">Vous opposer pour motif légitime aux traitements fondés sur notre intérêt légitime.</p>
+            </div>
+          </div>
+
+          <!-- Contact DPO / Référent -->
+          <div class="p-6 rounded-3xl bg-slate-900 text-white space-y-3 shadow-sm">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-400 text-lg">mail</span>
+              <strong class="font-display font-bold text-sm sm:text-base">Contact Référent Données Personnelles :</strong>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Pour exercer l'un de ces droits ou adresser toute demande relative au traitement de vos données, écrivez directement à :
+            </p>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 font-mono text-xs text-emerald-300">
+              <span>Discord : nayrolf_rdgs</span>
+              <span class="text-slate-500">·</span>
+              <a href="https://github.com/NayrolfRdgs" target="_blank" rel="noopener" class="underline text-slate-300 hover:text-white">GitHub @NayrolfRdgs</a>
+            </div>
+            <p class="text-slate-400 text-[11px] leading-relaxed pt-2 border-t border-slate-800">
+              Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous avez le droit d'introduire une réclamation auprès de la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) : <a href="https://www.cnil.fr" target="_blank" rel="noopener" class="underline hover:text-white">cnil.fr</a>.
+            </p>
+          </div>
+        </section>
+
+        <!-- 4. Prestataires tiers -->
+        <section class="bg-white/80 backdrop-blur-xs rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-subtle space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">public</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="4. Third-Party Services & International Transfers" data-fr="4. Prestataires Tiers & Transferts Internationaux">
+              4. Prestataires Tiers & Transferts Internationaux
+            </h3>
+          </div>
+          <p class="text-xs sm:text-sm text-body leading-relaxed">
+            Pour assurer des performances graphiques optimales et la résilience du site, certaines ressources statiques peuvent être chargées via des réseaux internationaux de diffusion :
+          </p>
+          <ul class="space-y-2 text-xs sm:text-sm text-body list-disc pl-5">
+            <li><strong>Google Fonts (Google Ireland Ltd. / USA) :</strong> Feuilles de style typographiques (Plus Jakarta Sans, JetBrains Mono). Votre adresse IP peut être reçue par Google lors de la requête conformément aux Clauses Contractuelles Types de l'UE.</li>
+            <li><strong>Tailwind CSS CDN (Tailwind Labs / USA) :</strong> Moteur de mise en page CSS en cache de bordure (Edge CDN).</li>
+            <li><strong>GitHub (Microsoft Corp. / USA) :</strong> Hébergement du code source libre, des notes de version et des téléchargements d'exécutables.</li>
+          </ul>
+        </section>
+
+        <!-- Liens et navigation juridique -->
+        <div class="pt-4 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200/80">
+          <div class="flex items-center gap-3">
+            <a href="legal/mentions-legales" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/80 text-heading font-semibold text-xs transition-colors shadow-xs">
+              <span class="material-symbols-outlined text-base">gavel</span>
+              <span data-en="Legal Notice" data-fr="Mentions Légales">Mentions Légales</span>
+            </a>
+            <a href="legal/cookies" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/80 text-heading font-semibold text-xs transition-colors shadow-xs">
+              <span class="material-symbols-outlined text-base">cookie</span>
+              <span data-en="Cookie Management" data-fr="Gestion des Cookies">Gestion des Cookies</span>
+            </a>
+          </div>
+          <a href="./" class="text-xs font-mono text-muted hover:text-heading flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span data-en="Back to Home" data-fr="Retour à l'accueil">Retour à l'accueil</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Pied de page -->
+  <kairo-footer></kairo-footer>
+</body>
+</html>
