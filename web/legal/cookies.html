@@ -92,10 +92,16 @@
             Vérification de vos préférences en cours...
           </p>
         </div>
-        <button type="button" id="btn-reopen-cookie-settings" class="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-display font-bold text-xs sm:text-sm transition-all shadow-sm hover:shadow-md flex items-center gap-2.5 shrink-0 cursor-pointer group">
-          <span class="material-symbols-outlined text-base group-hover:rotate-45 transition-transform">tune</span>
-          <span data-en="Change my preferences" data-fr="Modifier mes préférences">Modifier mes préférences</span>
-        </button>
+        <div class="flex flex-wrap items-center gap-3 shrink-0">
+          <button type="button" id="btn-reopen-cookie-settings" class="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-display font-bold text-xs sm:text-sm transition-all shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer group">
+            <span class="material-symbols-outlined text-base group-hover:rotate-45 transition-transform">tune</span>
+            <span data-en="Change my preferences" data-fr="Modifier mes préférences">Modifier mes préférences</span>
+          </button>
+          <button type="button" id="btn-purge-local-data" class="px-5 py-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-display font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer group" title="Supprime tous les cookies, le localStorage et le sessionStorage stockés sur cet appareil">
+            <span class="material-symbols-outlined text-base text-rose-600 group-hover:scale-110 transition-transform">delete_forever</span>
+            <span data-en="Purge all local data" data-fr="Supprimer toutes les données locales">Supprimer toutes les données locales</span>
+          </button>
+        </div>
       </div>
 
       <div class="space-y-10">
@@ -250,6 +256,25 @@
         btn.addEventListener('click', () => {
           if (window.openCookieSettings) {
             window.openCookieSettings();
+          }
+        });
+      }
+
+      const purgeBtn = document.getElementById('btn-purge-local-data');
+      if (purgeBtn) {
+        purgeBtn.addEventListener('click', () => {
+          if (confirm("Confirmez-vous la suppression intégrale de toutes les données enregistrées sur cet appareil (consentement, préférences, session) ?")) {
+            if (window.clearAllLocalData) {
+              window.clearAllLocalData();
+            } else {
+              try { localStorage.clear(); } catch(e) {}
+              try { sessionStorage.clear(); } catch(e) {}
+            }
+            updateStatusDisplay();
+            if (window.showConsentBanner) {
+              window.showConsentBanner();
+            }
+            alert("Toutes vos données locales ont été purgées avec succès.");
           }
         });
       }

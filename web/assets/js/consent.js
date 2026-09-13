@@ -76,12 +76,12 @@
 
     const banner = document.createElement('div');
     banner.id = 'kairo-consent-banner';
-    banner.className = 'fixed bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-md z-[90] animate-fade-in font-sans';
+    banner.className = 'fixed bottom-4 left-3 right-3 sm:left-6 sm:right-auto sm:max-w-md z-[9999] animate-fade-in font-sans pb-[env(safe-area-inset-bottom,0px)]';
     banner.innerHTML = `
-      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200/90 text-slate-800 space-y-4">
+      <div class="bg-white/98 backdrop-blur-xl rounded-3xl p-5 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.25)] border border-slate-200 text-slate-800 space-y-4">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-lg">cookie</span>
+          <div class="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0 shadow-xs">
+            <span class="material-symbols-outlined text-xl">cookie</span>
           </div>
           <div class="space-y-1">
             <h4 class="font-display font-bold text-sm text-slate-900">Respect de votre vie privée</h4>
@@ -97,14 +97,14 @@
           <a href="/legal/confidentialite" class="underline hover:text-brand-600 transition-colors">Politique de confidentialité</a>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 pt-1">
-          <button type="button" id="btn-consent-refuse" class="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors cursor-pointer text-center">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+          <button type="button" id="btn-consent-refuse" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors cursor-pointer text-center">
             Tout refuser
           </button>
-          <button type="button" id="btn-consent-customize" class="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition-colors cursor-pointer text-center">
+          <button type="button" id="btn-consent-customize" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition-colors cursor-pointer text-center">
             Personnaliser
           </button>
-          <button type="button" id="btn-consent-accept" class="px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer text-center">
+          <button type="button" id="btn-consent-accept" class="w-full px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer text-center">
             Tout accepter
           </button>
         </div>
@@ -213,8 +213,33 @@
     if (modal) modal.remove();
   }
 
+  function clearAllLocalData() {
+    try {
+      localStorage.clear();
+    } catch(e) {}
+    try {
+      sessionStorage.clear();
+    } catch(e) {}
+    // Purge also any readable document.cookie
+    try {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        if (name) {
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+        }
+      }
+    } catch(e) {}
+
+    window.dispatchEvent(new CustomEvent('kairo_consent_updated', { detail: null }));
+  }
+
   // API publique accessible partout
   window.openCookieSettings = openModal;
+  window.clearAllLocalData = clearAllLocalData;
+  window.showConsentBanner = renderBanner;
   window.hasAnalyticsConsent = function() {
     const c = getSavedConsent();
     return c ? Boolean(c.analytics) : false;
