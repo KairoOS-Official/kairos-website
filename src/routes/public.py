@@ -119,6 +119,37 @@ def handle_public_get(req, raw_path, client_ip):
         total_views = views_row['total_views']
         conv_rate = round((dl_clicks / total_views * 100), 1) if total_views > 0 else 0.0
 
+        # Statistiques anonymisées : Systèmes d'exploitation, Navigateurs et Appareils
+        cursor.execute("""
+        SELECT os, COUNT(*) as count 
+        FROM page_views 
+        WHERE os IS NOT NULL AND os != '' AND os != 'Inconnu'
+        GROUP BY os 
+        ORDER BY count DESC 
+        LIMIT 6
+        """)
+        os_stats = [dict(row) for row in cursor.fetchall()]
+
+        cursor.execute("""
+        SELECT browser, COUNT(*) as count 
+        FROM page_views 
+        WHERE browser IS NOT NULL AND browser != '' AND browser != 'Inconnu'
+        GROUP BY browser 
+        ORDER BY count DESC 
+        LIMIT 6
+        """)
+        browser_stats = [dict(row) for row in cursor.fetchall()]
+
+        cursor.execute("""
+        SELECT device, COUNT(*) as count 
+        FROM page_views 
+        WHERE device IS NOT NULL AND device != ''
+        GROUP BY device 
+        ORDER BY count DESC 
+        LIMIT 4
+        """)
+        device_stats = [dict(row) for row in cursor.fetchall()]
+
         conn.close()
         req.send_json({
             "total_views": total_views,
@@ -129,12 +160,59 @@ def handle_public_get(req, raw_path, client_ip):
             "consent_accepted": consent_accepted,
             "consent_refused": consent_refused,
             "consent_rate": consent_rate,
+            "os_stats": os_stats,
+            "browser_stats": browser_stats,
+            "device_stats": device_stats,
             "top_clicks": top_clicks,
             "recent_events": recent_events
         })
         return True
 
     return False
+
+def parse_user_agent(ua_str):
+    if not ua_str:
+        return ('Inconnu', 'Inconnu', 'desktop')
+    ua = ua_str.lower()
+
+    # Détection OS
+    os_name = 'Autre'
+    if 'windows' in ua:
+        os_name = 'Windows'
+    elif 'android' in ua:
+        os_name = 'Android'
+    elif 'iphone' in ua or 'ipad' in ua or 'ipod' in ua:
+        os_name = 'iOS'
+    elif 'macintosh' in ua or 'mac os x' in ua:
+        os_name = 'macOS'
+    elif 'linux' in ua:
+        os_name = 'Linux'
+    elif 'cros' in ua:
+        os_name = 'ChromeOS'
+
+    # Détection Navigateur
+    browser_name = 'Autre'
+    if 'edg/' in ua or 'edge/' in ua:
+        browser_name = 'Edge'
+    elif 'opr/' in ua or 'opera' in ua:
+        browser_name = 'Opera'
+    elif 'firefox' in ua or 'fxios' in ua:
+        browser_name = 'Firefox'
+    elif 'brave' in ua:
+        browser_name = 'Brave'
+    elif 'chrome' in ua or 'crios' in ua:
+        browser_name = 'Chrome'
+    elif 'safari' in ua:
+        browser_name = 'Safari'
+
+    # Détection Type d'Appareil
+    device_type = 'desktop'
+    if 'mobile' in ua or 'android' in ua or 'iphone' in ua or 'ipod' in ua:
+        device_type = 'mobile'
+    elif 'ipad' in ua or 'tablet' in ua:
+        device_type = 'tablette'
+
+    return (os_name, browser_name, device_type)
 
 def anonymize_ip(ip_str):
     if not ip_str:
@@ -227,17 +305,19 @@ def handle_public_post(req, path, payload, client_ip):
         session_id = payload.get('session_id', 'anon')
         meta_json = json.dumps(payload.get('meta', {}))
 
+        ua = req.headers.get('User-Agent', '')
+        os_name, browser_name, device_type = parse_user_agent(ua)
         anon_ip = anonymize_ip(client_ip)
 
         conn = get_db()
         cursor = conn.cursor()
         if event_type == 'page_view':
             referrer = sanitize_referrer(payload.get('referrer', ''))
-            cursor.execute("INSERT INTO page_views (page, session_id, referrer, ip_address) VALUES (?, ?, ?, ?)",
-                           (page, session_id, referrer, anon_ip))
+            cursor.execute("INSERT INTO page_views (page, session_id, referrer, ip_address, os, browser, device) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                           (page, session_id, referrer, anon_ip, os_name, browser_name, device_type))
         else:
-            cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address) VALUES (?, ?, ?, ?, ?, ?)",
-                           (event_type, target, page, session_id, meta_json, anon_ip))
+            cursor.execute("INSERT INTO analytics_events (event_type, target, page, session_id, meta_json, ip_address, os, browser, device) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                           (event_type, target, page, session_id, meta_json, anon_ip, os_name, browser_name, device_type))
         conn.commit()
         conn.close()
         req.send_json({"status": "tracked"})

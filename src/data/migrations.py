@@ -270,16 +270,28 @@ def init_db():
     )
     """)
 
-    # Migration ip_address sur page_views et analytics_events
+    # Migration ip_address, os, browser, device sur page_views et analytics_events
     cursor.execute("PRAGMA table_info(page_views)")
     cols_pv = [r[1] for r in cursor.fetchall()]
     if 'ip_address' not in cols_pv:
         cursor.execute("ALTER TABLE page_views ADD COLUMN ip_address TEXT")
+    if 'os' not in cols_pv:
+        cursor.execute("ALTER TABLE page_views ADD COLUMN os TEXT DEFAULT 'Inconnu'")
+    if 'browser' not in cols_pv:
+        cursor.execute("ALTER TABLE page_views ADD COLUMN browser TEXT DEFAULT 'Inconnu'")
+    if 'device' not in cols_pv:
+        cursor.execute("ALTER TABLE page_views ADD COLUMN device TEXT DEFAULT 'desktop'")
 
     cursor.execute("PRAGMA table_info(analytics_events)")
     cols_ae = [r[1] for r in cursor.fetchall()]
     if 'ip_address' not in cols_ae:
         cursor.execute("ALTER TABLE analytics_events ADD COLUMN ip_address TEXT")
+    if 'os' not in cols_ae:
+        cursor.execute("ALTER TABLE analytics_events ADD COLUMN os TEXT DEFAULT 'Inconnu'")
+    if 'browser' not in cols_ae:
+        cursor.execute("ALTER TABLE analytics_events ADD COLUMN browser TEXT DEFAULT 'Inconnu'")
+    if 'device' not in cols_ae:
+        cursor.execute("ALTER TABLE analytics_events ADD COLUMN device TEXT DEFAULT 'desktop'")
 
     # 12. Banned IPs Table (Système de Bannissement Temporaire / Définitif & Granulaire)
     cursor.execute("""

@@ -331,6 +331,51 @@
           </div>
         </div>
 
+        <!-- RÉPARTITION ANONYMISÉE OS, NAVIGATEURS & APPAREILS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- OS -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-brand-600 text-lg">laptop</span>
+                <h3 class="font-display font-bold text-sm text-heading">Systèmes d'exploitation</h3>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">OS</span>
+            </div>
+            <div id="stat-os-list" class="space-y-2 pt-1">
+              <div class="text-xs text-muted py-3 text-center">Aucune donnée OS disponible</div>
+            </div>
+          </div>
+
+          <!-- Navigateurs -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-indigo-600 text-lg">globe</span>
+                <h3 class="font-display font-bold text-sm text-heading">Navigateurs Web</h3>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">Web</span>
+            </div>
+            <div id="stat-browsers-list" class="space-y-2 pt-1">
+              <div class="text-xs text-muted py-3 text-center">Aucune donnée navigateur disponible</div>
+            </div>
+          </div>
+
+          <!-- Appareils -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-600 text-lg">devices</span>
+                <h3 class="font-display font-bold text-sm text-heading">Types d'appareils</h3>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">Devices</span>
+            </div>
+            <div id="stat-devices-list" class="space-y-2 pt-1">
+              <div class="text-xs text-muted py-3 text-center">Aucune donnée appareil disponible</div>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div class="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-subtle">
             <h3 class="font-display font-bold text-base text-heading mb-1">Éléments les plus cliqués</h3>
@@ -1447,6 +1492,85 @@
             if (elAcc) elAcc.innerText = data.consent_accepted || 0;
             if (elRef) elRef.innerText = data.consent_refused || 0;
             if (elRate) elRate.innerText = (data.consent_rate || 0.0) + '%';
+
+            // Rendu OS Stats
+            const osList = document.getElementById('stat-os-list');
+            if (osList) {
+              osList.innerHTML = '';
+              if (data.os_stats && data.os_stats.length > 0) {
+                const totalOs = data.os_stats.reduce((acc, cur) => acc + cur.count, 0) || 1;
+                data.os_stats.forEach(item => {
+                  const pct = Math.round((item.count / totalOs) * 100);
+                  const div = document.createElement('div');
+                  div.className = 'space-y-1';
+                  div.innerHTML = `
+                    <div class="flex justify-between text-xs font-semibold">
+                      <span class="text-slate-800">${item.os}</span>
+                      <span class="font-mono text-slate-500">${item.count} (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                      <div class="bg-brand-500 h-1.5 rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                  `;
+                  osList.appendChild(div);
+                });
+              } else {
+                osList.innerHTML = '<div class="text-xs text-muted py-3 text-center">Aucune donnée OS disponible</div>';
+              }
+            }
+
+            // Rendu Navigateurs Stats
+            const browsersList = document.getElementById('stat-browsers-list');
+            if (browsersList) {
+              browsersList.innerHTML = '';
+              if (data.browser_stats && data.browser_stats.length > 0) {
+                const totalBrowsers = data.browser_stats.reduce((acc, cur) => acc + cur.count, 0) || 1;
+                data.browser_stats.forEach(item => {
+                  const pct = Math.round((item.count / totalBrowsers) * 100);
+                  const div = document.createElement('div');
+                  div.className = 'space-y-1';
+                  div.innerHTML = `
+                    <div class="flex justify-between text-xs font-semibold">
+                      <span class="text-slate-800">${item.browser}</span>
+                      <span class="font-mono text-slate-500">${item.count} (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                      <div class="bg-indigo-500 h-1.5 rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                  `;
+                  browsersList.appendChild(div);
+                });
+              } else {
+                browsersList.innerHTML = '<div class="text-xs text-muted py-3 text-center">Aucune donnée navigateur disponible</div>';
+              }
+            }
+
+            // Rendu Appareils Stats
+            const devicesList = document.getElementById('stat-devices-list');
+            if (devicesList) {
+              devicesList.innerHTML = '';
+              if (data.device_stats && data.device_stats.length > 0) {
+                const totalDevices = data.device_stats.reduce((acc, cur) => acc + cur.count, 0) || 1;
+                data.device_stats.forEach(item => {
+                  const pct = Math.round((item.count / totalDevices) * 100);
+                  const label = item.device === 'desktop' ? 'Ordinateur (Desktop)' : (item.device === 'mobile' ? 'Mobile' : (item.device === 'tablette' ? 'Tablette' : item.device));
+                  const div = document.createElement('div');
+                  div.className = 'space-y-1';
+                  div.innerHTML = `
+                    <div class="flex justify-between text-xs font-semibold">
+                      <span class="text-slate-800">${label}</span>
+                      <span class="font-mono text-slate-500">${item.count} (${pct}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                      <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                  `;
+                  devicesList.appendChild(div);
+                });
+              } else {
+                devicesList.innerHTML = '<div class="text-xs text-muted py-3 text-center">Aucune donnée appareil disponible</div>';
+              }
+            }
 
             const topList = document.getElementById('top-clicks-list');
             topList.innerHTML = '';
