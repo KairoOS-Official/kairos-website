@@ -106,4 +106,10 @@ Le design system complet est dans `Source/luminous_editorial_tech/DESIGN.md` ave
 
 ---
 
-Fait avec ❤️ par la communauté KaïroOS.
+<div align="center">
+
+**FlowCreativeStudio** · Florian ([@NayrolfRdgs](https://github.com/NayrolfRdgs)) · Discord: `nayrolf_rdgs`  
+*Empreinte d'intégrité : `SHA256:e2848c38514d22829359a8cedb77c1df2960c7ae3e946d90803516a68b87bd67`*
+
+</div>
+

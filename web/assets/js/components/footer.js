@@ -100,7 +100,7 @@ class KairoFooter extends HTMLElement {
 
           <!-- Bottom bar : Copyright & Moteurs -->
           <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted">
-            <p>© ${year} KaïroOS Project · Crafted with editorial precision · Free for Personal Use · Pro Operator Available</p>
+            <p>© ${year} KaïroOS · <strong>Flow (Florian) — FlowCreativeStudio</strong> · Discord: <strong>nayrolf_rdgs</strong></p>
             <div class="flex items-center gap-4">
               <span class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
