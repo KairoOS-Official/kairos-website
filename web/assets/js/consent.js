@@ -71,6 +71,8 @@
         }).catch(() => {});
       }
     } catch(e) {}
+  }
+
   function renderBanner() {
     if (document.getElementById('kairo-consent-banner')) return;
 
