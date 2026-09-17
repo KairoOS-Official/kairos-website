@@ -530,6 +530,12 @@
     background-color: #FBFBF9;
     color: #475569;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  html.dark body {
+    background-color: #090D16;
+    color: #94A3B8;
   }
 }
 
@@ -541,10 +547,23 @@
     radial-gradient(at 50% 65%, rgba(14, 165, 233, 0.035) 0px, transparent 55%);
 }
 
+html.dark .bg-light-mesh {
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.12) 0px, transparent 55%),
+    radial-gradient(at 85% 12%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 65%, rgba(14, 165, 233, 0.07) 0px, transparent 60%);
+}
+
 .bg-hero-glow {
   background-image:
     radial-gradient(at 50% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 60%),
     radial-gradient(at 80% 20%, rgba(244, 63, 94, 0.08) 0px, transparent 50%);
+}
+
+html.dark .bg-hero-glow {
+  background-image:
+    radial-gradient(at 50% 0%, rgba(99, 102, 241, 0.25) 0px, transparent 65%),
+    radial-gradient(at 80% 20%, rgba(244, 63, 94, 0.15) 0px, transparent 55%);
 }
 
 /* --- Barres de Défilement Épurées --- */
@@ -557,14 +576,26 @@
   background: #F1F5F9;
 }
 
+html.dark ::-webkit-scrollbar-track {
+  background: #0B0F19;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
   border-radius: 9999px;
   transition: background 0.2s ease;
 }
 
+html.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 .scrollbar-none::-webkit-scrollbar {
@@ -671,6 +702,15 @@ kairo-navbar header {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+html.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 .glass-panel-dark {
@@ -678,6 +718,281 @@ kairo-navbar header {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Adaptations Dark Mode Utilitaires --- */
+html.dark .text-heading {
+  color: #F8FAFC !important;
+}
+
+html.dark .text-body {
+  color: #94A3B8 !important;
+}
+
+html.dark .text-muted {
+  color: #64748B !important;
+}
+
+html.dark .bg-canvas {
+  background-color: #090D16 !important;
+}
+
+html.dark .bg-white {
+  background-color: #0F172A !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/80 {
+  background-color: #1E293B !important;
+}
+
+html.dark .border-slate-200,
+html.dark .border-slate-200\/70,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-100 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .border-black\/5 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .bg-white\/80,
+html.dark .bg-white\/85,
+html.dark .bg-white\/90,
+html.dark .bg-white\/95 {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+}
+
+html.dark .bg-slate-100,
+html.dark .bg-slate-100\/70,
+html.dark .bg-slate-100\/80 {
+  background-color: rgba(30, 41, 59, 0.7) !important;
+}
+
+html.dark .text-slate-900 {
+  color: #F8FAFC !important;
+}
+
+html.dark .text-slate-700 {
+  color: #CBD5E1 !important;
+}
+
+html.dark .text-slate-600,
+html.dark .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+html.dark .hover\:text-heading:hover {
+  color: #FFFFFF !important;
+}
+
+html.dark .hover\:bg-white\/80:hover,
+html.dark .hover\:bg-slate-50:hover {
+  background-color: rgba(51, 65, 85, 0.6) !important;
+}
+
+html.dark .bg-\[\#F5F5F7\],
+html.dark .bg-\[\#f5f5f7\],
+html.dark .bg-\[\#F8FAFC\],
+html.dark .bg-\[\#f8fafc\],
+html.dark .bg-surface-subtle {
+  background-color: #0c1220 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .bg-\[\#FBFBF9\],
+html.dark .bg-\[\#fbfbf9\] {
+  background-color: #090D16 !important;
+}
+
+/* --- Avant / Après (Toggle Chaos vs Purity) & Pill Switchers --- */
+html.dark .bg-slate-200\/70,
+html.dark .bg-slate-200\/80,
+html.dark .bg-slate-200 {
+  background-color: #1e293b !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark #toggle-chaos.bg-white,
+html.dark #toggle-purity.bg-white {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Panneaux Avant / Après avec bordures subtiles non aveuglantes */
+html.dark #panel-chaos {
+  background-color: #0f172a !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+
+html.dark #panel-purity {
+  background-color: #0f172a !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+/* Badges teintés doux (rose, émeraude, ambre, indigo, ciel) */
+html.dark .bg-rose-50,
+html.dark .bg-rose-50\/50 {
+  background-color: rgba(244, 63, 94, 0.12) !important;
+  color: #fda4af !important;
+}
+
+html.dark .border-rose-100,
+html.dark .border-rose-200 {
+  border-color: rgba(244, 63, 94, 0.25) !important;
+}
+
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-50\/40,
+html.dark .bg-emerald-50\/50 {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #6ee7b7 !important;
+}
+
+html.dark .border-emerald-100,
+html.dark .border-emerald-200,
+html.dark .border-emerald-200\/80 {
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+html.dark .bg-amber-50,
+html.dark .bg-amber-50\/40 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  color: #fcd34d !important;
+}
+
+html.dark .border-amber-100,
+html.dark .border-amber-200,
+html.dark .border-amber-200\/80 {
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+html.dark .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.12) !important;
+  color: #a5b4fc !important;
+}
+
+html.dark .bg-sky-50 {
+  background-color: rgba(14, 165, 233, 0.12) !important;
+  color: #7dd3fc !important;
+}
+
+html.dark .bg-coral-50 {
+  background-color: rgba(244, 63, 94, 0.12) !important;
+  color: #fda4af !important;
+}
+
+/* Timeline et séparateurs de section (évite les traits blancs aveuglants) */
+html.dark .border-white {
+  border-color: #0f172a !important;
+}
+
+html.dark [class*="before:via-slate-300"]::before {
+  background-image: linear-gradient(to bottom, #6366f1, #334155, #1e293b) !important;
+}
+
+html.dark .apple-pill-btn.active {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark .apple-pill-btn:not(.active) {
+  background-color: #0f172a !important;
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html.dark .apple-pill-btn:not(.active):hover {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}
+
+html.dark .apple-pill-btn:not(.active) .pill-icon {
+  background-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #0F172A !important;
+  color: #F8FAFC !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+html.dark .bg-slate-900 {
+  background-color: #020617 !important;
+}
+
+html.dark .bg-brand-50 {
+  background-color: rgba(99, 102, 241, 0.12) !important;
+  color: #C7D2FE !important;
+}
+
+html.dark .border-brand-200,
+html.dark .border-brand-200\/60,
+html.dark .border-brand-200\/80 {
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+
+html.dark .shadow-subtle {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45) !important;
+}
+
+html.dark .shadow-card {
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.55) !important;
+}
+
+html.dark .shadow-float {
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* --- Menu Mobile Drawer Dark Mode & Contrôle Burger --- */
+html.dark #mobile-drawer {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8) !important;
+}
+
+html.dark #mobile-menu-btn {
+  color: #F8FAFC !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark #mobile-menu-btn:hover {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+html.dark code {
+  background-color: #1E293B !important;
+  color: #A5B4FC !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Modal dialogs & cards in dark theme */
+html.dark #roadmap-info-modal .bg-white,
+html.dark #roadmap-suggestion-modal .bg-white {
+  background-color: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+html.dark .vote-card {
+  background-color: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .vote-card:hover {
+  border-color: rgba(99, 102, 241, 0.4) !important;
 }
 
 /* --- Effet Scanline Rétro Arcade Subtil --- */

@@ -1,0 +1,371 @@
+﻿<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <script>
+    (function() {
+      try {
+        var pref = localStorage.getItem('kairo_theme_pref');
+        var isDark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-en="GAME OVER — 404 · KaïroOS" data-fr="GAME OVER — 404 · KaïroOS">GAME OVER — 404 · KaïroOS</title>
+  <meta name="description" content="GAME OVER — cette page s'est perdue dans l'arcade. Insert coin pour retourner à l'accueil KaïroOS.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/img/logo.png">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            coral: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              500: '#f43f5e',
+              600: '#e11d48',
+            },
+            canvas: '#FBFBF9',
+            surface: '#FFFFFF',
+            heading: '#0F172A',
+            body: '#475569',
+            muted: '#64748B'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'subtle': '0 2px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.04)',
+            'card': '0 20px 40px -15px rgba(0,0,0,0.05), 0 0 1px 1px rgba(0,0,0,0.04)',
+            'float': '0 30px 60px -12px rgba(15,23,42,0.08)',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .bg-light-mesh {
+      background-image:
+        radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+        radial-gradient(at 85% 12%, rgba(244, 63, 94, 0.04) 0px, transparent 50%),
+        radial-gradient(at 50% 65%, rgba(14, 165, 233, 0.035) 0px, transparent 55%);
+    }
+    /* Écran arcade : scanlines + vignettage CRT */
+    .crt::after {
+      content: "";
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 4px);
+      mix-blend-mode: overlay;
+    }
+    .crt::before {
+      content: "";
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
+    }
+    @keyframes blink-start {
+      0%, 60% { opacity: 1; }
+      61%, 100% { opacity: 0.15; }
+    }
+    .press-start {
+      animation: blink-start 1.1s steps(1) infinite;
+    }
+    @keyframes gameover-glow {
+      0%, 100% { text-shadow: 0 0 24px rgba(244,63,94,0.45), 0 0 60px rgba(99,102,241,0.25); }
+      50% { text-shadow: 0 0 34px rgba(244,63,94,0.7), 0 0 80px rgba(99,102,241,0.4); }
+    }
+    .gameover-glow {
+      animation: gameover-glow 2.8s ease-in-out infinite;
+    }
+    /* Curseur gant Mickey (PNG fond transparent, incline comme une vraie souris) */
+    /* Scopé uniquement a la fenetre 404 */
+    #borne-404, #borne-404 * {
+      cursor: url("/assets/img/cursors/glove-pointer.png?v=2") 24 8, pointer !important;
+    }
+  </style>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/components/navbar.js" defer></script>
+  <script src="assets/js/components/footer.js" defer></script>
+  <script src="assets/js/consent.js" defer></script>
+</head>
+<body class="bg-canvas text-body font-sans antialiased selection:bg-brand-500 selection:text-white bg-light-mesh min-h-screen flex flex-col">
+
+  <kairo-navbar active="home"></kairo-navbar>
+
+  <main class="flex-1 w-full px-4 sm:px-8 pt-24 sm:pt-28 pb-10 flex items-center justify-center min-h-[100svh]">
+    <div class="max-w-6xl w-full mx-auto text-center my-auto">
+
+      <!-- BORNE ARCADE : mini-fenêtre kiosque sombre comme l'accueil -->
+      <div id="borne-404" class="flex flex-col text-left rounded-3xl overflow-hidden bg-slate-950/95 backdrop-blur-2xl border border-slate-700/60 shadow-[0_25px_80px_rgba(0,0,0,0.45)]">
+        <!-- Header macOS -->
+        <div class="h-12 shrink-0 flex items-center justify-between px-4 sm:px-6 bg-slate-900/90 border-b border-white/10 select-none">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded-full bg-[#ff5f56] border border-[#e0443e] block"></span>
+              <span class="w-3.5 h-3.5 rounded-full bg-[#ffbd2e] border border-[#dea123] block"></span>
+              <span class="w-3.5 h-3.5 rounded-full bg-[#27c93f] border border-[#1aab29] block"></span>
+            </div>
+            <span class="hidden sm:inline-block h-3.5 w-px bg-white/15 mx-1"></span>
+            <span class="font-mono font-bold text-xs text-slate-200 tracking-wide">KAÏRO<span class="text-brand-400">OS</span></span>
+          </div>
+          <div class="flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.06] border border-white/10 text-xs font-mono text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-coral-500 animate-pulse"></span>
+            <span class="font-medium text-[11px] tracking-wide" data-en="Kiosk Engine · 404" data-fr="Moteur Kiosque · 404">Moteur Kiosque · 404</span>
+          </div>
+          <div class="hidden sm:flex items-center gap-3 font-mono text-[11px] text-slate-400">
+            <span class="flex items-center gap-1.5 text-rose-400 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> 0 FPS
+            </span>
+            <span class="text-slate-600">·</span>
+            <span class="font-semibold text-slate-300">HI-SCORE 00404</span>
+          </div>
+        </div>
+
+        <!-- Écran GAME OVER -->
+        <div class="crt relative overflow-hidden bg-slate-950 text-white flex flex-col items-center justify-center text-center px-6 pt-10 pb-8 sm:pt-14 sm:pb-10 select-none">
+          <div class="absolute inset-0 bg-cover bg-center opacity-25 scale-105" style="background-image: url('assets/img/wallpapers/bg-mario.jpg');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/40"></div>
+
+          <div id="gameover-content" class="relative z-10 flex flex-col items-center w-full">
+            <p class="font-mono text-[11px] tracking-[0.3em] text-slate-400 mb-2" data-en="ARCADE / 404 NOT FOUND" data-fr="ARCADE / 404 INTROUVABLE">ARCADE / 404 INTROUVABLE</p>
+            <h1 class="gameover-glow font-display font-extrabold uppercase tracking-tight leading-none text-5xl sm:text-7xl mb-1"
+                data-en="GAME OVER" data-fr="GAME OVER">GAME OVER</h1>
+
+            <!-- 404 particules façon pixel / poussière d'étoiles (interactif : fuit la souris puis revient) -->
+            <canvas id="particles-404" class="w-full max-w-[620px] h-[190px] sm:h-[240px] -mt-1 mb-1"></canvas>
+
+            <p class="text-sm sm:text-base text-slate-300 max-w-md leading-relaxed mb-2"
+               data-en="Oops... this level doesn't exist. The cartridge may be missing or the link is broken."
+               data-fr="Oups... ce niveau n'existe pas. La cartouche est manquante ou le lien est cassé.">Oups... ce niveau n'existe pas. La cartouche est manquante ou le lien est cassé.</p>
+            <p class="font-mono text-xs text-slate-400 mb-6" data-en="INSERT COIN TO CONTINUE" data-fr="INSÉREZ UNE PIÈCE POUR CONTINUER">INSÉREZ UNE PIÈCE POUR CONTINUER</p>
+
+            <a href="/" class="press-start inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-950 font-mono font-bold text-sm tracking-widest hover:bg-brand-500 hover:text-white transition-all shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+              <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+              <span data-en="PRESS START" data-fr="PRESS START">PRESS START</span>
+            </a>
+            <p class="font-mono text-[11px] text-slate-500 mt-3" data-en="Enter / A button / click = back home" data-fr="Entrée / bouton A / clic = retour accueil">Entrée / bouton A / clic = retour accueil</p>
+          </div>
+
+          <!-- BONUS STAGE : Snake intégré à la borne (easter egg, séquence cachée) -->
+          <div id="snake-stage" class="hidden relative z-10 flex-col items-center w-full">
+            <div class="w-full max-w-[420px]">
+              <div class="flex items-center justify-between gap-3 font-mono mb-3">
+                <span class="font-bold text-xs text-slate-200 tracking-wide">BONUS<span class="text-brand-400"> STAGE</span> · SNAKE</span>
+                <span class="text-[11px] text-slate-400">SCORE <span id="snake-score" class="text-white font-bold">0</span> · BEST <span id="snake-best" class="text-amber-300 font-bold">0</span></span>
+                <button id="snake-close" type="button" aria-label="Quitter le Snake" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+              <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-[#020617]">
+                <canvas id="snake-game" width="400" height="400" class="w-full h-auto block"></canvas>
+                <div id="snake-msg" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 bg-slate-950/60"></div>
+              </div>
+              <div class="mt-3 font-mono text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2">
+                <span>← ↑ ↓ → / WASD : diriger</span>
+                <span>ENTRÉE : rejouer · ÉCHAP : retour</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barre contrôles manette -->
+          <div class="relative z-10 w-full flex flex-wrap items-center justify-between gap-3 pt-4 mt-6 border-t border-white/10 text-[11px] font-mono text-left">
+            <div class="flex items-center gap-3">
+              <a href="/" class="flex items-center gap-1.5 hover:text-white transition-colors"><span class="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 font-bold flex items-center justify-center text-[10px]">A</span> <span data-en="Home" data-fr="Accueil">Accueil</span></a>
+              <button type="button" onclick="history.back()" class="flex items-center gap-1.5 hover:text-white transition-colors"><span class="w-5 h-5 rounded-full bg-rose-500 text-white font-bold flex items-center justify-center text-[10px]">B</span> <span data-en="Back" data-fr="Retour">Retour</span></button>
+              <a href="/roadmap" class="hidden sm:flex items-center gap-1.5 hover:text-white transition-colors"><span class="w-5 h-5 rounded-full bg-sky-500 text-white font-bold flex items-center justify-center text-[10px]">X</span> <span data-en="Roadmap" data-fr="Roadmap">Roadmap</span></a>
+            </div>
+            <div class="text-slate-400"><span class="text-white font-semibold">START + SELECT :</span> <span data-en="Back to Kaïro" data-fr="Revenir à Kaïro">Revenir à Kaïro</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <kairo-footer></kairo-footer>
+
+  <script src="assets/js/snake-easter.js"></script>
+  <script src="assets/js/pacman-404.js"></script>
+  <script>
+    // Entrée clavier = INSERT COIN -> retour accueil (sauf si le Snake bonus est ouvert)
+    document.addEventListener('keydown', function (e) {
+      if (window.kairoSnake && window.kairoSnake.isOpen()) return;
+      if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        var tag = (document.activeElement && document.activeElement.tagName) || '';
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA') window.location.href = '/';
+      }
+    });
+
+    // 404 en particules pixel / poussière d'étoiles (léger, sans dépendance)
+    // Interactif : les particules fuient la souris / le doigt puis reviennent en place (ressort)
+    (function () {
+      var canvas = document.getElementById('particles-404');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var particles = [];
+      var W = 0, H = 0, raf = null;
+      var mouse = { x: -9999, y: -9999, active: false };
+      var RADIUS = 95;   // zone d'influence autour du curseur
+      var FORCE = 3.2;   // puissance de répulsion
+      var SPRING = 0.035; // rappel vers la position d'origine
+      var FRICTION = 0.86;
+
+      function canvasPos(evt) {
+        var rect = canvas.getBoundingClientRect();
+        if (evt.touches && evt.touches.length) {
+          return { x: evt.touches[0].clientX - rect.left, y: evt.touches[0].clientY - rect.top };
+        }
+        return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+      }
+      canvas.addEventListener('mousemove', function (e) {
+        var p = canvasPos(e);
+        mouse.x = p.x; mouse.y = p.y; mouse.active = true;
+      });
+      canvas.addEventListener('mouseleave', function () {
+        mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+      });
+      canvas.addEventListener('touchmove', function (e) {
+        var p = canvasPos(e);
+        mouse.x = p.x; mouse.y = p.y; mouse.active = true;
+      }, { passive: true });
+      canvas.addEventListener('touchend', function () {
+        mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+      });
+
+      function resize() {
+        var rect = canvas.getBoundingClientRect();
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = Math.max(300, Math.floor(rect.width));
+        H = Math.floor(rect.height) || 220;
+        RADIUS = W < 480 ? 70 : 95;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        build();
+      }
+
+      function build() {
+        // Dessine "404" en offscreen puis échantillonne les pixels
+        var off = document.createElement('canvas');
+        off.width = W; off.height = H;
+        var octx = off.getContext('2d');
+        octx.clearRect(0, 0, W, H);
+        var fontSize = Math.min(W / 3.4, H * 0.92);
+        octx.font = '900 ' + fontSize + 'px "Space Grotesk", system-ui, sans-serif';
+        octx.textAlign = 'center';
+        octx.textBaseline = 'middle';
+        octx.fillStyle = '#fff';
+        octx.fillText('404', W / 2, H / 2 + fontSize * 0.04);
+        var data = octx.getImageData(0, 0, W, H).data;
+        particles = [];
+        var gap = W < 480 ? 4 : 5;
+        for (var y = 0; y < H; y += gap) {
+          for (var x = 0; x < W; x += gap) {
+            if (data[(y * W + x) * 4 + 3] > 128) {
+              if (Math.random() < 0.72) {
+                var ox = x + (Math.random() - 0.5) * 2;
+                var oy = y + (Math.random() - 0.5) * 2;
+                particles.push({
+                  ox: ox, oy: oy,
+                  x: ox, y: oy,
+                  vx: 0, vy: 0,
+                  r: 0.6 + Math.random() * 1.9,
+                  a: 0.35 + Math.random() * 0.65,
+                  ph: Math.random() * Math.PI * 2,
+                  sp: 0.4 + Math.random() * 1.2
+                });
+              }
+            }
+          }
+        }
+      }
+
+      var t = 0;
+      function tick() {
+        t += 0.016;
+        ctx.clearRect(0, 0, W, H);
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          // Mangée par Pac-Man : repousse après un délai
+          if (p.eaten) {
+            if (t < p.regrowAt) continue;
+            p.eaten = false;
+          }
+          // Répulsion autour de la souris
+          if (mouse.active) {
+            var mdx = p.x - mouse.x;
+            var mdy = p.y - mouse.y;
+            var dist = Math.sqrt(mdx * mdx + mdy * mdy);
+            if (dist < RADIUS && dist > 0.01) {
+              var f = (1 - dist / RADIUS) * FORCE;
+              p.vx += (mdx / dist) * f;
+              p.vy += (mdy / dist) * f;
+            }
+          }
+          // Retour élastique à la position d'origine + micro-flottement
+          p.vx += (p.ox - p.x) * SPRING;
+          p.vy += (p.oy - p.y) * SPRING;
+          p.vx += Math.sin(t * 0.7 + p.ph) * 0.02;
+          p.vy += Math.cos(t * 0.6 + p.ph * 1.3) * 0.02;
+          p.vx *= FRICTION;
+          p.vy *= FRICTION;
+          p.x += p.vx;
+          p.y += p.vy;
+          // Scintillement
+          var tw = 0.55 + 0.45 * Math.sin(t * p.sp * 2 + p.ph);
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(186, 230, 253,' + (p.a * tw).toFixed(3) + ')';
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        raf = requestAnimationFrame(tick);
+      }
+
+      var rsz;
+      window.addEventListener('resize', function () {
+        clearTimeout(rsz);
+        rsz = setTimeout(resize, 200);
+      });
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { resize(); });
+      }
+      resize();
+      tick();
+      // Pont pour le mode attract Pac-Man (pacman-404.js)
+      try {
+        window.__kairoFx = {
+          get list() { return particles; },
+          get time() { return t; },
+          canvas: canvas
+        };
+      } catch (e) {}
+    })();
+  </script>
+
+</body>
+</html>

@@ -2,6 +2,22 @@
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title data-fr="KaïroOS — L'Arcade PC Réinventée" data-en="KaïroOS — PC Arcade Reimagined">KaïroOS — L'Arcade PC Réinventée</title>
+  <script>
+    (function() {
+      try {
+        var pref = localStorage.getItem('kairo_theme_pref');
+        var isDark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <script src="assets/js/theme.js"></script>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
     tailwind.config = {

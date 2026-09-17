@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
 <head>
+  <script>
+    (function() {
+      try {
+        var pref = localStorage.getItem('kairo_theme_pref');
+        var isDark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      } catch(e) {}
+    })();
+  </script>
   <base href="/">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,12 +67,13 @@
     };
   </script>
   <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/components/navbar.js" defer></script>
   <script src="assets/js/components/footer.js" defer></script>
   <script src="assets/js/consent.js" defer></script>
 </head>
-<body class="bg-[#FBFBF9] font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
+<body class="bg-canvas font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
 
   <!-- Navigation -->
   <kairo-navbar></kairo-navbar>

@@ -20,26 +20,26 @@ class KairoFooter extends HTMLElement {
     const cookiesHref = `${root}legal/cookies${window.location.protocol === 'file:' ? '.html' : ''}`;
 
     this.innerHTML = `
-      <footer class="w-full bg-white border-t border-slate-200/80 pt-16 pb-12 mt-16">
+      <footer class="w-full bg-white dark:bg-slate-900 border-t border-slate-200/80 dark:border-white/10 pt-16 pb-12 mt-16 transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-8">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 pb-12 border-b border-slate-200/70">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 pb-12 border-b border-slate-200/70 dark:border-white/10">
             
             <!-- Col 1 : Marque & Description (2 cols) -->
             <div class="lg:col-span-2 space-y-4">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center p-1.5 shadow-sm">
+                <div class="w-8 h-8 rounded-xl bg-slate-900 dark:bg-slate-800 flex items-center justify-center p-1.5 shadow-sm border dark:border-white/10">
                   <img alt="Kaïro Logo" class="w-full h-full object-contain filter invert" 
                        src="${root}assets/img/logo.png">
                 </div>
-                <span class="font-display font-bold text-lg tracking-tight text-heading">Kaïro<span class="text-brand-600">OS</span></span>
-                <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">v0.1.0 Alpha</span>
+                <span class="font-display font-bold text-lg tracking-tight text-heading">Kaïro<span class="text-brand-600 dark:text-brand-400">OS</span></span>
+                <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10">v0.1.0 Alpha</span>
               </div>
               <p class="text-xs text-muted leading-relaxed max-w-sm" 
                  data-en="Modular, open-source operating layer crafted with editorial elegance for dedicated gaming setups and arcade cabinets." 
                  data-fr="Système d'exploitation modulaire, libre et axé sur l'élégance éditoriale pour bornes d'arcade et setups gaming dédiés.">
                 Système d'exploitation modulaire, libre et axé sur l'élégance éditoriale pour bornes d'arcade et setups gaming dédiés.
               </p>
-              <div class="flex items-center gap-2 text-xs font-mono text-slate-500">
+              <div class="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                 <span data-en="Free for Personal Use · Pro Operator" data-fr="Gratuit Usage Personnel · Pro Opérateur">Gratuit Usage Personnel · Pro Opérateur</span>
               </div>
