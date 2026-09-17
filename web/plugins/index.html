@@ -5,7 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-fr="Plugins & Extensions — KaïroOS" data-en="Plugins & Extensions — KaïroOS">Plugins & Extensions — KaïroOS</title>
   
-  
+  <script>
+    (function() {
+      try {
+        var pref = localStorage.getItem('kairo_theme_pref');
+        var isDark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <script src="../assets/js/theme.js"></script>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
     tailwind.config = {

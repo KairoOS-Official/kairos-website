@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
 <head>
+  <script>
+    (function() {
+      try {
+        var pref = localStorage.getItem('kairo_theme_pref');
+        var isDark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      } catch(e) {}
+    })();
+  </script>
   <base href="/">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,12 +67,13 @@
     };
   </script>
   <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/components/navbar.js" defer></script>
   <script src="assets/js/components/footer.js" defer></script>
   <script src="assets/js/consent.js" defer></script>
 </head>
-<body class="bg-[#FBFBF9] font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
+<body class="bg-canvas font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
 
   <!-- Navigation -->
   <kairo-navbar></kairo-navbar>
@@ -92,10 +108,16 @@
             Vérification de vos préférences en cours...
           </p>
         </div>
-        <button type="button" id="btn-reopen-cookie-settings" class="px-6 py-3.5 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-display font-bold text-xs sm:text-sm transition-all shadow-sm hover:shadow-md flex items-center gap-2.5 shrink-0 cursor-pointer group">
-          <span class="material-symbols-outlined text-base group-hover:rotate-45 transition-transform">tune</span>
-          <span data-en="Change my preferences" data-fr="Modifier mes préférences">Modifier mes préférences</span>
-        </button>
+        <div class="flex flex-wrap items-center gap-3 shrink-0">
+          <button type="button" id="btn-reopen-cookie-settings" class="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-brand-600 text-white font-display font-bold text-xs sm:text-sm transition-all shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer group">
+            <span class="material-symbols-outlined text-base group-hover:rotate-45 transition-transform">tune</span>
+            <span data-en="Change my preferences" data-fr="Modifier mes préférences">Modifier mes préférences</span>
+          </button>
+          <button type="button" id="btn-purge-local-data" class="px-5 py-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-display font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer group" title="Supprime tous les cookies, le localStorage et le sessionStorage stockés sur cet appareil">
+            <span class="material-symbols-outlined text-base text-rose-600 group-hover:scale-110 transition-transform">delete_forever</span>
+            <span data-en="Purge all local data" data-fr="Supprimer toutes les données locales">Supprimer toutes les données locales</span>
+          </button>
+        </div>
       </div>
 
       <div class="space-y-10">
@@ -250,6 +272,25 @@
         btn.addEventListener('click', () => {
           if (window.openCookieSettings) {
             window.openCookieSettings();
+          }
+        });
+      }
+
+      const purgeBtn = document.getElementById('btn-purge-local-data');
+      if (purgeBtn) {
+        purgeBtn.addEventListener('click', () => {
+          if (confirm("Confirmez-vous la suppression intégrale de toutes les données enregistrées sur cet appareil (consentement, préférences, session) ?")) {
+            if (window.clearAllLocalData) {
+              window.clearAllLocalData();
+            } else {
+              try { localStorage.clear(); } catch(e) {}
+              try { sessionStorage.clear(); } catch(e) {}
+            }
+            updateStatusDisplay();
+            if (window.showConsentBanner) {
+              window.showConsentBanner();
+            }
+            alert("Toutes vos données locales ont été purgées avec succès.");
           }
         });
       }

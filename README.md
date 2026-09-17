@@ -1,108 +1,121 @@
 <p align="center">
-  <img src="assets/img/logo.png?v=2" alt="KaïroOS" width="160" />
+  <img src="web/assets/img/logo.png?v=2" alt="KaïroOS" width="160" />
 </p>
 
-# 🕹️ KaïroOS — Site Web Officiel
+# 🕹️ KaïroOS — Site Web Officiel & API
 
-Site de présentation de KaïroOS, le frontend d'arcade moderne et 100% personnalisable.
+Site de présentation officiel et plateforme communautaire de **KaïroOS**, le système d'arcade moderne 100% personnalisable.
 
 ---
 
-## 📦 Structure du Projet
+## 📦 Structure Moderne du Projet
 
 ```text
 kairos-website/
-├── data/                  ← Base de données SQLite (kairoos.db) & migrations
-├── src/                   ← Backend Python modulaire
-│   ├── app/               ← Serveur HTTP et gestionnaire de requêtes (server.py)
-│   ├── data/              ← Connexion base SQLite et migrations (db.py, migrations.py)
-│   ├── routes/            ← Routes API & contrôleurs (public, admin, content, roadmap)
-│   └── services/          ← Métier & sécurité (auth, ban, security, upload)
-├── web/                   ← Frontend moderne découplé
-│   ├── index.html         ← Page d'accueil officielle (bilingue FR/EN)
-│   ├── admin/             ← Panneau d'administration & modération
-│   ├── plugins/           ← Guide plugins, SDK & extensions
-│   ├── roadmap/           ← Feuille de route interactive & votes réels
-│   ├── themes/            ← Simulateur de thèmes & palettes
-│   └── assets/            ← Web Components, CSS, i18n, images & uploads
-├── server.py              ← Point d'entrée exécutable minimal
+├── data/                         ← Base de données SQLite locale (kairoos.db)
+├── apps/
+│   ├── api/                      ← Backend API Fastify + TypeScript
+│   │   └── src/
+│   │       ├── db/               ← Client de données universel (SQLite local / Supabase PostgreSQL)
+│   │       ├── modules/          ← Modules fonctionnels (auth, public, roadmap, content, admin)
+│   │       ├── server.ts         ← Point d'entrée serveur Fastify
+│   │       └── server.test.ts    ← Suite de tests d'intégration Vitest
+│   └── web/                      ← Frontend Multi-pages & Composants React 19
+│       └── src/
+│           ├── components/       ← Îlots React 19 (RoadmapVoteApp, ThemeSimulator, Admin)
+│           ├── entries/          ← Points de montage
+│           └── index.ts          ← Baril d'export TypeScript
+├── web/                          ← Pages HTML statiques, assets, styles et scripts
+│   ├── index.html                ← Accueil officiel bilingue (FR/EN)
+│   ├── admin/                    ← Portail d'administration sécurisé
+│   ├── roadmap/                  ← Feuille de route & votes communautaires réels
+│   ├── themes/                   ← Vitrine thèmes & simulateur CRT
+│   ├── plugins/                  ← Catalogue extensions & SDK
+│   └── assets/                   ← Polices locales WOFF2, CSS, icônes & images
+├── packages/
+│   └── shared/                   ← Schémas Zod & DTOs partagés
+├── dist/                         ← Bundle de production compilé ultra-rapide
+├── vite.config.ts                ← Configuration multi-pages Vite + Proxy API
+├── tsconfig.json                 ← Typage TypeScript strict
 └── README.md
 ```
 
 ---
 
-## 🎨 Design System — Luminous Editorial Tech
+## 🚀 Démarrage & Commandes
 
-Chaque page est un fichier HTML autonome (CSS inline via Tailwind CDN).
+Le projet fonctionne avec **Node.js (>= 20)** et **npm** :
 
-### Palette
+### 1. Installation des dépendances
+```bash
+npm install
+```
 
-| Token | Rôle | Valeur |
-|-------|------|--------|
-| Surface | Fond principal | `#FBFBFA` |
-| Elevated | Cartes | `#FFFFFF` |
-| Primary Ink | Texte titre | `#111418` |
-| Muted Ink | Texte secondaire | `#606770` / `#949CA6` |
-| Primary Accent | Accent cobalt | `#1E40AF` |
-| Warm Accent | Accent coral | `#F43F5E` |
-
-### Typographie
-
-| Style | Police | Usage |
-|-------|--------|-------|
-| Display | Space Grotesk | Titres, badges |
-| Body | Plus Jakarta Sans | Texte principal |
-| Code | JetBrains Mono | Code, labels techniques |
-
-### Composants
-
-- **Nav** : Glassmorphism flottante (rounded-2xl ou pill)
-- **Cards** : Rounded-xl, ombres subtiles, hover shadow crescendo
-- **Badges** : Pill-shaped, couleurs sémantiques
-- **Code blocks** : Fond inverse dark, dots macOS, syntax highlighting
-
----
-
-## 📄 Pages
-
-| Page | Description | JS |
-|------|-------------|-----|
-| `index.html` | Hero interactif, kiosk showcase, before/after, thèmes live, FAQ | Lourd (shelf, toggle, lang) |
-| `pages/roadmap.html` | Jalons v0.1→v1.0, barres de progression, stats | Aucun |
-| `pages/plugins.html` | SDK WASM, manifest, store communautaire, guide publication | Léger (tabs + terminal) |
-| `pages/themes.html` | Simulateur de thèmes interactif, palettes, layouts | Lourd (layouts + palettes) |
-
----
-
-## 🔗 Liens Externes
-
-- **Fonts** : Google Fonts (Plus Jakarta Sans, Space Grotesk, JetBrains Mono)
-- **Icons** : Google Material Symbols Outlined
-- **CSS** : Tailwind CSS CDN
-- **Images** : lh3.googleusercontent.com (AI-generated), Unsplash
-
----
-
-## 🚀 Lancement
+### 2. Développement
+Vous pouvez lancer le frontend et l'API de manière indépendante ou conjointe :
 
 ```bash
-# Lancement du serveur complet (API + Pages Web statiques)
-python server.py
+# Lancement de l'API Backend Fastify (Port 3000)
+npm run dev:api
 
-# Administration en ligne de commande
-python server.py --admin-list
-python server.py --admin-create <username> --password <mot_de_passe> --role superadmin
+# Lancement du Frontend Vite avec Hot-Reload (Port 5173 avec proxy /api -> :3000)
+npm run dev:web
+# ou simplement
+npm run dev
+```
+
+### 3. Tests & Contrôle de qualité
+```bash
+# Exécution du typecheck TypeScript strict (0 erreur)
+npm run typecheck
+
+# Exécution des tests d'intégration Vitest (48 tests)
+npm test
+```
+
+### 4. Build & Production
+```bash
+# Compilation de la production (TypeScript + Vite Multi-pages vers dist/)
+npm run build
+
+# Démarrage du serveur unifié Fastify en production (sert API + Frontend sur le Port 3000)
+npm start
 ```
 
 ---
 
-## 📋 Design Spec
+## ⚙️ Configuration & Adaptabilité (`.env`)
 
-Le design system complet est dans `Source/luminous_editorial_tech/DESIGN.md` avec :
-- 50+ tokens couleur (Material Design 3)
-- Échelle typographique complète
-- Spacing system (space-xs → space-xl)
-- Spécifications de composants (boutons, cards, inputs, badges)
+Copiez le fichier d'exemple pour configurer votre environnement :
+```bash
+cp .env.example .env
+```
+
+### 1. Ports du système
+- **`PORT=3000`** : Port du serveur principal Fastify.
+- **`VITE_PORT=5173`** : Port du serveur Vite en développement.
+
+### 2. Base de données adaptable (SQLite Local ↔ Supabase PostgreSQL)
+Vous pouvez basculer d'une base SQLite locale à une instance Cloud Supabase sans modifier le code :
+```env
+# Mode SQLite local (par défaut) :
+DB_DRIVER=sqlite
+SQLITE_DB_PATH=data/kairoos.db
+
+# Mode Cloud Supabase (PostgreSQL) :
+# DB_DRIVER=supabase
+# DATABASE_URL=postgres://postgres:[VOTRE_MDP]@db.[PROJET].supabase.co:5432/postgres
+```
+
+### 3. Personnalisation de l'accès Admin
+Vous pouvez dissimuler l'URL d'administration ou la faire tourner sur un port réseau distinct :
+```env
+# Modification de l'URL admin (ex: /secret-admin au lieu de /admin) :
+ADMIN_PATH=secret-admin
+
+# Isolation du panneau admin sur un port dédié :
+# ADMIN_PORT=3001
+```
 
 ---
 

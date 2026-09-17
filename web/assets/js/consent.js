@@ -31,17 +31,40 @@
   }
 
   function saveConsent(analyticsAllowed) {
+    const prevConsent = getSavedConsent();
+    const hadPrevious = prevConsent !== null;
+    const prevAnalytics = hadPrevious ? Boolean(prevConsent.analytics) : null;
+    const nextAnalytics = Boolean(analyticsAllowed);
+
+    let choiceType = 'consent_accepted';
+    if (!nextAnalytics) {
+      choiceType = 'consent_refused';
+    }
+
+    let transition = 'initial';
+    if (hadPrevious) {
+      if (prevAnalytics && !nextAnalytics) {
+        transition = 'accepted_to_refused'; // -1 acceptation, +1 refus
+      } else if (!prevAnalytics && nextAnalytics) {
+        transition = 'refused_to_accepted'; // +1 acceptation, -1 refus
+      } else if (nextAnalytics) {
+        transition = 'renew_accepted';
+      } else {
+        transition = 'renew_refused';
+      }
+    }
+
     const consent = {
       timestamp: Date.now(),
-      analytics: Boolean(analyticsAllowed),
+      analytics: nextAnalytics,
       version: 1
     };
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
     } catch(e) {}
 
-    // Envoi anonyme des statistiques de consentement (sans IP ni traceur nominatif)
-    sendAnonymousConsentStat(analyticsAllowed ? 'consent_accepted' : 'consent_refused');
+    // Envoi anonyme des statistiques de consentement avec transition
+    sendAnonymousConsentStat(choiceType, transition);
 
     // Si refus, purger l'identifiant de session existant éventuel
     if (!analyticsAllowed) {
@@ -57,9 +80,9 @@
     closeModal();
   }
 
-  function sendAnonymousConsentStat(choice) {
+  function sendAnonymousConsentStat(choice, transition = 'initial') {
     try {
-      const payload = JSON.stringify({ choice: choice });
+      const payload = JSON.stringify({ choice: choice, transition: transition });
       if (navigator.sendBeacon) {
         navigator.sendBeacon('/api/track/consent-stat', new Blob([payload], { type: 'application/json' }));
       } else {
@@ -71,41 +94,43 @@
         }).catch(() => {});
       }
     } catch(e) {}
+  }
+
   function renderBanner() {
     if (document.getElementById('kairo-consent-banner')) return;
 
     const banner = document.createElement('div');
     banner.id = 'kairo-consent-banner';
-    banner.className = 'fixed bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-md z-[90] animate-fade-in font-sans';
+    banner.className = 'fixed bottom-3 left-3 right-3 sm:bottom-5 sm:left-6 sm:right-auto sm:max-w-md z-[9999] animate-fade-in font-sans pb-[env(safe-area-inset-bottom,0px)]';
     banner.innerHTML = `
-      <div class="bg-white/95 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-2xl border border-slate-200/90 text-slate-800 space-y-4">
+      <div class="bg-white/85 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-subtle border border-black/5 text-slate-800 space-y-3 sm:space-y-3.5">
         <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-lg">cookie</span>
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-brand-50 border border-brand-100 text-brand-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-lg sm:text-xl">cookie</span>
           </div>
           <div class="space-y-1">
-            <h4 class="font-display font-bold text-sm text-slate-900">Respect de votre vie privée</h4>
-            <p class="text-xs text-slate-600 leading-relaxed">
-              Nous utilisons une mesure d'audience anonymisée hébergée localement pour comprendre l'usage du site et guider le développement de KaïroOS. Aucun traceur publicitaire n'est utilisé.
+            <h4 class="font-display font-bold text-xs sm:text-sm text-heading">Respect de votre vie privée</h4>
+            <p class="text-[11px] sm:text-xs text-body leading-relaxed">
+              Nous mesurons l'audience de manière anonyme pour améliorer KaïroOS. Aucun traceur publicitaire n'est utilisé.
             </p>
           </div>
         </div>
 
-        <div class="flex items-center gap-2 text-[11px] font-mono text-slate-500">
+        <div class="flex items-center gap-2 text-[10px] sm:text-[11px] font-mono text-muted">
           <a href="/legal/cookies" class="underline hover:text-brand-600 transition-colors">Détail des cookies</a>
           <span>·</span>
-          <a href="/legal/confidentialite" class="underline hover:text-brand-600 transition-colors">Politique de confidentialité</a>
+          <a href="/legal/confidentialite" class="underline hover:text-brand-600 transition-colors">Confidentialité</a>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 pt-1">
-          <button type="button" id="btn-consent-refuse" class="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors cursor-pointer text-center">
-            Tout refuser
+        <div class="grid grid-cols-3 gap-2 pt-0.5">
+          <button type="button" id="btn-consent-refuse" class="w-full px-2 py-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200/80 bg-white/70 hover:bg-white text-slate-700 font-bold text-[11px] sm:text-xs transition-all cursor-pointer text-center shadow-xs">
+            Refuser
           </button>
-          <button type="button" id="btn-consent-customize" class="px-3 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition-colors cursor-pointer text-center">
-            Personnaliser
+          <button type="button" id="btn-consent-customize" class="w-full px-2 py-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200/80 bg-white/70 hover:bg-white text-slate-700 font-semibold text-[11px] sm:text-xs transition-all cursor-pointer text-center shadow-xs">
+            Régler
           </button>
-          <button type="button" id="btn-consent-accept" class="px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer text-center">
-            Tout accepter
+          <button type="button" id="btn-consent-accept" class="w-full px-2 py-2 sm:px-3 sm:py-2.5 rounded-xl bg-slate-900 hover:bg-brand-600 text-white font-bold text-[11px] sm:text-xs shadow-sm transition-all cursor-pointer text-center">
+            Accepter
           </button>
         </div>
       </div>
@@ -213,8 +238,33 @@
     if (modal) modal.remove();
   }
 
+  function clearAllLocalData() {
+    try {
+      localStorage.clear();
+    } catch(e) {}
+    try {
+      sessionStorage.clear();
+    } catch(e) {}
+    // Purge also any readable document.cookie
+    try {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        if (name) {
+          document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+        }
+      }
+    } catch(e) {}
+
+    window.dispatchEvent(new CustomEvent('kairo_consent_updated', { detail: null }));
+  }
+
   // API publique accessible partout
   window.openCookieSettings = openModal;
+  window.clearAllLocalData = clearAllLocalData;
+  window.showConsentBanner = renderBanner;
   window.hasAnalyticsConsent = function() {
     const c = getSavedConsent();
     return c ? Boolean(c.analytics) : false;

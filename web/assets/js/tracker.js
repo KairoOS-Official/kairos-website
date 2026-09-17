@@ -1,4 +1,4 @@
-﻿/**
+/**
  * KaïroOS Client-side Analytics & Click Tracker
  * Ultra-léger (< 2 Ko), respectueux du RGPD / ePrivacy.
  * - Conditionné au consentement explicite (localStorage.kairo_consent_v1)
@@ -56,6 +56,29 @@
     }
   }
 
+  let pageEnterTime = Date.now();
+  let durationSent = false;
+
+  function sendPageDuration() {
+    if (!getConsent() || durationSent) return;
+    const durationSeconds = Math.max(1, Math.round((Date.now() - pageEnterTime) / 1000));
+    // Limite raisonnable (ex: 2h max pour éviter les onglets laissés ouverts)
+    if (durationSeconds > 7200) return;
+
+    sendEvent('page_duration', window.location.pathname || '/', {
+      duration_seconds: durationSeconds
+    });
+  }
+
+  // Envoi périodique ou au départ de la page
+  window.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      sendPageDuration();
+    }
+  });
+  window.addEventListener('pagehide', sendPageDuration);
+  window.addEventListener('beforeunload', sendPageDuration);
+
   // Si le consentement est déjà accordé, enregistrer la page vue
   if (getConsent()) {
     sendEvent('page_view', window.location.pathname || '/');
@@ -64,6 +87,7 @@
   // Écouter l'événement de mise à jour du consentement
   window.addEventListener('kairo_consent_updated', function(e) {
     if (e.detail && e.detail.analytics) {
+      pageEnterTime = Date.now();
       sendEvent('page_view', window.location.pathname || '/');
     }
   });

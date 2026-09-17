@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
 <head>
+  <script>
+    (function() {
+      try {
+        var pref = localStorage.getItem('kairo_theme_pref');
+        var isDark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      } catch(e) {}
+    })();
+  </script>
   <base href="/">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,12 +67,13 @@
     };
   </script>
   <link rel="stylesheet" href="assets/css/main.css">
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/components/navbar.js" defer></script>
   <script src="assets/js/components/footer.js" defer></script>
   <script src="assets/js/consent.js" defer></script>
 </head>
-<body class="bg-[#FBFBF9] font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
+<body class="bg-canvas font-sans text-body antialiased min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white bg-light-mesh">
 
   <!-- Navigation -->
   <kairo-navbar></kairo-navbar>
@@ -119,7 +135,7 @@
                     <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Adresse IP tronquée (/24 ou /48)</td>
                     <td class="py-3.5 px-4">Statistiques de fréquentation anonymisées (pays, volume de requêtes).</td>
                     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 font-mono text-[11px] font-bold border border-emerald-200">Consentement</span> (Art. 6.1.a)</td>
-                    <td class="py-3.5 px-4 font-mono">13 mois max</td>
+                    <td class="py-3.5 px-4 font-mono">13 mois max <span class="block text-[10px] text-emerald-600 font-sans font-semibold">(auto-supprimé sous 6.5 mois)</span></td>
                   </tr>
                   <tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Adresse IP brute (empreinte de vote)</td>
@@ -131,25 +147,25 @@
                     <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Adresse IP (journal des bans & abus)</td>
                     <td class="py-3.5 px-4">Sécurisation du serveur, blocage des attaques automatisées et protection de l'espace d'administration.</td>
                     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 font-mono text-[11px] font-bold border border-amber-200">Intérêt légitime</span> (Art. 6.1.f)</td>
-                    <td class="py-3.5 px-4 font-mono">6 à 12 mois</td>
+                    <td class="py-3.5 px-4 font-mono">6 mois max <span class="block text-[10px] text-emerald-600 font-sans font-semibold">(auto-supprimé sous 3 mois)</span></td>
                   </tr>
                   <tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="py-3.5 px-4 font-mono font-bold text-slate-900">sessionStorage (kairo_session_id)</td>
                     <td class="py-3.5 px-4">Comptabilisation du parcours et des clics de téléchargement de release au cours d'une session.</td>
                     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 font-mono text-[11px] font-bold border border-emerald-200">Consentement</span> (Art. 6.1.a)</td>
-                    <td class="py-3.5 px-4 font-mono">Fin de session (onglet)</td>
+                    <td class="py-3.5 px-4 font-mono">Fin de session (fermeture onglet)</td>
                   </tr>
                   <tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Email, pseudo, titre de proposition</td>
                     <td class="py-3.5 px-4">Boîte à idées publique, soumission de fonctionnalités et contact de notification.</td>
                     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 font-mono text-[11px] font-bold border border-emerald-200">Consentement</span> (Art. 6.1.a)</td>
-                    <td class="py-3.5 px-4 font-mono">3 ans après soumission</td>
+                    <td class="py-3.5 px-4 font-mono">3 ans max <span class="block text-[10px] text-emerald-600 font-sans font-semibold">(auto-supprimé sous 1.5 an)</span></td>
                   </tr>
                   <tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="py-3.5 px-4 font-mono font-bold text-slate-900">Messages de recours & chat d'assistance</td>
                     <td class="py-3.5 px-4">Instruction des contestations de bannissement et modération de l'espace participatif.</td>
                     <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 font-mono text-[11px] font-bold border border-amber-200">Intérêt légitime</span> (Art. 6.1.f)</td>
-                    <td class="py-3.5 px-4 font-mono">12 mois</td>
+                    <td class="py-3.5 px-4 font-mono">12 mois max <span class="block text-[10px] text-emerald-600 font-sans font-semibold">(auto-supprimé sous 6 mois)</span></td>
                   </tr>
                 </tbody>
               </table>

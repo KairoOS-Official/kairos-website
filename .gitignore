@@ -31,6 +31,18 @@ logs/
 .env.*
 !.env.example
 
+# Dependencies & Build output
+node_modules/
+dist/
+*.tsbuildinfo
+*.js.map
+*.d.ts.map
+
+# Administration page (Do not publish)
+web/admin/
+web/src/AdminDashboardApp.tsx
+web/src/entries/admin.tsx
+
 # Scratch and build caches
 scratch/
 .system_generated/

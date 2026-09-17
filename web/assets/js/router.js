@@ -198,6 +198,11 @@
       window.kairoI18n.applyLang();
     }
 
+    // 2a. Maintien et ré-application du thème (Clair / Sombre / Auto PC)
+    if (window.kairoTheme && typeof window.kairoTheme.apply === 'function') {
+      window.kairoTheme.apply();
+    }
+
     // 2b. Ré-initialisation des vitrines interactives Apple « De plus près »
     if (typeof window.initDePlusPres === 'function') {
       window.initDePlusPres();
