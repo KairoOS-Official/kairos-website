@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import fs from 'fs';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // Plugin Vite pour le routage multi-pages et la vraie page 404 en mode dev
 function multiPageDevRouter() {
@@ -70,7 +71,18 @@ function multiPageDevRouter() {
 }
 
 export default defineConfig({
-  plugins: [react(), multiPageDevRouter()],
+  plugins: [
+    react(),
+    multiPageDevRouter(),
+    viteStaticCopy({
+      targets: [
+        { src: 'assets/css',   dest: '.' },
+        { src: 'assets/js',    dest: '.' },
+        { src: 'assets/img',   dest: '.' },
+        { src: 'assets/fonts', dest: '.' },
+      ]
+    })
+  ],
   root: 'web',
   server: {
     port: 5173,
@@ -95,7 +107,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(import.meta.dirname, 'web/index.html'),
-        admin: resolve(import.meta.dirname, 'web/admin/index.html'),
         roadmap: resolve(import.meta.dirname, 'web/roadmap/index.html'),
         plugins: resolve(import.meta.dirname, 'web/plugins/index.html'),
         themes: resolve(import.meta.dirname, 'web/themes/index.html'),
