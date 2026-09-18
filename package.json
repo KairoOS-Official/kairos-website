@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n \"API,WEB\" -c \"cyan,magenta\" \"npm run dev:api\" \"npm run dev:web\"",
     "dev:web": "vite",
     "dev:api": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
@@ -21,6 +21,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
     "drizzle-kit": "^0.31.10",
     "eslint": "^10.10.0",
     "prettier": "^3.9.7",

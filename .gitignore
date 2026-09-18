@@ -10,9 +10,9 @@ ehthumbs.db
 .vscode/
 .idea/
 
-# Local databases & Runtime state (CRITICAL: Never publish kairoos.db or live user/admin data)
-data/kairoos.db
-data/kairoos.db*
+# Local databases & Runtime state (CRITICAL: Never publish kairoos.db, backups or live data)
+data/*
+!data/.gitkeep
 *.sqlite
 *.sqlite3
 *.db
@@ -21,8 +21,6 @@ data/kairoos.db*
 *.db-shm
 
 # Logs & Audit
-data/logs/
-data/*.txt
 logs/
 *.log
 
@@ -37,11 +35,15 @@ dist/
 *.tsbuildinfo
 *.js.map
 *.d.ts.map
+src/**/*.d.ts
+src/**/*.js
+web/src/**/*.d.ts
+web/src/**/*.js
 
-# Administration page (Do not publish)
+# Administration page & private code (Do not publish)
 web/admin/
-web/src/AdminDashboardApp.tsx
-web/src/entries/admin.tsx
+web/src/AdminDashboardApp.*
+web/src/entries/admin.*
 
 # Scratch and build caches
 scratch/

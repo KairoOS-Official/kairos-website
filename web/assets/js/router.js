@@ -24,7 +24,7 @@
     if (pathname.includes('themes') && pathname !== '/themes') cleanPath = '/themes';
     else if (pathname.includes('plugins') && pathname !== '/plugins') cleanPath = '/plugins';
     else if (pathname.includes('roadmap') && pathname !== '/roadmap') cleanPath = '/roadmap';
-    else if (pathname.endsWith('/index.html')) cleanPath = '/';
+    else if (pathname.endsWith('/index.html') && !pathname.includes('/admin') && !pathname.includes('/legal')) cleanPath = '/';
 
     if (cleanPath) {
       const fullClean = cleanPath + window.location.search + window.location.hash;

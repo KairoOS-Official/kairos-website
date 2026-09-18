@@ -779,4 +779,107 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       url: ('assets/img/uploads/' + safeName)
     });
   });
+
+  // 22. POST /api/admin/pages/publish (Sauvegarde en dur dans les fichiers HTML et SQLite)
+  fastify.post('/api/admin/pages/publish', async (request, reply) => {
+    const admin = getAuthAdmin(request);
+    if (!admin) return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
+
+    const PublishSchema = z.object({
+      page: z.enum(['home', 'themes', 'plugins', 'roadmap']),
+      lang: z.enum(['fr', 'en']).default('fr'),
+      content: z.record(z.string(), z.string()).default({}),
+      html_override: z.string().optional()
+    });
+
+    const parse = PublishSchema.safeParse(request.body);
+    if (!parse.success) {
+      return reply.status(400).send({ status: 'error', message: 'Données invalides pour la publication' });
+    }
+
+    const { page, lang, content, html_override } = parse.data;
+
+    // Fichier HTML cible
+    const pageFiles: Record<string, string> = {
+      home: 'web/index.html',
+      themes: 'web/themes/index.html',
+      plugins: 'web/plugins/index.html',
+      roadmap: 'web/roadmap/index.html'
+    };
+
+    const targetRelative = pageFiles[page];
+    if (!targetRelative) {
+      return reply.status(400).send({ status: 'error', message: 'Page inconnue' });
+    }
+
+    const filePath = path.resolve(process.cwd(), targetRelative);
+    if (!fs.existsSync(filePath)) {
+      return reply.status(404).send({ status: 'error', message: `Fichier ${targetRelative} introuvable` });
+    }
+
+    // A. Backup de sécurité automatique dans data/backups/
+    const backupDir = path.resolve(process.cwd(), 'data/backups');
+    if (!fs.existsSync(backupDir)) {
+      fs.mkdirSync(backupDir, { recursive: true });
+    }
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = path.join(backupDir, `${page}_${timestamp}.html.bak`);
+    fs.copyFileSync(filePath, backupPath);
+
+    // B. Mise à jour de la base SQLite pour synchronisation API
+    for (const [k, v] of Object.entries(content)) {
+      db.run(sql`
+        INSERT INTO site_content_i18n (content_key, lang, content_value, updated_at)
+        VALUES (${k}, ${lang}, ${v}, CURRENT_TIMESTAMP)
+        ON CONFLICT(content_key, lang) DO UPDATE SET
+          content_value = ${v},
+          updated_at = CURRENT_TIMESTAMP
+      `);
+    }
+
+    // C. Modification en dur du fichier HTML
+    let fileContent = fs.readFileSync(filePath, 'utf-8');
+
+    if (html_override && html_override.trim().length > 100) {
+      // Si une version complète du HTML éditée a été transmise
+      fileContent = html_override;
+    } else {
+      // Remplacement en dur des éléments data-content-key dans le fichier HTML
+      for (const [key, val] of Object.entries(content)) {
+        // Remplacement pour data-content-key="..."
+        const regexWithContentKey = new RegExp(
+          `(<([a-zA-Z0-9]+)[^>]*data-content-key=["']${key}["'][^>]*>)([\\s\\S]*?)(<\\/\\2>)`,
+          'gi'
+        );
+
+        if (regexWithContentKey.test(fileContent)) {
+          fileContent = fileContent.replace(
+            regexWithContentKey,
+            (_match, openTag, _tag, _oldContent, closeTag) => {
+              // Mettre à jour aussi l'attribut de langue si présent (ex: data-fr="..." ou data-en="...")
+              let updatedOpenTag = openTag;
+              const langAttr = lang === 'en' ? 'data-en' : 'data-fr';
+              const cleanVal = String(val).replace(/"/g, '&quot;');
+              if (new RegExp(`${langAttr}=["'][^"']*["']`, 'i').test(updatedOpenTag)) {
+                updatedOpenTag = updatedOpenTag.replace(
+                  new RegExp(`${langAttr}=["'][^"']*["']`, 'i'),
+                  `${langAttr}="${cleanVal}"`
+                );
+              }
+              return `${updatedOpenTag}${val}${closeTag}`;
+            }
+          );
+        }
+      }
+    }
+
+    // Sauvegarde en dur sur le disque
+    fs.writeFileSync(filePath, fileContent, 'utf-8');
+
+    return reply.status(200).send({
+      status: 'ok',
+      message: `Page ${page} sauvegardée et publiée en dur avec succès !`,
+      backup: path.basename(backupPath)
+    });
+  });
 };
