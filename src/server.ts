@@ -75,7 +75,7 @@ export function buildServer(): FastifyInstance {
   server.register(fastifyStatic, {
     root: staticRoot,
     prefix: '/',
-    wildcard: false
+    wildcard: true
   });
 
   // Configurable Admin Path (e.g. /admin or /secret-admin)
