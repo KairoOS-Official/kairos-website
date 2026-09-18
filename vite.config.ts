@@ -77,7 +77,15 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:3000',
-        changeOrigin: true
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('error', (err: any, _req: any, res: any) => {
+            if (err.code === 'ECONNREFUSED' && !res.headersSent) {
+              res.writeHead(503, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ status: 'starting', message: 'API en cours de démarrage...' }));
+            }
+          });
+        }
       }
     }
   },

@@ -631,6 +631,12 @@
   <!-- SCRIPT CLIENT ROADMAP -->
   <script>
     (function() {
+      window.initRoadmapPage = function() {
+        if (typeof window.loadVotingFeatures === 'function') {
+          window.loadVotingFeatures();
+        }
+      };
+
       // BASE OFFICIELLE DES DÉTAILS ISSUS DE docs/ROADMAP.md
       const ROADMAP_SPECS = {
         'v0.1.0': {
@@ -1179,19 +1185,26 @@
       }
 
       // Initial load with AbortController timeout (30s max)
-      let _votesInitDone = false;
       function initVotes() {
-        if (!_votesInitDone) {
-          _votesInitDone = true;
-          loadVotingFeatures();
-        }
+        loadVotingFeatures();
       }
+
+      window.initRoadmapPage = function() {
+        loadVotingFeatures();
+      };
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initVotes);
       } else {
         initVotes();
       }
+
+      // Écouter l'événement kairo:page-ready du router SPA
+      window.addEventListener('kairo:page-ready', (e) => {
+        if (e.detail && e.detail.active === 'roadmap') {
+          loadVotingFeatures();
+        }
+      });
 
       // On language change reload votes (skip first call which is the init call)
       let _langChangeCount = 0;
