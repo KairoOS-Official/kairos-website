@@ -9,9 +9,9 @@
     "dev:api": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --root .",
-    "build": "tsc && vite build",
+    "build": "npm run build:api; npm run build:web",
     "build:api": "tsc",
-    "build:web": "vite build",
+    "build:web": "node scripts/build-web.mjs",
     "start": "tsx src/server.ts"
   },
   "devDependencies": {
