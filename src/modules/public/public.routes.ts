@@ -76,7 +76,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
   // 1. Statut de sanction de l'IP appelante
   fastify.get('/api/user/ban-status', async (request, reply) => {
     const clientIp = request.ip || '127.0.0.1';
-    const ban = db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)).get();
+    const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)))[0];
 
     if (!ban) {
       return reply.status(200).send({ is_banned: false, ip: clientIp });
@@ -105,19 +105,17 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
   // 2. Fil de discussion visiteur <-> admin
   fastify.get('/api/user/chat', async (request, reply) => {
     const clientIp = request.ip || '127.0.0.1';
-    const msgs = db
+    const msgs = await db
       .select()
       .from(chatMessages)
       .where(eq(chatMessages.ipAddress, clientIp))
       .orderBy(chatMessages.id)
-      .limit(100)
-      .all();
+      .limit(100);
 
     // Marquer les messages envoyés par l'admin comme lus par le visiteur
-    db.update(chatMessages)
+    await db.update(chatMessages)
       .set({ isRead: 1 })
-      .where(and(eq(chatMessages.ipAddress, clientIp), eq(chatMessages.sender, 'admin')))
-      .run();
+      .where(and(eq(chatMessages.ipAddress, clientIp), eq(chatMessages.sender, 'admin')));
 
     return reply.status(200).send({
       status: 'ok',
@@ -135,14 +133,13 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error', message: parse.error.issues[0]?.message || 'Données invalides' });
     }
 
-    db.insert(chatMessages)
+    await db.insert(chatMessages)
       .values({
         ipAddress: clientIp,
         sender: 'visitor',
         message: parse.data.message,
         isRead: 0
-      })
-      .run();
+      });
 
     return reply.status(200).send({ status: 'ok', message: 'Message transmis aux administrateurs' });
   });
@@ -155,14 +152,13 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error', message: parse.error.issues[0]?.message || 'Données invalides' });
     }
 
-    db.insert(banAppeals)
+    await db.insert(banAppeals)
       .values({
         ipAddress: clientIp,
         email: parse.data.email,
         message: parse.data.message,
         status: 'pending'
-      })
-      .run();
+      });
 
     return reply.status(200).send({
       status: 'ok',
@@ -185,7 +181,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
     const { event_type, target, page, session_id, meta, referrer } = parse.data;
 
     if (event_type === 'page_view') {
-      db.insert(pageViews)
+      await db.insert(pageViews)
         .values({
           page,
           sessionId: session_id,
@@ -195,10 +191,9 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
           browser,
           device,
           durationSeconds: 0
-        })
-        .run();
+        });
     } else {
-      db.insert(analyticsEvents)
+      await db.insert(analyticsEvents)
         .values({
           eventType: event_type,
           target,
@@ -209,8 +204,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
           os,
           browser,
           device
-        })
-        .run();
+        });
     }
 
     return reply.status(200).send({ status: 'tracked' });
@@ -223,23 +217,22 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error' });
     }
 
-    db.insert(analyticsEvents)
+    await db.insert(analyticsEvents)
       .values({
         eventType: 'consent',
         target: parse.data.choice,
         page: parse.data.page,
         sessionId: 'anon',
         ipAddress: 'ANON'
-      })
-      .run();
+      });
 
     return reply.status(200).send({ status: 'consent_stat_recorded' });
   });
 
   // 7. Résumé analytique public / admin
   fastify.get('/api/analytics/summary', async (_request, reply) => {
-    const [viewsCount] = db.select({ val: count() }).from(pageViews).all();
-    const [eventsCount] = db.select({ val: count() }).from(analyticsEvents).all();
+    const [viewsCount] = await db.select({ val: count() }).from(pageViews);
+    const [eventsCount] = await db.select({ val: count() }).from(analyticsEvents);
 
     return reply.status(200).send({
       total_views: viewsCount?.val || 0,

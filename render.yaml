@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: kairos-website
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: DB_DRIVER
+        value: supabase
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_PATH
+        value: admin
+      - key: ADMIN_ALLOW_ALL
+        value: "true"
+      - key: ADMIN_ALLOWED_IPS
+        value: 127.0.0.1,::1

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { db } from '../../db/client.js';
+import { db, rawAll } from '../../db/client.js';
 import {
   adminUsers,
   bannedIps,
@@ -26,13 +26,13 @@ const UBLOAD_DIR = path.resolve(process.cwd(), 'web/assets/img/uploads');
 
 const UPLOAD_DIR = path.resolve(process.cwd(), 'web/assets/img/uploads');
 
-function getAuthAdmin(request: FastifyRequest) {
+async function getAuthAdmin(request: FastifyRequest) {
   const cookieToken = request.cookies['kairo_admin_session'];
   const authHeader = request.headers.authorization?.replace('Bearer ', '').trim();
   const token = cookieToken || authHeader;
   if (!token) return null;
 
-  return db.select().from(adminUsers).where(eq(adminUsers.token, token)).get() || null;
+  return (await db.select().from(adminUsers).where(eq(adminUsers.token, token)))[0] || null;
 }
 
 function hasPermission(user: typeof adminUsers.$inferSelect, perm: string): boolean {
@@ -103,7 +103,7 @@ const UploadSchema = z.object({
 export const adminRoutes: FastifyPluginAsync = async (fastify) => {
   // 1. GET /api/admin/users
   fastify.get('/api/admin/users', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const allIpsQuery = sql`
@@ -121,15 +121,15 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         SELECT ip_address FROM banned_ips WHERE ip_address IS NOT NULL AND ip_address != ''
       )
     `;
-    const distinctIps = db.all<{ ip_address: string }>(allIpsQuery).map(r => r.ip_address);
+    const distinctIps = (await rawAll<{ ip_address: string }>(allIpsQuery)).map(r => r.ip_address);
 
     const users = [];
     for (const ip of distinctIps) {
-      const [vRow] = db.select({ c: sql<number>`count(*)` }).from(pageViews).where(eq(pageViews.ipAddress, ip)).all();
-      const [eRow] = db.select({ c: sql<number>`count(*)` }).from(analyticsEvents).where(eq(analyticsEvents.ipAddress, ip)).all();
-      const [voteRow] = db.select({ c: sql<number>`count(*)` }).from(roadmapVotes).where(eq(roadmapVotes.ipAddress, ip)).all();
-      const [propRow] = db.select({ c: sql<number>`count(*)` }).from(communityProposals).where(eq(communityProposals.ipAddress, ip)).all();
-      const [sugRow] = db.select({ c: sql<number>`count(*)` }).from(featureSuggestions).where(eq(featureSuggestions.ipAddress, ip)).all();
+      const [vRow] = await db.select({ c: sql<number>`count(*)` }).from(pageViews).where(eq(pageViews.ipAddress, ip));
+      const [eRow] = await db.select({ c: sql<number>`count(*)` }).from(analyticsEvents).where(eq(analyticsEvents.ipAddress, ip));
+      const [voteRow] = await db.select({ c: sql<number>`count(*)` }).from(roadmapVotes).where(eq(roadmapVotes.ipAddress, ip));
+      const [propRow] = await db.select({ c: sql<number>`count(*)` }).from(communityProposals).where(eq(communityProposals.ipAddress, ip));
+      const [sugRow] = await db.select({ c: sql<number>`count(*)` }).from(featureSuggestions).where(eq(featureSuggestions.ipAddress, ip));
 
       const lastSeenQuery = sql`
         SELECT MAX(ts) as last_seen FROM (
@@ -144,29 +144,27 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
           SELECT MAX(created_at) as ts FROM feature_suggestions WHERE ip_address = ${ip}
         )
       `;
-      const [lastSeenRow] = db.all<{ last_seen: string | null }>(lastSeenQuery);
+      const [lastSeenRow] = await rawAll<{ last_seen: string | null }>(lastSeenQuery);
 
-      const propInfo = db.select({ author: communityProposals.author, email: communityProposals.email })
+      const propInfo = (await db.select({ author: communityProposals.author, email: communityProposals.email })
         .from(communityProposals)
         .where(eq(communityProposals.ipAddress, ip))
         .orderBy(desc(communityProposals.id))
-        .limit(1)
-        .get();
+        .limit(1))[0];
 
       let nickname = propInfo?.author && propInfo.author !== 'Anonyme' ? propInfo.author : null;
       const email = propInfo?.email || null;
 
       if (!nickname) {
-        const sugInfo = db.select({ author: featureSuggestions.author })
+        const sugInfo = (await db.select({ author: featureSuggestions.author })
           .from(featureSuggestions)
           .where(eq(featureSuggestions.ipAddress, ip))
           .orderBy(desc(featureSuggestions.id))
-          .limit(1)
-          .get();
+          .limit(1))[0];
         if (sugInfo && sugInfo.author !== 'Anonyme') nickname = sugInfo.author;
       }
 
-      const ban = db.select().from(bannedIps).where(eq(bannedIps.ipAddress, ip)).get() || null;
+      const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, ip)))[0] || null;
 
       const vCount = vRow?.c || 0;
       const eCount = eRow?.c || 0;
@@ -198,15 +196,15 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 2. GET /api/admin/users/detail
   fastify.get<{ Querystring: { ip?: string } }>('/api/admin/users/detail', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const targetIp = (request.query.ip || '').trim();
     if (!targetIp) return reply.status(400).send({ status: 'error', message: 'IP requise' });
 
-    const ban = db.select().from(bannedIps).where(eq(bannedIps.ipAddress, targetIp)).get() || null;
+    const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, targetIp)))[0] || null;
 
-    const votes = db.select({
+    const votes = (await db.select({
       id: roadmapVotes.id,
       featureId: roadmapVotes.featureId,
       createdAt: roadmapVotes.createdAt,
@@ -218,17 +216,16 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       .from(roadmapVotes)
       .leftJoin(roadmapFeatures, eq(roadmapVotes.featureId, roadmapFeatures.id))
       .where(eq(roadmapVotes.ipAddress, targetIp))
-      .orderBy(desc(roadmapVotes.id))
-      .all()
-      .map(v => ({
+      .orderBy(desc(roadmapVotes.id)))
+      .map((v: any) => ({
         ...v,
         feature_title: v.titleFr || v.titleEn || ('Feature #' + v.featureId),
         feature_tag: v.tag
       }));
 
-    const proposals = db.select().from(communityProposals).where(eq(communityProposals.ipAddress, targetIp)).orderBy(desc(communityProposals.id)).all();
+    const proposals = await db.select().from(communityProposals).where(eq(communityProposals.ipAddress, targetIp)).orderBy(desc(communityProposals.id));
 
-    const suggestions = db.select({
+    const suggestions = (await db.select({
       id: featureSuggestions.id,
       featureId: featureSuggestions.featureId,
       author: featureSuggestions.author,
@@ -242,18 +239,17 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       .from(featureSuggestions)
       .leftJoin(roadmapFeatures, eq(featureSuggestions.featureId, roadmapFeatures.id))
       .where(eq(featureSuggestions.ipAddress, targetIp))
-      .orderBy(desc(featureSuggestions.id))
-      .all()
-      .map(s => ({
+      .orderBy(desc(featureSuggestions.id)))
+      .map((s: any) => ({
         ...s,
         feature_title: s.titleFr || ('Feature #' + s.featureId)
       }));
 
-    const views = db.select().from(pageViews).where(eq(pageViews.ipAddress, targetIp)).orderBy(desc(pageViews.id)).limit(50).all();
-    const events = db.select().from(analyticsEvents).where(eq(analyticsEvents.ipAddress, targetIp)).orderBy(desc(analyticsEvents.id)).limit(50).all();
-    const appeals = db.select().from(banAppeals).where(eq(banAppeals.ipAddress, targetIp)).orderBy(desc(banAppeals.id)).all();
-    const chat = db.select().from(chatMessages).where(eq(chatMessages.ipAddress, targetIp)).orderBy(asc(chatMessages.id)).limit(200).all();
-    const loginLogs = db.select().from(adminLoginLogs).where(eq(adminLoginLogs.ipAddress, targetIp)).orderBy(desc(adminLoginLogs.id)).limit(20).all();
+    const views = await db.select().from(pageViews).where(eq(pageViews.ipAddress, targetIp)).orderBy(desc(pageViews.id)).limit(50);
+    const events = await db.select().from(analyticsEvents).where(eq(analyticsEvents.ipAddress, targetIp)).orderBy(desc(analyticsEvents.id)).limit(50);
+    const appeals = await db.select().from(banAppeals).where(eq(banAppeals.ipAddress, targetIp)).orderBy(desc(banAppeals.id));
+    const chat = await db.select().from(chatMessages).where(eq(chatMessages.ipAddress, targetIp)).orderBy(asc(chatMessages.id)).limit(200);
+    const loginLogs = await db.select().from(adminLoginLogs).where(eq(adminLoginLogs.ipAddress, targetIp)).orderBy(desc(adminLoginLogs.id)).limit(20);
 
     let lastSeen: string | null = null;
     for (const pool of [views, events, votes, proposals, suggestions, appeals, chat]) {
@@ -301,34 +297,33 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 3. GET /api/admin/chat
   fastify.get<{ Querystring: { ip?: string } }>('/api/admin/chat', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const targetIp = (request.query.ip || '').trim();
     if (!targetIp) return reply.status(400).send({ status: 'error', message: 'IP requise' });
 
-    const msgs = db.select().from(chatMessages).where(eq(chatMessages.ipAddress, targetIp)).orderBy(asc(chatMessages.id)).limit(200).all();
+    const msgs = await db.select().from(chatMessages).where(eq(chatMessages.ipAddress, targetIp)).orderBy(asc(chatMessages.id)).limit(200);
 
-    db.update(chatMessages)
+    await db.update(chatMessages)
       .set({ isRead: 1 })
-      .where(and(eq(chatMessages.ipAddress, targetIp), eq(chatMessages.sender, 'visitor')))
-      .run();
+      .where(and(eq(chatMessages.ipAddress, targetIp), eq(chatMessages.sender, 'visitor')));
 
     return reply.status(200).send({ status: 'ok', ip: targetIp, messages: msgs });
   });
 
   // 4. GET /api/admin/features/votes
   fastify.get<{ Querystring: { feature_id?: string } }>('/api/admin/features/votes', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const fid = Number(request.query.feature_id);
     if (!fid) return reply.status(400).send({ status: 'error', message: 'ID requis' });
 
-    const feature = db.select().from(roadmapFeatures).where(eq(roadmapFeatures.id, fid)).get();
+    const feature = (await db.select().from(roadmapFeatures).where(eq(roadmapFeatures.id, fid)))[0];
     if (!feature) return reply.status(404).send({ status: 'error', message: 'Fonctionnalité introuvable' });
 
-    const votes = db.select({
+    const votes = await db.select({
       id: roadmapVotes.id,
       featureId: roadmapVotes.featureId,
       ipAddress: roadmapVotes.ipAddress,
@@ -342,8 +337,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       .from(roadmapVotes)
       .leftJoin(bannedIps, eq(roadmapVotes.ipAddress, bannedIps.ipAddress))
       .where(eq(roadmapVotes.featureId, fid))
-      .orderBy(desc(roadmapVotes.id))
-      .all();
+      .orderBy(desc(roadmapVotes.id));
 
     return reply.status(200).send({
       status: 'ok',
@@ -355,19 +349,19 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 5. GET /api/admin/appeals
   fastify.get('/api/admin/appeals', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
-    const appeals = db.select().from(banAppeals).orderBy(desc(banAppeals.id)).all();
+    const appeals = await db.select().from(banAppeals).orderBy(desc(banAppeals.id));
     return reply.status(200).send({ status: 'ok', appeals });
   });
 
   // 6. GET /api/admin/security/config
   fastify.get('/api/admin/security/config', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
-    const row = db.select().from(adminSecurityConfig).where(eq(adminSecurityConfig.id, 1)).get();
+    const row = (await db.select().from(adminSecurityConfig).where(eq(adminSecurityConfig.id, 1)))[0];
     return reply.status(200).send({
       status: 'ok',
       access_mode: row?.accessMode || 'all',
@@ -378,11 +372,11 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 7. GET /api/admin/admins
   fastify.get('/api/admin/admins', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
     if (!hasPermission(admin, 'settings')) return reply.status(403).send({ status: 'unauthorized' });
 
-    const admins = db.select({
+    const admins = (await db.select({
       id: adminUsers.id,
       username: adminUsers.username,
       role: adminUsers.role,
@@ -390,7 +384,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       lastLogin: adminUsers.lastLogin,
       lastIp: adminUsers.lastIp,
       createdAt: adminUsers.createdAt
-    }).from(adminUsers).orderBy(asc(adminUsers.id)).all().map(a => {
+    }).from(adminUsers).orderBy(asc(adminUsers.id))).map((a: any) => {
       let perms = ['all'];
       try {
         if (a.permissions) perms = JSON.parse(a.permissions);
@@ -403,31 +397,31 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 8. GET /api/admin/audit-logs
   fastify.get('/api/admin/audit-logs', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
     if (!hasPermission(admin, 'settings')) return reply.status(403).send({ status: 'unauthorized' });
 
-    const logs = db.select().from(adminLoginLogs).orderBy(desc(adminLoginLogs.id)).limit(150).all();
+    const logs = await db.select().from(adminLoginLogs).orderBy(desc(adminLoginLogs.id)).limit(150);
     return reply.status(200).send({ status: 'ok', logs });
   });
 
   // 9. GET /api/admin/notifications
   fastify.get('/api/admin/notifications', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
-    const notifs = db.select().from(securityNotifications).orderBy(desc(securityNotifications.id)).limit(50).all();
-    const [unread] = db.select({ c: sql<number>`count(*)` }).from(securityNotifications).where(eq(securityNotifications.isRead, 0)).all();
+    const notifs = await db.select().from(securityNotifications).orderBy(desc(securityNotifications.id)).limit(50);
+    const [unread] = await db.select({ c: sql<number>`count(*)` }).from(securityNotifications).where(eq(securityNotifications.isRead, 0));
 
     return reply.status(200).send({ status: 'ok', notifications: notifs, unread_count: unread?.c || 0 });
   });
 
   // 10. GET /api/admin/bans
   fastify.get('/api/admin/bans', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
-    const bans = db.select().from(bannedIps).orderBy(desc(bannedIps.id)).all();
+    const bans = await db.select().from(bannedIps).orderBy(desc(bannedIps.id));
 
     const knownIpsQuery = sql`
       SELECT ip_address, count(*) as count, 'vote' as origin FROM roadmap_votes WHERE ip_address IS NOT NULL GROUP BY ip_address
@@ -437,14 +431,14 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       SELECT ip_address, count(*) as count, 'suggestion' as origin FROM feature_suggestions WHERE ip_address IS NOT NULL GROUP BY ip_address
       ORDER BY count DESC LIMIT 100
     `;
-    const knownIps = db.all<{ ip_address: string; count: number; origin: string }>(knownIpsQuery);
+    const knownIps = await rawAll<{ ip_address: string; count: number; origin: string }>(knownIpsQuery);
 
     return reply.status(200).send({ status: 'ok', bans, known_ips: knownIps });
   });
 
   // 11. POST /api/admin/users/delete
   fastify.post('/api/admin/users/delete', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const parse = UserDeleteSchema.safeParse(request.body);
@@ -452,19 +446,19 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
     const targetIp = parse.data.ip_address;
 
-    db.delete(pageViews).where(eq(pageViews.ipAddress, targetIp)).run();
-    db.delete(analyticsEvents).where(eq(analyticsEvents.ipAddress, targetIp)).run();
-    db.delete(roadmapVotes).where(eq(roadmapVotes.ipAddress, targetIp)).run();
-    db.delete(communityProposals).where(eq(communityProposals.ipAddress, targetIp)).run();
-    db.delete(featureSuggestions).where(eq(featureSuggestions.ipAddress, targetIp)).run();
-    db.delete(bannedIps).where(eq(bannedIps.ipAddress, targetIp)).run();
-    db.delete(banAppeals).where(eq(banAppeals.ipAddress, targetIp)).run();
-    db.delete(chatMessages).where(eq(chatMessages.ipAddress, targetIp)).run();
+    await db.delete(pageViews).where(eq(pageViews.ipAddress, targetIp));
+    await db.delete(analyticsEvents).where(eq(analyticsEvents.ipAddress, targetIp));
+    await db.delete(roadmapVotes).where(eq(roadmapVotes.ipAddress, targetIp));
+    await db.delete(communityProposals).where(eq(communityProposals.ipAddress, targetIp));
+    await db.delete(featureSuggestions).where(eq(featureSuggestions.ipAddress, targetIp));
+    await db.delete(bannedIps).where(eq(bannedIps.ipAddress, targetIp));
+    await db.delete(banAppeals).where(eq(banAppeals.ipAddress, targetIp));
+    await db.delete(chatMessages).where(eq(chatMessages.ipAddress, targetIp));
 
-    const allFeatures = db.select({ id: roadmapFeatures.id }).from(roadmapFeatures).all();
+    const allFeatures = await db.select({ id: roadmapFeatures.id }).from(roadmapFeatures);
     for (const f of allFeatures) {
-      const [c] = db.select({ val: sql<number>`count(*)` }).from(roadmapVotes).where(eq(roadmapVotes.featureId, f.id)).all();
-      db.update(roadmapFeatures).set({ votesCount: c?.val || 0 }).where(eq(roadmapFeatures.id, f.id)).run();
+      const [c] = await db.select({ val: sql<number>`count(*)` }).from(roadmapVotes).where(eq(roadmapVotes.featureId, f.id));
+      await db.update(roadmapFeatures).set({ votesCount: c?.val || 0 }).where(eq(roadmapFeatures.id, f.id));
     }
 
     return reply.status(200).send({
@@ -475,16 +469,16 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 12. POST /api/admin/appeals/delete
   fastify.post('/api/admin/appeals/delete', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const parse = AppealDeleteSchema.safeParse(request.body);
     if (!parse.success) return reply.status(400).send({ status: 'error', message: 'ID requis' });
 
     if (parse.data.hard) {
-      db.delete(banAppeals).where(eq(banAppeals.id, parse.data.appeal_id)).run();
+      await db.delete(banAppeals).where(eq(banAppeals.id, parse.data.appeal_id));
     } else {
-      db.update(banAppeals).set({ archived: 1 }).where(eq(banAppeals.id, parse.data.appeal_id)).run();
+      await db.update(banAppeals).set({ archived: 1 }).where(eq(banAppeals.id, parse.data.appeal_id));
     }
 
     return reply.status(200).send({ status: 'ok', message: 'Recours supprimé du panel.' });
@@ -492,48 +486,48 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 13. POST /api/admin/votes/delete
   fastify.post('/api/admin/votes/delete', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const parse = VoteDeleteSchema.safeParse(request.body);
     if (!parse.success) return reply.status(400).send({ status: 'error', message: 'feature_id et ip_address requis' });
 
     const { feature_id, ip_address } = parse.data;
-    db.delete(roadmapVotes).where(and(eq(roadmapVotes.featureId, feature_id), eq(roadmapVotes.ipAddress, ip_address))).run();
+    await db.delete(roadmapVotes).where(and(eq(roadmapVotes.featureId, feature_id), eq(roadmapVotes.ipAddress, ip_address)));
 
-    const [c] = db.select({ val: sql<number>`count(*)` }).from(roadmapVotes).where(eq(roadmapVotes.featureId, feature_id)).all();
-    db.update(roadmapFeatures).set({ votesCount: c?.val || 0 }).where(eq(roadmapFeatures.id, feature_id)).run();
+    const [c] = await db.select({ val: sql<number>`count(*)` }).from(roadmapVotes).where(eq(roadmapVotes.featureId, feature_id));
+    await db.update(roadmapFeatures).set({ votesCount: c?.val || 0 }).where(eq(roadmapFeatures.id, feature_id));
 
     return reply.status(200).send({ status: 'ok', message: 'Vote révoqué.' });
   });
 
   // 14. POST /api/admin/chat/send
   fastify.post('/api/admin/chat/send', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const parse = ChatSendAdminSchema.safeParse(request.body);
     if (!parse.success) return reply.status(400).send({ status: 'error', message: parse.error.issues[0]?.message || 'Données invalides' });
 
-    db.insert(chatMessages).values({
+    await db.insert(chatMessages).values({
       ipAddress: parse.data.ip_address,
       sender: 'admin',
       message: parse.data.message,
       isRead: 0
-    }).run();
+    });
 
     return reply.status(200).send({ status: 'ok', message: 'Message envoyé au visiteur.' });
   });
 
   // 15. POST /api/admin/security/config
   fastify.post('/api/admin/security/config', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const parse = SecurityConfigSchema.safeParse(request.body);
     if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Configuration invalide' });
 
-    db.insert(adminSecurityConfig).values({
+    await db.insert(adminSecurityConfig).values({
       id: 1,
       accessMode: parse.data.access_mode,
       allowedIps: parse.data.allowed_ips
@@ -543,21 +537,21 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         accessMode: parse.data.access_mode,
         allowedIps: parse.data.allowed_ips
       }
-    }).run();
+    });
 
     return reply.status(200).send({ status: 'ok', message: 'Politique de restriction d accès IP mise à jour avec succès.' });
   });
 
   // 16. POST /api/admin/appeals/respond
   fastify.post('/api/admin/appeals/respond', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const parse = AppealRespondSchema.safeParse(request.body);
     if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Données invalides' });
 
     const { appeal_id, action, escalate_reason } = parse.data;
-    const appeal = db.select().from(banAppeals).where(eq(banAppeals.id, appeal_id)).get();
+    const appeal = (await db.select().from(banAppeals).where(eq(banAppeals.id, appeal_id)))[0];
     if (!appeal || !appeal.ipAddress) return reply.status(404).send({ status: 'error', message: 'Recours introuvable' });
 
     const targetIp = appeal.ipAddress;
@@ -565,9 +559,9 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     if (action === 'escalate') {
       if (!escalate_reason) return reply.status(400).send({ status: 'error', message: 'La raison de la sur-sanction est obligatoire.' });
 
-      db.update(banAppeals).set({ status: 'escalated', adminResponse: escalate_reason }).where(eq(banAppeals.id, appeal_id)).run();
+      await db.update(banAppeals).set({ status: 'escalated', adminResponse: escalate_reason }).where(eq(banAppeals.id, appeal_id));
 
-      db.insert(bannedIps).values({
+      await db.insert(bannedIps).values({
         ipAddress: targetIp,
         banType: 'permanent',
         expiresAt: null,
@@ -587,7 +581,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
           blockAll: 1,
           reason: ('Sur-sanction (recours abusif) : ' + escalate_reason)
         }
-      }).run();
+      });
 
       return reply.status(200).send({
         status: 'ok',
@@ -596,10 +590,10 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     }
 
     const newStatus = action === 'accept' ? 'accepted' : 'rejected';
-    db.update(banAppeals).set({ status: newStatus }).where(eq(banAppeals.id, appeal_id)).run();
+    await db.update(banAppeals).set({ status: newStatus }).where(eq(banAppeals.id, appeal_id));
 
     if (action === 'accept') {
-      db.delete(bannedIps).where(eq(bannedIps.ipAddress, targetIp)).run();
+      await db.delete(bannedIps).where(eq(bannedIps.ipAddress, targetIp));
       return reply.status(200).send({ status: 'ok', message: ('Recours accepté pour ' + targetIp) });
     }
 
@@ -608,7 +602,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 17. POST /api/admin/bans/save
   fastify.post('/api/admin/bans/save', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized' });
 
     const parse = BanSaveSchema.safeParse(request.body);
@@ -622,7 +616,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       expiresAt = null;
     }
 
-    db.insert(bannedIps).values({
+    await db.insert(bannedIps).values({
       ipAddress: d.ip_address,
       banType: d.ban_type,
       expiresAt,
@@ -643,14 +637,14 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         reason: d.reason,
         createdAt: sql`CURRENT_TIMESTAMP`
       }
-    }).run();
+    });
 
     return reply.status(200).send({ status: 'ok', message: ('Bannissement appliqué avec succès pour ' + d.ip_address) });
   });
 
   // 18. POST /api/admin/admins/save
   fastify.post('/api/admin/admins/save', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin || !hasPermission(admin, 'settings')) {
       return reply.status(403).send({ status: 'error', message: 'Permission insuffisante pour gérer les comptes administrateurs.' });
     }
@@ -664,30 +658,30 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     if (id) {
       if (password) {
         const pwdHash = await hashPassword(password);
-        db.update(adminUsers).set({
+        await db.update(adminUsers).set({
           username,
           passwordHash: pwdHash,
           role,
           permissions: permsJson
-        }).where(eq(adminUsers.id, id)).run();
+        }).where(eq(adminUsers.id, id));
       } else {
-        db.update(adminUsers).set({
+        await db.update(adminUsers).set({
           username,
           role,
           permissions: permsJson
-        }).where(eq(adminUsers.id, id)).run();
+        }).where(eq(adminUsers.id, id));
       }
       return reply.status(200).send({ status: 'ok', message: ('Compte administrateur mis à jour: ' + username) });
     } else {
       if (!password) return reply.status(400).send({ status: 'error', message: 'Le mot de passe est obligatoire pour un nouveau compte.' });
       const pwdHash = await hashPassword(password);
       try {
-        db.insert(adminUsers).values({
+        await db.insert(adminUsers).values({
           username,
           passwordHash: pwdHash,
           role,
           permissions: permsJson
-        }).run();
+        });
         return reply.status(200).send({ status: 'ok', message: ('Compte administrateur créé: ' + username) });
       } catch {
         return reply.status(400).send({ status: 'error', message: 'Cet identifiant est déjà utilisé.' });
@@ -697,7 +691,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 19. POST /api/admin/admins/delete
   fastify.post('/api/admin/admins/delete', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin || !hasPermission(admin, 'settings')) {
       return reply.status(403).send({ status: 'error', message: 'Permission insuffisante.' });
     }
@@ -709,18 +703,18 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error', message: 'Vous ne pouvez pas supprimer votre propre compte actif.' });
     }
 
-    const target = db.select().from(adminUsers).where(eq(adminUsers.id, parse.data.id)).get();
+    const target = (await db.select().from(adminUsers).where(eq(adminUsers.id, parse.data.id)))[0];
     if (target?.username === 'admin') {
       return reply.status(400).send({ status: 'error', message: 'Le compte superadministrateur principal admin ne peut pas être supprimé.' });
     }
 
-    db.delete(adminUsers).where(eq(adminUsers.id, parse.data.id)).run();
+    await db.delete(adminUsers).where(eq(adminUsers.id, parse.data.id));
     return reply.status(200).send({ status: 'ok', message: 'Compte administrateur supprimé.' });
   });
 
   // 20. POST /api/admin/bans/delete
   fastify.post('/api/admin/bans/delete', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'error', message: 'Non autorisé.' });
 
     const parse = z.object({
@@ -733,9 +727,9 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     }
 
     if (parse.data.id) {
-      db.delete(bannedIps).where(eq(bannedIps.id, parse.data.id)).run();
+      await db.delete(bannedIps).where(eq(bannedIps.id, parse.data.id));
     } else if (parse.data.ip_address) {
-      db.delete(bannedIps).where(eq(bannedIps.ipAddress, parse.data.ip_address)).run();
+      await db.delete(bannedIps).where(eq(bannedIps.ipAddress, parse.data.ip_address));
     }
 
     return reply.status(200).send({ status: 'ok', message: 'Bannissement levé avec succès !' });
@@ -743,7 +737,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 21. POST /api/upload
   fastify.post('/api/upload', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
 
     const parse = UploadSchema.safeParse(request.body);
@@ -782,7 +776,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 22. POST /api/admin/pages/publish (Sauvegarde en dur dans les fichiers HTML et SQLite)
   fastify.post('/api/admin/pages/publish', async (request, reply) => {
-    const admin = getAuthAdmin(request);
+    const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
 
     const PublishSchema = z.object({
@@ -883,3 +877,4 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     });
   });
 };
+

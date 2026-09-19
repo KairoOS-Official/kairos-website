@@ -1,4 +1,4 @@
-﻿import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import crypto from 'node:crypto';
 import { z } from 'zod';
 import { db } from '../../db/client.js';
@@ -30,7 +30,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =
       return reply.status(200).send({ authenticated: false });
     }
 
-    const user = db.select().from(adminUsers).where(eq(adminUsers.token, token)).get();
+    const user = (await db.select().from(adminUsers).where(eq(adminUsers.token, token)))[0];
     if (!user) {
       return reply.status(200).send({ authenticated: false });
     }
@@ -70,9 +70,9 @@ export const authRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =
     const { username, password } = parseResult.data;
 
     // C. Find User
-    const user = db.select().from(adminUsers).where(eq(adminUsers.username, username)).get();
+    const user = (await db.select().from(adminUsers).where(eq(adminUsers.username, username)))[0];
     if (!user || !user.passwordHash) {
-      const { remainingAttempts } = recordFailedLogin(clientIp, username, userAgent);
+      const { remainingAttempts } = await recordFailedLogin(clientIp, username, userAgent);
       return reply.status(401).send({
         status: 'error',
         message: `Identifiants incorrects. Attention : il vous reste ${remainingAttempts} tentative(s) avant sanction automatique.`
@@ -82,7 +82,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =
     // D. Verify Password (Argon2 or Legacy SHA-256)
     const isValid = await verifyPassword(user.passwordHash, password);
     if (!isValid) {
-      const { lockedNow, remainingAttempts } = recordFailedLogin(clientIp, username, userAgent);
+      const { lockedNow, remainingAttempts } = await recordFailedLogin(clientIp, username, userAgent);
       if (lockedNow) {
         return reply.status(429).send({
           status: 'error',
@@ -107,25 +107,23 @@ export const authRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =
       updatedHash = await hashPassword(password);
     }
 
-    db.update(adminUsers)
+    await db.update(adminUsers)
       .set({
         token: sessionToken,
         passwordHash: updatedHash,
         lastLogin: sql`CURRENT_TIMESTAMP`,
         lastIp: clientIp
       })
-      .where(eq(adminUsers.id, user.id))
-      .run();
+      .where(eq(adminUsers.id, user.id));
 
-    db.insert(adminLoginLogs)
+    await db.insert(adminLoginLogs)
       .values({
         ipAddress: clientIp,
         usernameAttempted: username,
         status: 'success',
         userAgent,
         sanctionApplied: 0
-      })
-      .run();
+      });
 
     // Set secure HttpOnly cookie
     reply.setCookie('kairo_admin_session', sessionToken, {
@@ -155,7 +153,7 @@ export const authRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) =
     const token = cookieToken || authHeader;
 
     if (token) {
-      db.update(adminUsers).set({ token: null }).where(eq(adminUsers.token, token)).run();
+      await db.update(adminUsers).set({ token: null }).where(eq(adminUsers.token, token));
     }
 
     reply.clearCookie('kairo_admin_session', { path: '/' });

@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
 import crypto from 'node:crypto';
-import { db } from '../../db/client.js';
+import { currentDbDriver, db } from '../../db/client.js';
 import { adminUsers, adminLoginLogs, bannedIps, securityNotifications } from '../../db/schema.js';
 import { eq, sql } from 'drizzle-orm';
 import type { AdminUserPublic } from '../../types.js';
@@ -38,6 +38,9 @@ interface BruteForceRecord {
 }
 
 const failedLogins = new Map<string, BruteForceRecord>();
+const threeDayExpiry = ['supabase', 'postgres', 'postgresql'].includes(currentDbDriver)
+  ? sql`CURRENT_TIMESTAMP + INTERVAL '3 days'`
+  : sql`datetime('now', '+3 days')`;
 
 export function checkBruteForceLock(ip: string): { locked: boolean; remainingSeconds: number } {
   const now = Math.floor(Date.now() / 1000);
@@ -51,7 +54,7 @@ export function checkBruteForceLock(ip: string): { locked: boolean; remainingSec
   return { locked: false, remainingSeconds: 0 };
 }
 
-export function recordFailedLogin(ip: string, usernameAttempted: string, userAgent = 'Unknown'): { lockedNow: boolean; remainingAttempts: number } {
+export async function recordFailedLogin(ip: string, usernameAttempted: string, userAgent = 'Unknown'): Promise<{ lockedNow: boolean; remainingAttempts: number }> {
   const now = Math.floor(Date.now() / 1000);
   const record = failedLogins.get(ip) || { count: 0, lockedUntil: 0 };
   record.count += 1;
@@ -63,69 +66,64 @@ export function recordFailedLogin(ip: string, usernameAttempted: string, userAge
     const banReason = `Sanction automatique de sécurité : 3 tentatives de connexion non autorisées à l'espace d'administration (compte visé : '${usernameAttempted || 'inconnu'}').`;
 
     // Sanctionne automatiquement l'IP en base de données (révoque les votes et la boîte à idées pendant 3 jours)
-    const existingBan = db.select().from(bannedIps).where(eq(bannedIps.ipAddress, ip)).get();
+    const existingBan = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, ip)))[0];
     if (existingBan) {
-      db.update(bannedIps)
+      await db.update(bannedIps)
         .set({
           blockVote: 1,
           blockProposal: 1,
           blockSuggestion: 1,
           reason: banReason,
           banType: 'temp',
-          expiresAt: sql`datetime('now', '+3 days')`
+          expiresAt: threeDayExpiry
         })
-        .where(eq(bannedIps.ipAddress, ip))
-        .run();
+        .where(eq(bannedIps.ipAddress, ip));
     } else {
-      db.insert(bannedIps)
+      await db.insert(bannedIps)
         .values({
           ipAddress: ip,
           banType: 'temp',
-          expiresAt: sql`datetime('now', '+3 days')`,
+          expiresAt: threeDayExpiry,
           blockVote: 1,
           blockProposal: 1,
           blockSuggestion: 1,
           blockAll: 0,
           reason: banReason
-        })
-        .run();
+        });
     }
 
     // Alerte notification de sécurité
-    db.insert(securityNotifications)
+    await db.insert(securityNotifications)
       .values({
         ipAddress: ip,
         type: 'failed_logins_sanction',
         title: `🚨 Sanction automatique appliquée à ${ip}`,
         message: `L'adresse IP ${ip} a échoué 3 tentatives consécutives de connexion admin (identifiant tenté : '${usernameAttempted}'). La Boîte à Idées et les votes de la Roadmap lui ont été révoqués pour 3 jours.`
-      })
-      .run();
+      });
 
     // Log d'audit
-    db.insert(adminLoginLogs)
+    await db.insert(adminLoginLogs)
       .values({
         ipAddress: ip,
         usernameAttempted,
         status: 'failed_credentials',
         userAgent,
         sanctionApplied: 1
-      })
-      .run();
+      });
 
     return { lockedNow: true, remainingAttempts: 0 };
   }
 
   failedLogins.set(ip, record);
 
-  db.insert(adminLoginLogs)
+  await db.insert(adminLoginLogs)
     .values({
       ipAddress: ip,
       usernameAttempted,
       status: 'failed_credentials',
       userAgent,
       sanctionApplied: 0
-    })
-    .run();
+    });
 
   return { lockedNow: false, remainingAttempts: Math.max(0, 3 - record.count) };
 }

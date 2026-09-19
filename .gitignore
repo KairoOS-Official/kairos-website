@@ -29,6 +29,9 @@ logs/
 .env.*
 !.env.example
 
+# Guides locaux contenant des étapes et paramètres de déploiement
+DEPLOIEMENT_RENDER_SUPABASE.local.md
+
 # Dependencies & Build output
 node_modules/
 dist/

@@ -1,5 +1,5 @@
 import Database, { type Database as DatabaseType } from 'better-sqlite3';
-import { drizzle as drizzleSqlite, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import { drizzle as drizzleSqlite } from 'drizzle-orm/better-sqlite3';
 import { drizzle as drizzlePg } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema.js';
@@ -46,5 +46,11 @@ if (driver === 'supabase' || driver === 'postgres' || driver === 'postgresql') {
 }
 
 export const sqlite: DatabaseType | null = sqliteInstance;
-export const db: BetterSQLite3Database<typeof schema> = dbInstance;
+// The application uses a shared query API; PostgreSQL resolves it asynchronously.
+export const db: any = dbInstance;
 export const currentDbDriver: string = driver;
+
+export async function rawAll<T>(query: unknown): Promise<T[]> {
+  if (sqliteInstance) return dbInstance.all(query) as T[];
+  return (await dbInstance.execute(query)) as T[];
+}

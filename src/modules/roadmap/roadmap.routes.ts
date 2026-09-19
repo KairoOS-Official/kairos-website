@@ -35,28 +35,26 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get('/api/roadmap/features', async (request, reply) => {
     const clientIp = request.ip || '127.0.0.1';
 
-    const features = db.select().from(roadmapFeatures).orderBy(desc(roadmapFeatures.votesCount), roadmapFeatures.sortOrder).all();
+    const features = await db.select().from(roadmapFeatures).orderBy(desc(roadmapFeatures.votesCount), roadmapFeatures.sortOrder);
 
-    const featuresWithVotes = features.map((feat) => {
-      const vote = db
+    const featuresWithVotes = await Promise.all(features.map(async (feat: any) => {
+      const vote = (await db
         .select()
         .from(roadmapVotes)
-        .where(and(eq(roadmapVotes.featureId, feat.id), eq(roadmapVotes.ipAddress, clientIp)))
-        .get();
+        .where(and(eq(roadmapVotes.featureId, feat.id), eq(roadmapVotes.ipAddress, clientIp))))[0];
 
-      const suggestions = db
+      const suggestions = await db
         .select()
         .from(featureSuggestions)
         .where(and(eq(featureSuggestions.featureId, feat.id), sql`status != 'rejected'`))
-        .orderBy(desc(featureSuggestions.id))
-        .all();
+        .orderBy(desc(featureSuggestions.id));
 
       return {
         ...feat,
         has_voted: Boolean(vote),
         suggestions
       };
-    });
+    }));
 
     return reply.status(200).send({
       status: 'ok',
@@ -71,7 +69,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
     const userAgent = request.headers['user-agent'] || 'Unknown';
 
     // Vérifier si l'IP est bannie du vote
-    const ban = db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)).get();
+    const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)))[0];
     if (ban && (ban.blockVote || ban.blockAll)) {
       return reply.status(403).send({
         status: 'banned',
@@ -86,17 +84,16 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
 
     const { feature_id } = parse.data;
 
-    const feature = db.select().from(roadmapFeatures).where(eq(roadmapFeatures.id, feature_id)).get();
+    const feature = (await db.select().from(roadmapFeatures).where(eq(roadmapFeatures.id, feature_id)))[0];
     if (!feature) {
       return reply.status(404).send({ status: 'error', message: 'Fonctionnalité introuvable' });
     }
 
     // Vérification de vote existant
-    const existingVote = db
+    const existingVote = (await db
       .select()
       .from(roadmapVotes)
-      .where(and(eq(roadmapVotes.featureId, feature_id), eq(roadmapVotes.ipAddress, clientIp)))
-      .get();
+      .where(and(eq(roadmapVotes.featureId, feature_id), eq(roadmapVotes.ipAddress, clientIp))))[0];
 
     if (existingVote) {
       return reply.status(200).send({
@@ -108,27 +105,24 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
     }
 
     // Enregistrement du vote
-    db.insert(roadmapVotes)
+    await db.insert(roadmapVotes)
       .values({
         featureId: feature_id,
         ipAddress: clientIp,
         userAgent
-      })
-      .run();
+      });
 
     // Recalcul incrémental
-    const [voteCount] = db
+    const [voteCount] = await db
       .select({ count: sql<number>`count(*)` })
       .from(roadmapVotes)
-      .where(eq(roadmapVotes.featureId, feature_id))
-      .all();
+      .where(eq(roadmapVotes.featureId, feature_id));
 
     const newCount = voteCount?.count || 1;
 
-    db.update(roadmapFeatures)
+    await db.update(roadmapFeatures)
       .set({ votesCount: newCount })
-      .where(eq(roadmapFeatures.id, feature_id))
-      .run();
+      .where(eq(roadmapFeatures.id, feature_id));
 
     return reply.status(200).send({
       status: 'ok',
@@ -142,7 +136,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/roadmap/propose', async (request, reply) => {
     const clientIp = request.ip || '127.0.0.1';
 
-    const ban = db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)).get();
+    const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)))[0];
     if (ban && (ban.blockProposal || ban.blockAll)) {
       return reply.status(403).send({
         status: 'banned',
@@ -157,7 +151,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
 
     const { title, category, description, author, email } = parse.data;
 
-    db.insert(communityProposals)
+    await db.insert(communityProposals)
       .values({
         title,
         category,
@@ -166,8 +160,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
         email: email || null,
         ipAddress: clientIp,
         status: 'pending'
-      })
-      .run();
+      });
 
     return reply.status(200).send({
       status: 'ok',
@@ -179,7 +172,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/roadmap/features/suggest', async (request, reply) => {
     const clientIp = request.ip || '127.0.0.1';
 
-    const ban = db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)).get();
+    const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)))[0];
     if (ban && (ban.blockSuggestion || ban.blockAll)) {
       return reply.status(403).send({
         status: 'banned',
@@ -194,12 +187,12 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
 
     const { feature_id, suggestion_text, author, email } = parse.data;
 
-    const feature = db.select().from(roadmapFeatures).where(eq(roadmapFeatures.id, feature_id)).get();
+    const feature = (await db.select().from(roadmapFeatures).where(eq(roadmapFeatures.id, feature_id)))[0];
     if (!feature) {
       return reply.status(404).send({ status: 'error', message: 'Fonctionnalité introuvable' });
     }
 
-    db.insert(featureSuggestions)
+    await db.insert(featureSuggestions)
       .values({
         featureId: feature_id,
         suggestionText: suggestion_text,
@@ -207,8 +200,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
         email: email || null,
         ipAddress: clientIp,
         status: 'pending'
-      })
-      .run();
+      });
 
     return reply.status(200).send({
       status: 'ok',
@@ -216,3 +208,5 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
     });
   });
 };
+
+
