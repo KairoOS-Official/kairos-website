@@ -1171,13 +1171,136 @@
             <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 text-white font-display font-bold text-xs shadow cursor-pointer">Mettre à jour mon mot de passe</button>
           </form>
 
-          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle space-y-4">
-            <h3 class="font-display font-bold text-base text-heading">Informations Système</h3>
-            <div class="text-xs font-mono text-slate-600 space-y-2">
-              <div class="flex justify-between border-b border-slate-100 pb-1.5"><span>Moteur Base de Données :</span> <strong class="text-slate-900">SQLite 3</strong></div>
-              <div class="flex justify-between border-b border-slate-100 pb-1.5"><span>Routage URLs :</span> <strong class="text-slate-900">/fr/ & /en/ Natives</strong></div>
-              <div class="flex justify-between border-b border-slate-100 pb-1.5"><span>Analytics :</span> <strong class="text-emerald-600">Local non-bloquant</strong></div>
-              <div class="flex justify-between"><span>Version KaïroOS :</span> <strong class="text-brand-600">v0.1.0 Alpha</strong></div>
+          <!-- SECTION MONITORING & SANTÉ DU SERVEUR -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle space-y-4 md:col-span-2">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-emerald-600 text-xl">monitor_heart</span>
+                  <h3 class="font-display font-bold text-base text-heading">Santé du Serveur & Monitoring Temps Réel</h3>
+                  <span id="sys-status-badge" class="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="sys-status-text">Opérationnel</span>
+                  </span>
+                </div>
+                <p class="text-xs text-muted mt-0.5">
+                  Surveillance en direct des ressources matérielles, de la mémoire vive, de la base de données et du stockage.
+                </p>
+              </div>
+              <button id="btn-refresh-system-health" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs shrink-0">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                <span>Actualiser</span>
+              </button>
+            </div>
+
+            <!-- Grille des 4 Métriques en Direct -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+              
+              <!-- 1. Mémoire Vive (RAM) -->
+              <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex flex-col justify-between space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-mono uppercase font-bold text-slate-500 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-indigo-600 text-sm">memory</span>
+                    <span>RAM Serveur</span>
+                  </span>
+                  <span id="sys-ram-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-50 text-indigo-700">--%</span>
+                </div>
+                <div>
+                  <div class="text-xl font-display font-bold text-slate-900">
+                    <span id="sys-ram-rss">--</span> <span class="text-xs text-slate-400 font-normal">Mo</span>
+                  </div>
+                  <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1.5 overflow-hidden">
+                    <div id="sys-ram-bar" class="bg-indigo-600 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div class="text-[10px] font-mono text-slate-500 flex justify-between pt-1 border-t border-slate-200/60">
+                  <span>Heap: <strong id="sys-ram-heap" class="text-slate-700">--</strong> Mo</span>
+                  <span>Sys: <strong id="sys-ram-sys" class="text-slate-700">--</strong> Mo</span>
+                </div>
+              </div>
+
+              <!-- 2. Disque & Stockage -->
+              <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex flex-col justify-between space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-mono uppercase font-bold text-slate-500 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-amber-600 text-sm">hard_drive</span>
+                    <span>Disque Hôte</span>
+                  </span>
+                  <span id="sys-disk-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 text-amber-700">--%</span>
+                </div>
+                <div>
+                  <div class="text-xl font-display font-bold text-slate-900">
+                    <span id="sys-disk-free">--</span> <span class="text-xs text-slate-400 font-normal">Go libres</span>
+                  </div>
+                  <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1.5 overflow-hidden">
+                    <div id="sys-disk-bar" class="bg-amber-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div class="text-[10px] font-mono text-slate-500 flex justify-between pt-1 border-t border-slate-200/60">
+                  <span>Base DB: <strong id="sys-db-size" class="text-slate-700">--</strong></span>
+                  <span>Total: <strong id="sys-disk-total" class="text-slate-700">--</strong> Go</span>
+                </div>
+              </div>
+
+              <!-- 3. Base de Données & Latence -->
+              <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex flex-col justify-between space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-mono uppercase font-bold text-slate-500 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-emerald-600 text-sm">database</span>
+                    <span>Base de Données</span>
+                  </span>
+                  <span id="sys-db-status-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700">ACTIVE</span>
+                </div>
+                <div>
+                  <div class="text-base font-display font-bold text-slate-900 truncate" id="sys-db-driver-title">
+                    SQLite (WAL)
+                  </div>
+                  <div class="text-xs font-mono text-emerald-600 font-bold mt-1">
+                    ● Latence: <span id="sys-db-latency">--</span> ms
+                  </div>
+                </div>
+                <div class="text-[10px] font-mono text-slate-500 flex justify-between pt-1 border-t border-slate-200/60">
+                  <span>Votes: <strong id="sys-votes-count" class="text-slate-700">--</strong></span>
+                  <span>Bans: <strong id="sys-bans-count" class="text-slate-700">--</strong></span>
+                </div>
+              </div>
+
+              <!-- 4. Uptime & Runtime -->
+              <div class="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex flex-col justify-between space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-mono uppercase font-bold text-slate-500 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sky-600 text-sm">schedule</span>
+                    <span>Uptime Serveur</span>
+                  </span>
+                  <span id="sys-node-badge" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-50 text-sky-700">Node --</span>
+                </div>
+                <div>
+                  <div class="text-base sm:text-lg font-mono font-bold text-indigo-700" id="sys-uptime">
+                    --
+                  </div>
+                  <div class="text-[11px] font-mono text-slate-500 mt-0.5 truncate" id="sys-os-info">
+                    --
+                  </div>
+                </div>
+                <div class="text-[10px] font-mono text-slate-500 flex justify-between pt-1 border-t border-slate-200/60">
+                  <span>Uploads: <strong id="sys-uploads-count" class="text-slate-700">--</strong></span>
+                  <span id="sys-uploads-size" class="text-slate-600">--</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Bandeau de Détails Techniques -->
+            <div class="p-3 rounded-2xl bg-slate-100/70 border border-slate-200/60 text-[11px] font-mono text-slate-600 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-slate-500">memory</span>
+                <span>Processeur : <strong id="sys-cpu-model" class="text-slate-800">--</strong> (<span id="sys-cpu-cores">--</span> cœurs)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span>Rate Limit : <strong class="text-slate-800">300 req/min</strong></span>
+                <span>·</span>
+                <span>Trust Proxy : <strong class="text-emerald-600">Actif</strong></span>
+              </div>
             </div>
           </div>
 
@@ -1857,7 +1980,7 @@
           if (target === 'store') renderStore();
           if (target === 'users') { loadUsers(); loadBans(); loadAppeals(); }
           if (target === 'roadmap') renderRoadmap();
-          if (target === 'settings') { loadSecurityConfig(); loadAdmins(); loadAuditLogs(); loadDataRetention(); }
+          if (target === 'settings') { loadSecurityConfig(); loadAdmins(); loadAuditLogs(); loadDataRetention(); loadSystemHealth(); }
         });
       });
 
@@ -1870,6 +1993,7 @@
         loadAdmins();
         loadAuditLogs();
         loadDataRetention();
+        loadSystemHealth();
         fetch('/api/content/all')
           .then(res => res.json())
           .then(data => {
@@ -5741,6 +5865,103 @@
           }
           closeHardResetModal();
           purgeDataScope(checkedBoxes);
+        });
+      }
+
+      // ========================================================
+      // SANTÉ DU SERVEUR & MONITORING TEMPS RÉEL
+      // ========================================================
+      function loadSystemHealth() {
+        const btn = document.getElementById('btn-refresh-system-health');
+        if (btn) btn.classList.add('opacity-50');
+
+        fetch('/api/admin/system/health', {
+          headers: { 'Authorization': 'Bearer ' + authToken }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (btn) btn.classList.remove('opacity-50');
+          if (data.status !== 'ok') return;
+
+          // Statut général
+          const stBadge = document.getElementById('sys-status-badge');
+          const stText = document.getElementById('sys-status-text');
+          const isHealthy = data.database?.status === 'healthy';
+          if (stText) stText.textContent = isHealthy ? 'Opérationnel' : 'Dégradé';
+          if (stBadge) {
+            stBadge.className = isHealthy
+              ? 'px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold flex items-center gap-1'
+              : 'px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-mono font-bold flex items-center gap-1';
+          }
+
+          // RAM
+          const ram = data.memory || {};
+          const elRamRss = document.getElementById('sys-ram-rss');
+          if (elRamRss) elRamRss.textContent = ram.processRssMb ?? '--';
+          const elRamHeap = document.getElementById('sys-ram-heap');
+          if (elRamHeap) elRamHeap.textContent = ram.processHeapUsedMb ?? '--';
+          const elRamSys = document.getElementById('sys-ram-sys');
+          if (elRamSys) elRamSys.textContent = ram.systemTotalMb ?? '--';
+          const elRamBadge = document.getElementById('sys-ram-badge');
+          if (elRamBadge) elRamBadge.textContent = (ram.systemUsedPercent || 0) + '%';
+          const elRamBar = document.getElementById('sys-ram-bar');
+          if (elRamBar) elRamBar.style.width = Math.min(100, ram.systemUsedPercent || 0) + '%';
+
+          // Disque
+          const disk = data.disk || {};
+          const elDiskFree = document.getElementById('sys-disk-free');
+          if (elDiskFree) elDiskFree.textContent = disk.freeGb ?? '--';
+          const elDiskTotal = document.getElementById('sys-disk-total');
+          if (elDiskTotal) elDiskTotal.textContent = disk.totalGb ?? '--';
+          const elDiskBadge = document.getElementById('sys-disk-badge');
+          if (elDiskBadge) elDiskBadge.textContent = (disk.usedPercent || 0) + '%';
+          const elDiskBar = document.getElementById('sys-disk-bar');
+          if (elDiskBar) elDiskBar.style.width = Math.min(100, disk.usedPercent || 0) + '%';
+          const elDbSize = document.getElementById('sys-db-size');
+          if (elDbSize) elDbSize.textContent = data.database?.fileSize || '--';
+
+          // Base de Données
+          const dbInfo = data.database || {};
+          const elDbTitle = document.getElementById('sys-db-driver-title');
+          if (elDbTitle) {
+            elDbTitle.textContent = dbInfo.driver === 'sqlite' ? 'SQLite 3 (WAL)' : 'Supabase (PostgreSQL)';
+          }
+          const elDbLat = document.getElementById('sys-db-latency');
+          if (elDbLat) elDbLat.textContent = dbInfo.latencyMs ?? '--';
+          const elVotes = document.getElementById('sys-votes-count');
+          if (elVotes) elVotes.textContent = data.stats?.totalVotes ?? '--';
+          const elBans = document.getElementById('sys-bans-count');
+          if (elBans) elBans.textContent = data.stats?.totalBans ?? '--';
+
+          // Uptime & Environnement
+          const elUptime = document.getElementById('sys-uptime');
+          if (elUptime) elUptime.textContent = data.uptime?.formatted || '--';
+          const elNodeBadge = document.getElementById('sys-node-badge');
+          if (elNodeBadge) elNodeBadge.textContent = 'Node ' + (data.environment?.nodeVersion || '');
+          const elOsInfo = document.getElementById('sys-os-info');
+          if (elOsInfo) elOsInfo.textContent = `${data.environment?.platform || ''} (${data.environment?.arch || ''})`;
+          const elUploadsCount = document.getElementById('sys-uploads-count');
+          if (elUploadsCount) elUploadsCount.textContent = data.storage?.uploadsCount ?? 0;
+          const elUploadsSize = document.getElementById('sys-uploads-size');
+          if (elUploadsSize) elUploadsSize.textContent = data.storage?.uploadsSizeFormatted || '';
+
+          // Processeur
+          const elCpuModel = document.getElementById('sys-cpu-model');
+          if (elCpuModel) elCpuModel.textContent = data.cpu?.model || '--';
+          const elCpuCores = document.getElementById('sys-cpu-cores');
+          if (elCpuCores) elCpuCores.textContent = data.cpu?.cores || 1;
+        })
+        .catch(err => {
+          if (btn) btn.classList.remove('opacity-50');
+          console.error('Erreur chargement santé système:', err);
+        });
+      }
+
+      const btnRefreshSystemHealth = document.getElementById('btn-refresh-system-health');
+      if (btnRefreshSystemHealth) {
+        btnRefreshSystemHealth.addEventListener('click', () => {
+          loadSystemHealth();
+          toast('Métriques serveur actualisées !');
         });
       }
 

@@ -3,7 +3,8 @@ import { z } from 'zod';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { db, rawAll } from '../../db/client.js';
+import os from 'node:os';
+import { db, rawAll, currentDbDriver } from '../../db/client.js';
 import {
   adminUsers,
   bannedIps,
@@ -1524,6 +1525,147 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       status: 'ok',
       message: `Purge effectuée avec succès : ${executedActions.join(', ')}. Le contenu du site et vos accès administrateurs sont intégralement préservés.`,
       scopes_executed: executedActions
+    });
+  });
+
+  // 26. GET /api/admin/system/health : Métriques système, RAM, Disque, DB & Uptime
+  fastify.get('/api/admin/system/health', async (request, reply) => {
+    const admin = await getAuthAdmin(request);
+    if (!admin) return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
+
+    const startTime = performance.now();
+    let dbStatus = 'healthy';
+    let dbLatencyMs = 0;
+    try {
+      await rawAll(sql`SELECT 1`);
+      dbLatencyMs = Math.round((performance.now() - startTime) * 100) / 100;
+    } catch {
+      dbStatus = 'degraded';
+    }
+
+    // Memory usage
+    const memUsage = process.memoryUsage();
+    const totalMem = os.totalmem();
+    const freeMem = os.freemem();
+    const usedMem = totalMem - freeMem;
+
+    // Disk usage
+    let diskStats = { totalGb: 0, freeGb: 0, usedGb: 0, usedPercent: 0 };
+    try {
+      const statfs = fs.statfsSync(process.cwd());
+      const totalBytes = statfs.blocks * statfs.bsize;
+      const freeBytes = statfs.bfree * statfs.bsize;
+      const usedBytes = totalBytes - freeBytes;
+      diskStats = {
+        totalGb: Math.round((totalBytes / (1024 ** 3)) * 100) / 100,
+        freeGb: Math.round((freeBytes / (1024 ** 3)) * 100) / 100,
+        usedGb: Math.round((usedBytes / (1024 ** 3)) * 100) / 100,
+        usedPercent: totalBytes > 0 ? Math.round(((usedBytes / totalBytes) * 100) * 10) / 10 : 0
+      };
+    } catch {}
+
+    // SQLite DB file size
+    let dbFileSizeBytes = 0;
+    let dbFileSizeFormatted = 'N/A (PostgreSQL / Supabase)';
+    const dbPath = process.env.SQLITE_DB_PATH || path.resolve(process.cwd(), 'data/kairoos.db');
+    if (fs.existsSync(dbPath)) {
+      try {
+        const dbStat = fs.statSync(dbPath);
+        dbFileSizeBytes = dbStat.size;
+        if (dbFileSizeBytes < 1024 * 1024) {
+          dbFileSizeFormatted = `${Math.round(dbFileSizeBytes / 1024)} Ko`;
+        } else {
+          dbFileSizeFormatted = `${(dbFileSizeBytes / (1024 * 1024)).toFixed(2)} Mo`;
+        }
+      } catch {}
+    }
+
+    // Uploads folder stats
+    let uploadsCount = 0;
+    let uploadsSizeBytes = 0;
+    if (fs.existsSync(UPLOAD_DIR)) {
+      try {
+        const files = fs.readdirSync(UPLOAD_DIR);
+        uploadsCount = files.length;
+        for (const file of files) {
+          const filePath = path.join(UPLOAD_DIR, file);
+          const s = fs.statSync(filePath);
+          uploadsSizeBytes += s.size;
+        }
+      } catch {}
+    }
+    const uploadsSizeFormatted = uploadsSizeBytes < 1024 * 1024
+      ? `${Math.round(uploadsSizeBytes / 1024)} Ko`
+      : `${(uploadsSizeBytes / (1024 * 1024)).toFixed(2)} Mo`;
+
+    // System uptime
+    const uptimeSec = Math.floor(process.uptime());
+    const days = Math.floor(uptimeSec / 86400);
+    const hours = Math.floor((uptimeSec % 86400) / 3600);
+    const minutes = Math.floor((uptimeSec % 3600) / 60);
+    const seconds = uptimeSec % 60;
+    const uptimeFormatted = `${days > 0 ? days + 'j ' : ''}${hours}h ${minutes}m ${seconds}s`;
+
+    // Counts from database
+    let totalAdmins = 0;
+    let totalBans = 0;
+    let totalVotes = 0;
+    try {
+      const [admCount] = await rawAll<{ count: number }>(sql`SELECT count(*) as count FROM admin_users`);
+      totalAdmins = Number(admCount?.count || 0);
+      const [banCount] = await rawAll<{ count: number }>(sql`SELECT count(*) as count FROM banned_ips`);
+      totalBans = Number(banCount?.count || 0);
+      const [voteCount] = await rawAll<{ count: number }>(sql`SELECT count(*) as count FROM roadmap_votes`);
+      totalVotes = Number(voteCount?.count || 0);
+    } catch {}
+
+    const cpus = os.cpus();
+
+    return reply.status(200).send({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: {
+        seconds: uptimeSec,
+        formatted: uptimeFormatted
+      },
+      cpu: {
+        model: cpus[0]?.model || 'Processeur Standard',
+        cores: cpus.length,
+        loadAvg: os.loadavg()
+      },
+      memory: {
+        processRssMb: Math.round((memUsage.rss / (1024 * 1024)) * 10) / 10,
+        processHeapUsedMb: Math.round((memUsage.heapUsed / (1024 * 1024)) * 10) / 10,
+        processHeapTotalMb: Math.round((memUsage.heapTotal / (1024 * 1024)) * 10) / 10,
+        systemTotalMb: Math.round(totalMem / (1024 * 1024)),
+        systemFreeMb: Math.round(freeMem / (1024 * 1024)),
+        systemUsedPercent: Math.round(((usedMem / totalMem) * 100) * 10) / 10
+      },
+      disk: diskStats,
+      database: {
+        status: dbStatus,
+        driver: currentDbDriver || 'sqlite',
+        latencyMs: dbLatencyMs,
+        fileSize: dbFileSizeFormatted,
+        fileSizeBytes: dbFileSizeBytes
+      },
+      storage: {
+        uploadsCount,
+        uploadsSizeFormatted,
+        uploadsSizeBytes
+      },
+      stats: {
+        totalAdmins,
+        totalBans,
+        totalVotes
+      },
+      environment: {
+        nodeVersion: process.version,
+        platform: os.platform(),
+        arch: os.arch(),
+        trustProxy: true,
+        rateLimit: '300 req/min'
+      }
     });
   });
 };

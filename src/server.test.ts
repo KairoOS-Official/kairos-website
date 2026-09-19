@@ -220,6 +220,35 @@ describe('Fastify Endpoints Integration Tests', () => {
     expect(body.mime).toBe('image/svg+xml');
   });
 
+  it('GET /api/admin/system/health rejects unauthorized requests', async () => {
+    const res = await server.inject({ method: 'GET', url: '/api/admin/system/health' });
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('GET /api/admin/system/health returns complete real-time system metrics for authenticated admin', async () => {
+    const res = await server.inject({
+      method: 'GET',
+      url: '/api/admin/system/health',
+      headers: { 'authorization': 'Bearer ' + testAdminToken }
+    });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('ok');
+    expect(body).toHaveProperty('uptime');
+    expect(body.uptime).toHaveProperty('formatted');
+    expect(body).toHaveProperty('memory');
+    expect(typeof body.memory.processRssMb).toBe('number');
+    expect(typeof body.memory.systemUsedPercent).toBe('number');
+    expect(body).toHaveProperty('disk');
+    expect(typeof body.disk.freeGb).toBe('number');
+    expect(typeof body.disk.usedPercent).toBe('number');
+    expect(body).toHaveProperty('database');
+    expect(body.database.status).toBe('healthy');
+    expect(typeof body.database.latencyMs).toBe('number');
+    expect(body).toHaveProperty('environment');
+    expect(body.environment.trustProxy).toBe(true);
+  });
+
   it('GET / serves index.html with 200', async () => {
     const res = await server.inject({ method: 'GET', url: '/' });
     expect(res.statusCode).toBe(200);
