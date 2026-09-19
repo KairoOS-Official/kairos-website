@@ -76,6 +76,19 @@ const ThemeSaveSchema = z.object({
   sort_order: z.number().default(0)
 });
 
+const MilestoneSaveSchema = z.object({
+  id: z.number().optional(),
+  version: z.string().default(''),
+  title_fr: z.string().default(''),
+  title_en: z.string().default(''),
+  desc_fr: z.string().default(''),
+  desc_en: z.string().default(''),
+  date_text: z.string().default(''),
+  progress_percent: z.number().default(0),
+  status_badge: z.string().default('Planifié'),
+  sort_order: z.number().default(0)
+});
+
 const IdSchema = z.object({
   id: z.number()
 });
@@ -96,33 +109,102 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
     const gamesRaw = await db.select().from(arcadeGames).orderBy(asc(arcadeGames.sortOrder));
     const games = gamesRaw.map((g: any) => ({
       ...g,
-      desc: lang === 'en' ? (g.descEn || g.descFr || '') : (g.descFr || '')
+      id: Number(g.id),
+      title: g.title || '',
+      genre: g.genre || '',
+      year: g.year || '',
+      desc: lang === 'en' ? (g.descEn || g.desc_en || g.descFr || g.desc_fr || '') : (g.descFr || g.desc_fr || ''),
+      descFr: g.descFr || g.desc_fr || '',
+      descEn: g.descEn || g.desc_en || '',
+      desc_fr: g.descFr || g.desc_fr || '',
+      desc_en: g.descEn || g.desc_en || '',
+      image: g.image || '',
+      bgImage: g.bgImage || g.bg_image || '',
+      bg_image: g.bgImage || g.bg_image || '',
+      sortOrder: Number(g.sortOrder ?? g.sort_order ?? 0),
+      sort_order: Number(g.sortOrder ?? g.sort_order ?? 0)
     }));
 
     const faqRaw = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));
     const faq = faqRaw.map((f: any) => ({
       ...f,
-      question: lang === 'en' ? (f.questionEn || f.questionFr || '') : (f.questionFr || ''),
-      answer: lang === 'en' ? (f.answerEn || f.answerFr || '') : (f.answerFr || '')
+      id: Number(f.id),
+      question: lang === 'en' ? (f.questionEn || f.question_en || f.questionFr || f.question_fr || '') : (f.questionFr || f.question_fr || ''),
+      answer: lang === 'en' ? (f.answerEn || f.answer_en || f.answerFr || f.answer_fr || '') : (f.answerFr || f.answer_fr || ''),
+      questionFr: f.questionFr || f.question_fr || '',
+      questionEn: f.questionEn || f.question_en || '',
+      answerFr: f.answerFr || f.answer_fr || '',
+      answerEn: f.answerEn || f.answer_en || '',
+      question_fr: f.questionFr || f.question_fr || '',
+      question_en: f.questionEn || f.question_en || '',
+      answer_fr: f.answerFr || f.answer_fr || '',
+      answer_en: f.answerEn || f.answer_en || '',
+      sortOrder: Number(f.sortOrder ?? f.sort_order ?? 0),
+      sort_order: Number(f.sortOrder ?? f.sort_order ?? 0)
     }));
 
     const pluginsRaw = await db.select().from(showcasePlugins).orderBy(asc(showcasePlugins.sortOrder));
     const plugins = pluginsRaw.map((p: any) => ({
       ...p,
-      desc: lang === 'en' ? (p.descEn || p.descFr || '') : (p.descFr || '')
+      id: Number(p.id),
+      name: p.name || '',
+      desc: lang === 'en' ? (p.descEn || p.desc_en || p.descFr || p.desc_fr || '') : (p.descFr || p.desc_fr || ''),
+      descFr: p.descFr || p.desc_fr || '',
+      descEn: p.descEn || p.desc_en || '',
+      desc_fr: p.descFr || p.desc_fr || '',
+      desc_en: p.descEn || p.desc_en || '',
+      category: p.category || 'GÉNÉRAL',
+      badge: p.badge || 'OFFICIEL',
+      version: p.version || 'v1.0.0',
+      author: p.author || '@KaïroCore',
+      installs: p.installs || '1 000 installs',
+      sortOrder: Number(p.sortOrder ?? p.sort_order ?? 0),
+      sort_order: Number(p.sortOrder ?? p.sort_order ?? 0)
     }));
 
     const themesRaw = await db.select().from(showcaseThemes).orderBy(asc(showcaseThemes.sortOrder));
     const themes = themesRaw.map((t: any) => ({
       ...t,
-      desc: lang === 'en' ? (t.descEn || t.descFr || '') : (t.descFr || '')
+      id: Number(t.id),
+      name: t.name || '',
+      desc: lang === 'en' ? (t.descEn || t.desc_en || t.descFr || t.desc_fr || '') : (t.descFr || t.desc_fr || ''),
+      descFr: t.descFr || t.desc_fr || '',
+      descEn: t.descEn || t.desc_en || '',
+      desc_fr: t.descFr || t.desc_fr || '',
+      desc_en: t.descEn || t.desc_en || '',
+      badge: t.badge || 'AMB',
+      rating: t.rating || '★ 5.0',
+      author: t.author || '@designer',
+      installs: t.installs || '500 installs',
+      previewClass: t.previewClass || t.preview_class || 'cyber',
+      preview_class: t.previewClass || t.preview_class || 'cyber',
+      sortOrder: Number(t.sortOrder ?? t.sort_order ?? 0),
+      sort_order: Number(t.sortOrder ?? t.sort_order ?? 0)
     }));
 
     const milestonesRaw = await db.select().from(roadmapMilestones).orderBy(asc(roadmapMilestones.sortOrder));
     const milestones = milestonesRaw.map((m: any) => ({
       ...m,
-      title: lang === 'en' ? (m.titleEn || m.titleFr || '') : (m.titleFr || ''),
-      desc: lang === 'en' ? (m.descEn || m.descFr || '') : (m.descFr || '')
+      id: Number(m.id),
+      version: m.version || '',
+      title: lang === 'en' ? (m.titleEn || m.title_en || m.titleFr || m.title_fr || '') : (m.titleFr || m.title_fr || ''),
+      desc: lang === 'en' ? (m.descEn || m.desc_en || m.descFr || m.desc_fr || '') : (m.descFr || m.desc_fr || ''),
+      titleFr: m.titleFr || m.title_fr || '',
+      titleEn: m.titleEn || m.title_en || '',
+      descFr: m.descFr || m.desc_fr || '',
+      descEn: m.descEn || m.desc_en || '',
+      title_fr: m.titleFr || m.title_fr || '',
+      title_en: m.titleEn || m.title_en || '',
+      desc_fr: m.descFr || m.desc_fr || '',
+      desc_en: m.descEn || m.desc_en || '',
+      dateText: m.dateText || m.date_text || '',
+      date_text: m.dateText || m.date_text || '',
+      progressPercent: Number(m.progressPercent ?? m.progress_percent ?? 0),
+      progress_percent: Number(m.progressPercent ?? m.progress_percent ?? 0),
+      statusBadge: m.statusBadge || m.status_badge || 'Planifié',
+      status_badge: m.statusBadge || m.status_badge || 'Planifié',
+      sortOrder: Number(m.sortOrder ?? m.sort_order ?? 0),
+      sort_order: Number(m.sortOrder ?? m.sort_order ?? 0)
     }));
 
     return reply.status(200).send({
@@ -150,12 +232,119 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    const games = await db.select().from(arcadeGames).orderBy(asc(arcadeGames.sortOrder));
-    const faq = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));
-    const plugins = await db.select().from(showcasePlugins).orderBy(asc(showcasePlugins.sortOrder));
-    const themes = await db.select().from(showcaseThemes).orderBy(asc(showcaseThemes.sortOrder));
-    const milestones = await db.select().from(roadmapMilestones).orderBy(asc(roadmapMilestones.sortOrder));
-    const features = await db.select().from(roadmapFeatures).orderBy(desc(roadmapFeatures.votesCount), asc(roadmapFeatures.sortOrder));
+    const gamesRaw = await db.select().from(arcadeGames).orderBy(asc(arcadeGames.sortOrder));
+    const games = gamesRaw.map((g: any) => ({
+      ...g,
+      id: Number(g.id),
+      title: g.title || '',
+      genre: g.genre || '',
+      year: g.year || '',
+      descFr: g.descFr || g.desc_fr || '',
+      descEn: g.descEn || g.desc_en || '',
+      desc_fr: g.descFr || g.desc_fr || '',
+      desc_en: g.descEn || g.desc_en || '',
+      image: g.image || '',
+      bgImage: g.bgImage || g.bg_image || '',
+      bg_image: g.bgImage || g.bg_image || '',
+      sortOrder: Number(g.sortOrder ?? g.sort_order ?? 0),
+      sort_order: Number(g.sortOrder ?? g.sort_order ?? 0)
+    }));
+
+    const faqRaw = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));
+    const faq = faqRaw.map((f: any) => ({
+      ...f,
+      id: Number(f.id),
+      questionFr: f.questionFr || f.question_fr || '',
+      questionEn: f.questionEn || f.question_en || '',
+      answerFr: f.answerFr || f.answer_fr || '',
+      answerEn: f.answerEn || f.answer_en || '',
+      question_fr: f.questionFr || f.question_fr || '',
+      question_en: f.questionEn || f.question_en || '',
+      answer_fr: f.answerFr || f.answer_fr || '',
+      answer_en: f.answerEn || f.answer_en || '',
+      sortOrder: Number(f.sortOrder ?? f.sort_order ?? 0),
+      sort_order: Number(f.sortOrder ?? f.sort_order ?? 0)
+    }));
+
+    const pluginsRaw = await db.select().from(showcasePlugins).orderBy(asc(showcasePlugins.sortOrder));
+    const plugins = pluginsRaw.map((p: any) => ({
+      ...p,
+      id: Number(p.id),
+      name: p.name || '',
+      descFr: p.descFr || p.desc_fr || '',
+      descEn: p.descEn || p.desc_en || '',
+      desc_fr: p.descFr || p.desc_fr || '',
+      desc_en: p.descEn || p.desc_en || '',
+      category: p.category || 'GÉNÉRAL',
+      badge: p.badge || 'OFFICIEL',
+      version: p.version || 'v1.0.0',
+      author: p.author || '@KaïroCore',
+      installs: p.installs || '1 000 installs',
+      sortOrder: Number(p.sortOrder ?? p.sort_order ?? 0),
+      sort_order: Number(p.sortOrder ?? p.sort_order ?? 0)
+    }));
+
+    const themesRaw = await db.select().from(showcaseThemes).orderBy(asc(showcaseThemes.sortOrder));
+    const themes = themesRaw.map((t: any) => ({
+      ...t,
+      id: Number(t.id),
+      name: t.name || '',
+      descFr: t.descFr || t.desc_fr || '',
+      descEn: t.descEn || t.desc_en || '',
+      desc_fr: t.descFr || t.desc_fr || '',
+      desc_en: t.descEn || t.desc_en || '',
+      badge: t.badge || 'AMB',
+      rating: t.rating || '★ 5.0',
+      author: t.author || '@designer',
+      installs: t.installs || '500 installs',
+      previewClass: t.previewClass || t.preview_class || 'cyber',
+      preview_class: t.previewClass || t.preview_class || 'cyber',
+      sortOrder: Number(t.sortOrder ?? t.sort_order ?? 0),
+      sort_order: Number(t.sortOrder ?? t.sort_order ?? 0)
+    }));
+
+    const milestonesRaw = await db.select().from(roadmapMilestones).orderBy(asc(roadmapMilestones.sortOrder));
+    const milestones = milestonesRaw.map((m: any) => ({
+      ...m,
+      id: Number(m.id),
+      version: m.version || '',
+      titleFr: m.titleFr || m.title_fr || '',
+      titleEn: m.titleEn || m.title_en || '',
+      descFr: m.descFr || m.desc_fr || '',
+      descEn: m.descEn || m.desc_en || '',
+      title_fr: m.titleFr || m.title_fr || '',
+      title_en: m.titleEn || m.title_en || '',
+      desc_fr: m.descFr || m.desc_fr || '',
+      desc_en: m.descEn || m.desc_en || '',
+      dateText: m.dateText || m.date_text || '',
+      date_text: m.dateText || m.date_text || '',
+      progressPercent: Number(m.progressPercent ?? m.progress_percent ?? 0),
+      progress_percent: Number(m.progressPercent ?? m.progress_percent ?? 0),
+      statusBadge: m.statusBadge || m.status_badge || 'Planifié',
+      status_badge: m.statusBadge || m.status_badge || 'Planifié',
+      sortOrder: Number(m.sortOrder ?? m.sort_order ?? 0),
+      sort_order: Number(m.sortOrder ?? m.sort_order ?? 0)
+    }));
+
+    const featuresRaw = await db.select().from(roadmapFeatures).orderBy(desc(roadmapFeatures.votesCount), asc(roadmapFeatures.sortOrder));
+    const features = featuresRaw.map((feat: any) => ({
+      ...feat,
+      id: Number(feat.id),
+      titleFr: feat.titleFr || feat.title_fr || '',
+      titleEn: feat.titleEn || feat.title_en || '',
+      descFr: feat.descFr || feat.desc_fr || '',
+      descEn: feat.descEn || feat.desc_en || '',
+      title_fr: feat.titleFr || feat.title_fr || '',
+      title_en: feat.titleEn || feat.title_en || '',
+      desc_fr: feat.descFr || feat.desc_fr || '',
+      desc_en: feat.descEn || feat.desc_en || '',
+      tag: feat.tag || 'GÉNÉRAL',
+      votesCount: Number(feat.votesCount ?? feat.votes_count ?? 0),
+      votes_count: Number(feat.votesCount ?? feat.votes_count ?? 0),
+      sortOrder: Number(feat.sortOrder ?? feat.sort_order ?? 0),
+      sort_order: Number(feat.sortOrder ?? feat.sort_order ?? 0)
+    }));
+
     const proposals = await db.select().from(communityProposals).orderBy(desc(communityProposals.id));
 
     const suggestions = await db
@@ -465,6 +654,65 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
     await db.delete(showcaseThemes).where(eq(showcaseThemes.id, parse.data.id));
     return reply.status(200).send({ status: 'ok', message: 'Thème supprimé' });
+  });
+
+  // 12. POST /api/milestones/save
+  fastify.post('/api/milestones/save', async (request, reply) => {
+    if (!(await getAuthenticatedAdmin(request))) {
+      return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
+    }
+
+    const parse = MilestoneSaveSchema.safeParse(request.body);
+    if (!parse.success) {
+      return reply.status(400).send({ status: 'error', message: parse.error.issues[0]?.message || 'Données invalides' });
+    }
+
+    const d = parse.data;
+    if (d.id) {
+      await db.update(roadmapMilestones)
+        .set({
+          version: d.version,
+          titleFr: d.title_fr,
+          titleEn: d.title_en,
+          descFr: d.desc_fr,
+          descEn: d.desc_en,
+          dateText: d.date_text,
+          progressPercent: d.progress_percent,
+          statusBadge: d.status_badge,
+          sortOrder: d.sort_order
+        })
+        .where(eq(roadmapMilestones.id, d.id));
+    } else {
+      await db.insert(roadmapMilestones)
+        .values({
+          version: d.version,
+          titleFr: d.title_fr,
+          titleEn: d.title_en,
+          descFr: d.desc_fr,
+          descEn: d.desc_en,
+          dateText: d.date_text,
+          progressPercent: d.progress_percent,
+          statusBadge: d.status_badge,
+          sortOrder: d.sort_order
+        });
+    }
+
+    return reply.status(200).send({ status: 'ok', message: 'Jalon enregistré' });
+  });
+
+  // 13. POST /api/milestones/delete
+  fastify.post('/api/milestones/delete', async (request, reply) => {
+    if (!(await getAuthenticatedAdmin(request))) {
+      return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
+    }
+
+    const parse = IdSchema.safeParse(request.body);
+    if (!parse.success) {
+      return reply.status(400).send({ status: 'error', message: 'ID requis' });
+    }
+
+    await db.delete(roadmapMilestones).where(eq(roadmapMilestones.id, parse.data.id));
+    return reply.status(200).send({ status: 'ok', message: 'Jalon supprimé' });
   });
 };
 

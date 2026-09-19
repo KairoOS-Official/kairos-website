@@ -12,12 +12,14 @@ import helmet from '@fastify/helmet';
 import compress from '@fastify/compress';
 import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
+import multipart from '@fastify/multipart';
 import path from 'node:path';
 import fs from 'node:fs';
 
 export function buildServer(): FastifyInstance {
   const server = fastify({
     logger: false,
+    trustProxy: true,
     bodyLimit: 15 * 1024 * 1024 // 15MB limit
   });
 
@@ -36,8 +38,15 @@ export function buildServer(): FastifyInstance {
 
   // Rate Limiting (Anti Brute Force & DoS)
   server.register(rateLimit, {
-    max: 120,
-    timeWindow: '1 minute'
+    max: 300,
+    timeWindow: '1 minute',
+    allowList: (req) => {
+      const cleanUrl = req.url.split('?')[0] || '';
+      return (
+        cleanUrl.startsWith('/assets') ||
+        /\.(png|jpg|jpeg|webp|gif|svg|ico|css|js|woff2?|ttf|eot|map|html)$/i.test(cleanUrl)
+      );
+    }
   });
 
   server.register(cors, {
@@ -47,6 +56,13 @@ export function buildServer(): FastifyInstance {
 
   server.register(cookie, {
     secret: process.env.SESSION_SECRET || 'kairo_local_session_cookie_key'
+  });
+
+  server.register(multipart, {
+    limits: {
+      fileSize: 15 * 1024 * 1024, // 15MB max file size
+      files: 1
+    }
   });
 
   // Health Endpoint

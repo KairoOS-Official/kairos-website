@@ -17,30 +17,70 @@
     }
   }
 
-  function getSessionId() {
-    if (!getConsent()) return null;
-    let sessionId = sessionStorage.getItem('kairo_session_id');
-    if (!sessionId) {
-      sessionId = 's_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now().toString(36);
-      sessionStorage.setItem('kairo_session_id', sessionId);
+  function getVisitorId() {
+    try {
+      let vid = localStorage.getItem('kairo_vid');
+      if (!vid) {
+        vid = 'v_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+        localStorage.setItem('kairo_vid', vid);
+      }
+      return vid;
+    } catch(e) {
+      return null;
     }
-    return sessionId;
+  }
+
+  function getSessionId() {
+    try {
+      let sessionId = sessionStorage.getItem('kairo_session_id');
+      if (!sessionId) {
+        sessionId = 's_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+        sessionStorage.setItem('kairo_session_id', sessionId);
+      }
+      return sessionId;
+    } catch(e) {
+      return null;
+    }
   }
 
   function sendEvent(eventType, target, meta = {}) {
-    // Ne rien envoyer si l'utilisateur n'a pas donné son consentement
-    if (!getConsent()) {
-      return;
+    const hasConsent = getConsent();
+
+    // Si pas de consentement : seule la vue de page 100% anonyme (exemptée CNIL) est transmise
+    if (!hasConsent && eventType !== 'page_view') {
+      return; // Aucun clic, aucun temps actif, aucun tracking comportemental
     }
 
-    const sId = getSessionId() || 'anon';
+    let vid = 'v_anon';
+    let sid = 's_anon';
+
+    if (hasConsent) {
+      vid = getVisitorId() || 'v_anon';
+      sid = getSessionId() || 's_anon';
+    } else {
+      // Mesure d'audience anonyme CNIL : identifiant de session volatile sans persistance inter-visites
+      try {
+        let anonSid = sessionStorage.getItem('kairo_anon_sid');
+        if (!anonSid) {
+          anonSid = 'anon_s_' + Math.random().toString(36).substring(2, 10);
+          sessionStorage.setItem('kairo_anon_sid', anonSid);
+        }
+        sid = anonSid;
+        vid = 'anon_visitor';
+      } catch(e) {
+        sid = 'anon_session';
+      }
+    }
+
+    const compositeSession = hasConsent ? (vid + '.' + sid) : sid;
+
     const payload = JSON.stringify({
       event_type: eventType,
       target: target,
       page: window.location.pathname || '/',
-      session_id: sId,
+      session_id: compositeSession,
       referrer: document.referrer ? document.referrer.split('?')[0] : '',
-      meta: meta
+      meta: hasConsent ? Object.assign({ visitor_id: vid }, meta) : { anonymous: true, consent: false }
     });
 
     if (navigator.sendBeacon) {
@@ -56,33 +96,67 @@
     }
   }
 
-  let pageEnterTime = Date.now();
-  let durationSent = false;
+  // --- MOTEUR DE TEMPS ACTIF (ACTIVE ENGAGEMENT TIME) ---
+  // Ne compte QUE si l'onglet est visible ET si l'utilisateur est actif (pas d'inactivité > 45s)
+  let activeSeconds = 0;
+  let isUserEngaged = true;
+  let idleTimeoutId = null;
+
+  function markUserEngaged() {
+    isUserEngaged = true;
+    clearTimeout(idleTimeoutId);
+    // Pause après 45 secondes sans interaction
+    idleTimeoutId = setTimeout(function() {
+      isUserEngaged = false;
+    }, 45000);
+  }
+
+  // Événements d'interaction légers
+  ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(function(evt) {
+    window.addEventListener(evt, markUserEngaged, { passive: true });
+  });
+  markUserEngaged();
+
+  // Incrément chaque seconde si actif et visible
+  setInterval(function() {
+    if (document.visibilityState === 'visible' && isUserEngaged) {
+      activeSeconds++;
+    }
+  }, 1000);
+
+  let lastSentDuration = 0;
 
   function sendPageDuration() {
-    if (!getConsent() || durationSent) return;
-    const durationSeconds = Math.max(1, Math.round((Date.now() - pageEnterTime) / 1000));
-    // Limite raisonnable (ex: 2h max pour éviter les onglets laissés ouverts)
-    if (durationSeconds > 7200) return;
+    if (!getConsent()) return;
+    if (activeSeconds <= 0 || activeSeconds <= lastSentDuration) return;
 
+    lastSentDuration = activeSeconds;
     sendEvent('page_duration', window.location.pathname || '/', {
-      duration_seconds: durationSeconds
+      duration_seconds: activeSeconds
     });
   }
 
-  // Envoi périodique ou au départ de la page
+  // Envoi périodique régulier (heartbeat toutes les 15 secondes)
+  setInterval(function() {
+    if (document.visibilityState === 'visible' && isUserEngaged) {
+      sendPageDuration();
+    }
+  }, 15000);
+
+  // Envoi immédiat dès que l'onglet est masqué ou fermé
   window.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden') {
+      isUserEngaged = false;
       sendPageDuration();
+    } else {
+      markUserEngaged();
     }
   });
   window.addEventListener('pagehide', sendPageDuration);
   window.addEventListener('beforeunload', sendPageDuration);
 
-  // Si le consentement est déjà accordé, enregistrer la page vue
-  if (getConsent()) {
-    sendEvent('page_view', window.location.pathname || '/');
-  }
+  // Enregistrement initial de la page vue (mesure d'audience anonyme CNIL par défaut si non consenti)
+  sendEvent('page_view', window.location.pathname || '/');
 
   // Écouter l'événement de mise à jour du consentement
   window.addEventListener('kairo_consent_updated', function(e) {

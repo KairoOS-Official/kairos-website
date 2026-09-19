@@ -961,14 +961,20 @@
             }
 
             features.forEach(feat => {
-              const title = currentLang === 'en' ? (feat.title_en || feat.title_fr) : feat.title_fr;
-              const desc = currentLang === 'en' ? (feat.desc_en || feat.desc_fr) : feat.desc_fr;
+              const featId = Number(feat.id);
+              const title = currentLang === 'en'
+                ? (feat.title_en || feat.titleEn || feat.title_fr || feat.titleFr || 'Fonctionnalité')
+                : (feat.title_fr || feat.titleFr || feat.title_en || feat.titleEn || 'Fonctionnalité');
+              const desc = currentLang === 'en'
+                ? (feat.desc_en || feat.descEn || feat.desc_fr || feat.descFr || '')
+                : (feat.desc_fr || feat.descFr || feat.desc_en || feat.descEn || '');
               const icon = getTagIcon(feat.tag);
               const hasVoted = Boolean(feat.has_voted);
+              const votesCount = Number(feat.votes_count ?? feat.votesCount ?? 0);
 
               const card = document.createElement('div');
               card.className = `vote-card bg-white rounded-3xl p-5 border transition-all flex flex-col justify-between select-none ${hasVoted ? 'border-brand-500 bg-brand-50/20 shadow-subtle' : 'border-slate-200/80 shadow-subtle hover:border-brand-300'}`;
-              card.setAttribute('data-id', feat.id);
+              card.setAttribute('data-id', featId);
 
               card.innerHTML = `
                 <div>
@@ -989,12 +995,12 @@
 
                 <div class="pt-3 border-t border-slate-100 space-y-2">
                   <div class="flex items-center justify-between">
-                    <span class="text-xs font-mono font-bold text-brand-600 vote-count">${feat.votes_count || 0} votes</span>
-                    <button type="button" class="btn-submit-vote px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${hasVoted ? 'bg-emerald-600 text-white pointer-events-none' : 'bg-slate-900 text-white hover:bg-brand-600 shadow-sm'}" data-id="${feat.id}" title="${hasVoted ? 'Vous avez déjà voté avec cette adresse IP' : '1 vote unique enregistré par adresse IP (sécurité & intégrité RGPD)'}">
+                    <span class="text-xs font-mono font-bold text-brand-600 vote-count">${votesCount} votes</span>
+                    <button type="button" class="btn-submit-vote px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${hasVoted ? 'bg-emerald-600 text-white pointer-events-none' : 'bg-slate-900 text-white hover:bg-brand-600 shadow-sm'}" data-id="${featId}" title="${hasVoted ? 'Vous avez déjà voté avec cette adresse IP' : '1 vote unique enregistré par adresse IP (sécurité & intégrité RGPD)'}">
                       ${hasVoted ? '✓ Voté' : 'Voter'}
                     </button>
                   </div>
-                  <button type="button" class="btn-open-sug w-full py-1.5 rounded-lg bg-slate-50 hover:bg-amber-50 hover:text-amber-800 text-slate-600 font-mono text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer" data-id="${feat.id}">
+                  <button type="button" class="btn-open-sug w-full py-1.5 rounded-lg bg-slate-50 hover:bg-amber-50 hover:text-amber-800 text-slate-600 font-mono text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer" data-id="${featId}">
                     <span class="material-symbols-outlined text-xs">add_comment</span>
                     <span>Proposer un complément</span>
                   </button>
@@ -1018,7 +1024,7 @@
                         </div>
                         <div class="flex items-center justify-between text-xs font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                           <span>Compteur actuel vérifié :</span>
-                          <strong class="text-brand-600">${feat.votes_count || 0} votes</strong>
+                          <strong class="text-brand-600">${votesCount} votes</strong>
                         </div>
                       </div>
                     `
@@ -1031,7 +1037,7 @@
               if (btnSug) {
                 btnSug.addEventListener('click', (e) => {
                   e.stopPropagation();
-                  openSuggestionModal(feat.id, title);
+                  openSuggestionModal(featId, title);
                 });
               }
 
@@ -1040,7 +1046,7 @@
               if (!hasVoted && btnVote) {
                 btnVote.addEventListener('click', (e) => {
                   e.stopPropagation();
-                  submitVote(feat.id, card, btnVote);
+                  submitVote(featId, card, btnVote);
                 });
               }
 
@@ -1083,10 +1089,11 @@
       window.loadVotingFeatures = loadVotingFeatures;
 
       function submitVote(featureId, cardEl, btnEl) {
+        const numId = Number(featureId);
         fetch('/api/roadmap/vote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ feature_id: featureId })
+          body: JSON.stringify({ feature_id: numId })
         })
         .then(async response => {
           const res = await response.json().catch(() => ({}));

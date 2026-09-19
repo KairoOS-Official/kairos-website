@@ -14,17 +14,51 @@ import {
   adminSecurityConfig,
   roadmapVotes,
   roadmapFeatures,
+  roadmapMilestones,
   communityProposals,
   featureSuggestions,
+  arcadeGames,
+  showcasePlugins,
+  showcaseThemes,
+  faqItems,
+  siteContent,
+  siteContentI18n,
   pageViews,
   analyticsEvents
 } from '../../db/schema.js';
 import { eq, desc, asc, and, sql } from 'drizzle-orm';
 import { hashPassword } from '../auth/auth.service.js';
-
-const UBLOAD_DIR = path.resolve(process.cwd(), 'web/assets/img/uploads');
+import sharp from 'sharp';
+import { fileTypeFromBuffer } from 'file-type';
 
 const UPLOAD_DIR = path.resolve(process.cwd(), 'web/assets/img/uploads');
+
+function isSafeSvg(buffer: Buffer): { safe: boolean; reason?: string } {
+  const content = buffer.toString('utf-8').trim();
+  if (!content.includes('<svg') || (!content.startsWith('<') && !content.startsWith('<?xml'))) {
+    return { safe: false, reason: 'Format SVG non reconnu' };
+  }
+  const dangerousPatterns = [
+    /<script/i,
+    /javascript:/i,
+    /data:text\/html/i,
+    /<foreignobject/i,
+    /<iframe/i,
+    /<embed/i,
+    /<object/i,
+    /onload\s*=/i,
+    /onerror\s*=/i,
+    /onclick\s*=/i,
+    /onmouseover\s*=/i,
+    /onfocus\s*=/i
+  ];
+  for (const pattern of dangerousPatterns) {
+    if (pattern.test(content)) {
+      return { safe: false, reason: 'Contenu SVG non sécurisé : balises de script ou gestionnaires d\'événements interdits' };
+    }
+  }
+  return { safe: true };
+}
 
 async function getAuthAdmin(request: FastifyRequest) {
   const cookieToken = request.cookies['kairo_admin_session'];
@@ -50,12 +84,12 @@ const UserDeleteSchema = z.object({
 });
 
 const AppealDeleteSchema = z.object({
-  appeal_id: z.number(),
+  appeal_id: z.coerce.number(),
   hard: z.boolean().optional().default(false)
 });
 
 const VoteDeleteSchema = z.object({
-  feature_id: z.number(),
+  feature_id: z.coerce.number(),
   ip_address: z.string().min(1, 'IP requise')
 });
 
@@ -119,9 +153,10 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         SELECT ip_address FROM feature_suggestions WHERE ip_address IS NOT NULL AND ip_address != ''
         UNION
         SELECT ip_address FROM banned_ips WHERE ip_address IS NOT NULL AND ip_address != ''
-      )
+      ) AS all_ips
     `;
-    const distinctIps = (await rawAll<{ ip_address: string }>(allIpsQuery)).map(r => r.ip_address);
+    const rawIps = await rawAll<{ ip_address: string }>(allIpsQuery);
+    const distinctIps = Array.from(new Set(rawIps.map(r => r.ip_address).filter(Boolean)));
 
     const users = [];
     for (const ip of distinctIps) {
@@ -142,7 +177,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
           SELECT MAX(created_at) as ts FROM community_proposals WHERE ip_address = ${ip}
           UNION ALL
           SELECT MAX(created_at) as ts FROM feature_suggestions WHERE ip_address = ${ip}
-        )
+        ) AS sub
       `;
       const [lastSeenRow] = await rawAll<{ last_seen: string | null }>(lastSeenQuery);
 
@@ -173,14 +208,20 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         ip_address: ip,
         total_connections: vCount + eCount,
         page_views: vCount,
+        total_page_views: vCount,
         events_count: eCount,
+        total_events: eCount,
         votes_count: voteRow?.c || 0,
         proposals_count: propRow?.c || 0,
         suggestions_count: sugRow?.c || 0,
         nickname,
         email,
+        known_authors: nickname ? [nickname] : [],
+        known_emails: email ? [email] : [],
         last_seen: lastSeenRow?.last_seen || null,
-        ban
+        is_banned: Boolean(ban),
+        ban,
+        ban_details: ban
       });
     }
 
@@ -740,37 +781,106 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
 
-    const parse = UploadSchema.safeParse(request.body);
-    if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Fichier requis' });
+    let buffer: Buffer;
+    let originalName = 'upload.png';
 
-    const { file_data, file_name } = parse.data;
-    const cleanData = file_data.includes(',') ? file_data.split(',')[1] : file_data;
-    const buffer = Buffer.from(cleanData, 'base64');
+    if (request.isMultipart()) {
+      const file = await request.file();
+      if (!file) {
+        return reply.status(400).send({ status: 'error', message: 'Fichier requis' });
+      }
+      buffer = await file.toBuffer();
+      originalName = file.filename || 'upload.png';
+    } else {
+      const parse = UploadSchema.safeParse(request.body);
+      if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Fichier requis' });
 
-    // Security Hardening: Max 10MB per file
-    if (buffer.length > 10 * 1024 * 1024) {
-      return reply.status(400).send({ status: 'error', message: 'Fichier trop volumineux (max 10MB)' });
+      const { file_data, file_name } = parse.data;
+      const cleanData = file_data.includes(',') ? file_data.split(',')[1]! : file_data;
+      buffer = Buffer.from(cleanData, 'base64');
+      originalName = file_name || 'upload.png';
     }
 
-    // Allowed extensions check (images and audio assets)
-    const allowedExts = ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif', '.ico', '.mp3', '.wav', '.ogg'];
-    const ext = path.extname(file_name).toLowerCase();
-    if (!allowedExts.includes(ext)) {
-      return reply.status(400).send({ status: 'error', message: 'Type de fichier non autorisé.' });
+    if (buffer.length === 0) {
+      return reply.status(400).send({ status: 'error', message: 'Fichier vide' });
+    }
+    if (buffer.length > 15 * 1024 * 1024) {
+      return reply.status(400).send({ status: 'error', message: 'Fichier trop volumineux (max 15MB)' });
+    }
+
+    const detected = await fileTypeFromBuffer(buffer);
+    const ext = path.extname(originalName).toLowerCase();
+
+    let finalMime = detected?.mime;
+    let finalExt = detected ? `.${detected.ext}` : ext;
+    let finalBuffer = buffer;
+    let imgMeta: { width?: number; height?: number } | undefined;
+
+    const allowedMimes = [
+      'image/png',
+      'image/jpeg',
+      'image/webp',
+      'image/gif',
+      'image/x-icon',
+      'image/vnd.microsoft.icon',
+      'audio/mpeg',
+      'audio/wav',
+      'audio/ogg',
+      'audio/x-wav'
+    ];
+
+    if (ext === '.svg' || finalMime === 'image/svg+xml') {
+      const svgCheck = isSafeSvg(buffer);
+      if (!svgCheck.safe) {
+        return reply.status(400).send({ status: 'error', message: svgCheck.reason || 'SVG non autorisé' });
+      }
+      finalMime = 'image/svg+xml';
+      finalExt = '.svg';
+    } else {
+      if (!detected || !allowedMimes.includes(detected.mime)) {
+        return reply.status(400).send({ status: 'error', message: 'Type de fichier non autorisé ou corrompu.' });
+      }
+
+      // Process and optimize images with Sharp
+      if (detected.mime.startsWith('image/') && !detected.mime.includes('icon')) {
+        try {
+          const image = sharp(buffer);
+          const metadata = await image.metadata();
+          if (!metadata.format) {
+            return reply.status(400).send({ status: 'error', message: 'Image non valide ou corrompue' });
+          }
+
+          image.rotate(); // auto-orient based on EXIF before stripping metadata
+          if ((metadata.width && metadata.width > 2560) || (metadata.height && metadata.height > 2560)) {
+            image.resize(2560, 2560, { fit: 'inside', withoutEnlargement: true });
+          }
+
+          finalBuffer = await image.toBuffer();
+          finalExt = `.${metadata.format}`;
+          imgMeta = { width: metadata.width, height: metadata.height };
+        } catch {
+          return reply.status(400).send({ status: 'error', message: 'Impossible de traiter l\'image (fichier corrompu)' });
+        }
+      }
     }
 
     if (!fs.existsSync(UPLOAD_DIR)) {
       fs.mkdirSync(UPLOAD_DIR, { recursive: true });
     }
 
-    const safeBaseName = path.basename(file_name).replace(/[^a-zA-Z0-9._-]/g, '_');
-    const safeName = (Math.floor(Date.now() / 1000) + '_' + crypto.randomBytes(4).toString('hex') + '_' + safeBaseName);
+    const safeBaseName = path.basename(originalName, path.extname(originalName)).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50) || 'upload';
+    const safeName = `${Math.floor(Date.now() / 1000)}_${crypto.randomBytes(4).toString('hex')}_${safeBaseName}${finalExt}`;
     const targetPath = path.join(UPLOAD_DIR, safeName);
-    fs.writeFileSync(targetPath, buffer);
+    fs.writeFileSync(targetPath, finalBuffer);
 
     return reply.status(200).send({
       status: 'ok',
-      url: ('assets/img/uploads/' + safeName)
+      url: `assets/img/uploads/${safeName}`,
+      file_name: safeName,
+      size: finalBuffer.length,
+      mime: finalMime,
+      width: imgMeta?.width,
+      height: imgMeta?.height
     });
   });
 
@@ -876,5 +986,546 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       backup: path.basename(backupPath)
     });
   });
+
+  // =========================================================================
+  // GESTION DES DONNÉES & EXPIRATION RGPD (Art. 5.1.e & ePrivacy)
+  // =========================================================================
+
+  // Helper pour vérifier l'expiration
+  function isRecordExpired(dateStr: string | null | undefined, cutoffIso: string): boolean {
+    if (!dateStr) return false;
+    const t = new Date(dateStr.replace(' ', 'T')).getTime();
+    return !isNaN(t) && t < new Date(cutoffIso).getTime();
+  }
+
+  // 1. GET /api/admin/data/retention : État de conservation et calendrier d'expiration
+  fastify.get('/api/admin/data/retention', async (request, reply) => {
+    const admin = await getAuthAdmin(request);
+    if (!admin) return reply.status(401).send({ status: 'unauthorized' });
+
+    const [pvRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM page_views
+    `);
+    const [aeRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM analytics_events
+    `);
+    const analyticsCount = Number(pvRow?.c || 0) + Number(aeRow?.c || 0);
+    const oldestAnalytics = [pvRow?.min_date, aeRow?.min_date].filter(Boolean).sort()[0] || null;
+
+    const [allRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM admin_login_logs
+    `);
+    const [snRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM security_notifications
+    `);
+    const logsCount = Number(allRow?.c || 0) + Number(snRow?.c || 0);
+    const oldestLogs = [allRow?.min_date, snRow?.min_date].filter(Boolean).sort()[0] || null;
+
+    const [baRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM ban_appeals
+    `);
+    const [cmRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM chat_messages
+    `);
+    const appealsCount = Number(baRow?.c || 0) + Number(cmRow?.c || 0);
+    const oldestAppeals = [baRow?.min_date, cmRow?.min_date].filter(Boolean).sort()[0] || null;
+
+    const [rvRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM roadmap_votes
+    `);
+    const [fsRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM feature_suggestions
+    `);
+    const [cpRow] = await rawAll<{ c: string | number; min_date: string | null }>(sql`
+      SELECT COUNT(*) as c, MIN(created_at) as min_date FROM community_proposals
+    `);
+    const communityCount = Number(rvRow?.c || 0) + Number(fsRow?.c || 0) + Number(cpRow?.c || 0);
+    const oldestCommunity = [rvRow?.min_date, fsRow?.min_date, cpRow?.min_date].filter(Boolean).sort()[0] || null;
+
+    function computeStats(count: number, oldest: string | null, days: number) {
+      if (!oldest || count === 0) {
+        return { total_records: count, oldest_record: null, next_expiration: null, days_remaining: null };
+      }
+      const t = new Date(oldest.replace(' ', 'T')).getTime();
+      if (isNaN(t)) {
+        return { total_records: count, oldest_record: oldest, next_expiration: null, days_remaining: null };
+      }
+      const exp = t + days * 86400 * 1000;
+      const remaining = Math.max(0, Math.ceil((exp - Date.now()) / (86400 * 1000)));
+      return {
+        total_records: count,
+        oldest_record: oldest,
+        next_expiration: new Date(exp).toISOString().replace('T', ' ').substring(0, 19),
+        days_remaining: remaining
+      };
+    }
+
+    return reply.send({
+      status: 'ok',
+      retention: [
+        {
+          key: 'analytics',
+          label: 'Audience & Pages Vues',
+          category: 'Statistiques',
+          legal_basis: 'Art. 5.1.e RGPD & ePrivacy (13 mois max)',
+          stated_duration: '13 mois légal',
+          effective_days: 395,
+          ...computeStats(analyticsCount, oldestAnalytics, 395)
+        },
+        {
+          key: 'logs',
+          label: 'Journaux de Connexion Admin',
+          category: 'Sécurité',
+          legal_basis: 'Art. 6.1.f RGPD (Intérêt Légitime)',
+          stated_duration: '6 mois légal',
+          effective_days: 180,
+          ...computeStats(logsCount, oldestLogs, 180)
+        },
+        {
+          key: 'appeals',
+          label: 'Recours & Messages Sanctions',
+          category: 'Modération',
+          legal_basis: "Droit d'opposition RGPD Art. 21",
+          stated_duration: '18 mois max',
+          effective_days: 540,
+          ...computeStats(appealsCount, oldestAppeals, 540)
+        },
+        {
+          key: 'community',
+          label: 'Votes & Suggestions Roadmap',
+          category: 'Communauté',
+          legal_basis: 'Consentement & Participation active',
+          stated_duration: '12 mois',
+          effective_days: 365,
+          ...computeStats(communityCount, oldestCommunity, 365)
+        }
+      ]
+    });
+  });
+
+  // 2. GET /api/admin/data/backup : Téléchargement archive JSON filtrée RGPD (sans données périmées)
+  fastify.get('/api/admin/data/backup', async (request, reply) => {
+    const admin = await getAuthAdmin(request);
+    if (!admin) return reply.status(401).send({ status: 'unauthorized' });
+    if (!hasPermission(admin, 'settings')) return reply.status(403).send({ status: 'forbidden' });
+
+    const now = Date.now();
+    const cutoffs = {
+      analytics: new Date(now - 395 * 86400 * 1000).toISOString(),
+      logs: new Date(now - 180 * 86400 * 1000).toISOString(),
+      appeals: new Date(now - 540 * 86400 * 1000).toISOString(),
+      community: new Date(now - 365 * 86400 * 1000).toISOString()
+    };
+
+    const [
+      allPageViews,
+      allAnalyticsEvents,
+      allLoginLogs,
+      allSecNotifs,
+      allAppeals,
+      allChat,
+      allVotes,
+      allSuggestions,
+      allProposals,
+      allBans,
+      allFeatures,
+      allMilestones,
+      allArcade,
+      allPlugins,
+      allThemes,
+      allFaq,
+      allSiteContent,
+      allSiteContentI18n,
+      allSecConfig,
+      allAdmins
+    ] = await Promise.all([
+      db.select().from(pageViews),
+      db.select().from(analyticsEvents),
+      db.select().from(adminLoginLogs),
+      db.select().from(securityNotifications),
+      db.select().from(banAppeals),
+      db.select().from(chatMessages),
+      db.select().from(roadmapVotes),
+      db.select().from(featureSuggestions),
+      db.select().from(communityProposals),
+      db.select().from(bannedIps),
+      db.select().from(roadmapFeatures),
+      db.select().from(roadmapMilestones),
+      db.select().from(arcadeGames),
+      db.select().from(showcasePlugins),
+      db.select().from(showcaseThemes),
+      db.select().from(faqItems),
+      db.select().from(siteContent),
+      db.select().from(siteContentI18n),
+      db.select().from(adminSecurityConfig),
+      db.select({
+        id: adminUsers.id,
+        username: adminUsers.username,
+        role: adminUsers.role,
+        permissions: adminUsers.permissions,
+        createdAt: adminUsers.createdAt
+      }).from(adminUsers)
+    ]);
+
+    // Filtrage strict : Ne JAMAIS inclure les données antérieures au délai légal RGPD
+    const backupPayload = {
+      metadata: {
+        system: 'KaïroOS Platform',
+        version: '1.0',
+        exported_at: new Date().toISOString(),
+        rgpd_filter_applied: true,
+        retention_rules: {
+          analytics_days: 395,
+          logs_days: 180,
+          appeals_days: 540,
+          community_days: 365
+        }
+      },
+      tables: {
+        site_content: allSiteContent,
+        site_content_i18n: allSiteContentI18n,
+        roadmap_features: allFeatures,
+        roadmap_milestones: allMilestones,
+        arcade_games: allArcade,
+        showcase_plugins: allPlugins,
+        showcase_themes: allThemes,
+        faq_items: allFaq,
+        admin_security_config: allSecConfig,
+        admin_users: allAdmins,
+        banned_ips: allBans,
+        roadmap_votes: allVotes.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.community)),
+        feature_suggestions: allSuggestions.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.community)),
+        community_proposals: allProposals.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.community)),
+        page_views: allPageViews.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.analytics)),
+        analytics_events: allAnalyticsEvents.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.analytics)),
+        admin_login_logs: allLoginLogs.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.logs)),
+        security_notifications: allSecNotifs.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.logs)),
+        ban_appeals: allAppeals.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.appeals)),
+        chat_messages: allChat.filter((r: any) => !isRecordExpired(r.createdAt, cutoffs.appeals))
+      }
+    };
+
+    const dateSlug = new Date().toISOString().slice(0, 10);
+    reply.header('Content-Type', 'application/json; charset=utf-8');
+    reply.header('Content-Disposition', `attachment; filename="kairo-backup-${dateSlug}.json"`);
+    return reply.send(backupPayload);
+  });
+
+  // 3. POST /api/admin/data/restore : Restauration archive JSON avec purge automatique des expirés
+  fastify.post('/api/admin/data/restore', async (request, reply) => {
+    const admin = await getAuthAdmin(request);
+    if (!admin) return reply.status(401).send({ status: 'unauthorized' });
+    if (!hasPermission(admin, 'settings')) return reply.status(403).send({ status: 'forbidden' });
+
+    let body = request.body as any;
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch { return reply.status(400).send({ status: 'error', message: 'Fichier JSON invalide.' }); }
+    }
+    const tables = body?.tables || body;
+    if (!tables || typeof tables !== 'object') {
+      return reply.status(400).send({ status: 'error', message: 'Format d archive JSON invalide : objet tables introuvable.' });
+    }
+
+    const now = Date.now();
+    const cutoffsIso = {
+      analytics: new Date(now - 395 * 86400 * 1000).toISOString(),
+      logs: new Date(now - 180 * 86400 * 1000).toISOString(),
+      appeals: new Date(now - 540 * 86400 * 1000).toISOString(),
+      community: new Date(now - 365 * 86400 * 1000).toISOString()
+    };
+    const cutoffsSql = {
+      analytics: cutoffsIso.analytics.replace('T', ' ').substring(0, 19),
+      logs: cutoffsIso.logs.replace('T', ' ').substring(0, 19),
+      appeals: cutoffsIso.appeals.replace('T', ' ').substring(0, 19),
+      community: cutoffsIso.community.replace('T', ' ').substring(0, 19)
+    };
+
+    // A. Nettoyage préventif immédiat de la base active de tout élément périmé
+    await Promise.all([
+      rawAll(sql`DELETE FROM page_views WHERE substr(created_at, 1, 19) < ${cutoffsSql.analytics}`),
+      rawAll(sql`DELETE FROM analytics_events WHERE substr(created_at, 1, 19) < ${cutoffsSql.analytics}`),
+      rawAll(sql`DELETE FROM admin_login_logs WHERE substr(created_at, 1, 19) < ${cutoffsSql.logs}`),
+      rawAll(sql`DELETE FROM security_notifications WHERE substr(created_at, 1, 19) < ${cutoffsSql.logs}`),
+      rawAll(sql`DELETE FROM ban_appeals WHERE substr(created_at, 1, 19) < ${cutoffsSql.appeals}`),
+      rawAll(sql`DELETE FROM chat_messages WHERE substr(created_at, 1, 19) < ${cutoffsSql.appeals}`),
+      rawAll(sql`DELETE FROM roadmap_votes WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`),
+      rawAll(sql`DELETE FROM feature_suggestions WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`),
+      rawAll(sql`DELETE FROM community_proposals WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`)
+    ]);
+
+    let expiredSkipped = 0;
+    const restoredCounts: Record<string, number> = {};
+
+    // B. Importation sécurisée en ignorant tout élément du fichier qui aurait dépassé la durée légale
+    if (Array.isArray(tables.page_views)) {
+      const valid = tables.page_views.filter((r: any) => {
+        const d = r.createdAt || r.created_at;
+        if (isRecordExpired(d, cutoffsIso.analytics)) { expiredSkipped++; return false; }
+        return true;
+      });
+      for (const row of valid) {
+        await db.insert(pageViews).values({
+          page: row.page,
+          sessionId: row.sessionId || row.session_id,
+          referrer: row.referrer,
+          ipAddress: row.ipAddress || row.ip_address,
+          os: row.os,
+          browser: row.browser,
+          device: row.device,
+          durationSeconds: row.durationSeconds || row.duration_seconds || 0,
+          createdAt: row.createdAt || row.created_at
+        }).catch(() => {});
+      }
+      restoredCounts.page_views = valid.length;
+    }
+
+    if (Array.isArray(tables.analytics_events)) {
+      const valid = tables.analytics_events.filter((r: any) => {
+        const d = r.createdAt || r.created_at;
+        if (isRecordExpired(d, cutoffsIso.analytics)) { expiredSkipped++; return false; }
+        return true;
+      });
+      for (const row of valid) {
+        await db.insert(analyticsEvents).values({
+          eventType: row.eventType || row.event_type,
+          target: row.target,
+          page: row.page,
+          sessionId: row.sessionId || row.session_id,
+          metaJson: typeof row.metaJson === 'object' ? JSON.stringify(row.metaJson) : (row.metaJson || row.meta_json),
+          ipAddress: row.ipAddress || row.ip_address,
+          os: row.os,
+          browser: row.browser,
+          device: row.device,
+          durationSeconds: row.durationSeconds || row.duration_seconds || 0,
+          createdAt: row.createdAt || row.created_at
+        }).catch(() => {});
+      }
+      restoredCounts.analytics_events = valid.length;
+    }
+
+    if (Array.isArray(tables.banned_ips)) {
+      for (const row of tables.banned_ips) {
+        await db.insert(bannedIps).values({
+          ipAddress: row.ipAddress || row.ip_address,
+          banType: row.banType || row.ban_type || 'permanent',
+          expiresAt: row.expiresAt || row.expires_at,
+          blockVote: row.blockVote ?? row.block_vote ?? 1,
+          blockProposal: row.blockProposal ?? row.block_proposal ?? 1,
+          blockSuggestion: row.blockSuggestion ?? row.block_suggestion ?? 1,
+          blockAll: row.blockAll ?? row.block_all ?? 0,
+          reason: row.reason || 'Import sauvegarde',
+          createdAt: row.createdAt || row.created_at
+        }).onConflictDoNothing().catch(() => {});
+      }
+      restoredCounts.banned_ips = tables.banned_ips.length;
+    }
+
+    if (Array.isArray(tables.roadmap_votes)) {
+      const valid = tables.roadmap_votes.filter((r: any) => {
+        const d = r.createdAt || r.created_at;
+        if (isRecordExpired(d, cutoffsIso.community)) { expiredSkipped++; return false; }
+        return true;
+      });
+      for (const row of valid) {
+        await db.insert(roadmapVotes).values({
+          featureId: row.featureId || row.feature_id,
+          ipAddress: row.ipAddress || row.ip_address,
+          userAgent: row.userAgent || row.user_agent,
+          createdAt: row.createdAt || row.created_at
+        }).catch(() => {});
+      }
+      restoredCounts.roadmap_votes = valid.length;
+    }
+
+    if (Array.isArray(tables.feature_suggestions)) {
+      const valid = tables.feature_suggestions.filter((r: any) => {
+        const d = r.createdAt || r.created_at;
+        if (isRecordExpired(d, cutoffsIso.community)) { expiredSkipped++; return false; }
+        return true;
+      });
+      for (const row of valid) {
+        await db.insert(featureSuggestions).values({
+          featureId: row.featureId || row.feature_id,
+          author: row.author || 'Anonyme',
+          email: row.email,
+          suggestionText: row.suggestionText || row.suggestion_text || '',
+          ipAddress: row.ipAddress || row.ip_address,
+          status: row.status || 'pending',
+          createdAt: row.createdAt || row.created_at
+        }).catch(() => {});
+      }
+      restoredCounts.feature_suggestions = valid.length;
+    }
+
+    if (Array.isArray(tables.community_proposals)) {
+      const valid = tables.community_proposals.filter((r: any) => {
+        const d = r.createdAt || r.created_at;
+        if (isRecordExpired(d, cutoffsIso.community)) { expiredSkipped++; return false; }
+        return true;
+      });
+      for (const row of valid) {
+        await db.insert(communityProposals).values({
+          title: row.title,
+          category: row.category || 'GÉNÉRAL',
+          description: row.description,
+          author: row.author || 'Anonyme',
+          email: row.email,
+          ipAddress: row.ipAddress || row.ip_address,
+          status: row.status || 'pending',
+          createdAt: row.createdAt || row.created_at
+        }).catch(() => {});
+      }
+      restoredCounts.community_proposals = valid.length;
+    }
+
+    if (Array.isArray(tables.chat_messages)) {
+      const valid = tables.chat_messages.filter((r: any) => {
+        const d = r.createdAt || r.created_at;
+        if (isRecordExpired(d, cutoffsIso.appeals)) { expiredSkipped++; return false; }
+        return true;
+      });
+      for (const row of valid) {
+        await db.insert(chatMessages).values({
+          ipAddress: row.ipAddress || row.ip_address,
+          sender: row.sender || 'admin',
+          message: row.message,
+          isRead: row.isRead ?? row.is_read ?? 0,
+          createdAt: row.createdAt || row.created_at
+        }).catch(() => {});
+      }
+      restoredCounts.chat_messages = valid.length;
+    }
+
+    if (Array.isArray(tables.ban_appeals)) {
+      const valid = tables.ban_appeals.filter((r: any) => {
+        const d = r.createdAt || r.created_at;
+        if (isRecordExpired(d, cutoffsIso.appeals)) { expiredSkipped++; return false; }
+        return true;
+      });
+      for (const row of valid) {
+        await db.insert(banAppeals).values({
+          ipAddress: row.ipAddress || row.ip_address,
+          email: row.email,
+          message: row.message,
+          status: row.status || 'pending',
+          adminResponse: row.adminResponse || row.admin_response,
+          archived: row.archived ?? 0,
+          createdAt: row.createdAt || row.created_at
+        }).catch(() => {});
+      }
+      restoredCounts.ban_appeals = valid.length;
+    }
+
+    // Recalcul du total des votes par feature
+    await rawAll(sql`
+      UPDATE roadmap_features SET votes_count = (
+        SELECT COUNT(*) FROM roadmap_votes WHERE roadmap_votes.feature_id = roadmap_features.id
+      )
+    `);
+
+    return reply.status(200).send({
+      status: 'ok',
+      message: `Sauvegarde restaurée avec succès ! ${expiredSkipped} élément(s) périmé(s) ont été éliminés conformément aux règles RGPD.`,
+      restored_counts: restoredCounts,
+      expired_skipped: expiredSkipped
+    });
+  });
+
+  // 4. POST /api/admin/data/purge : Purge sélective ou réinitialisation ciblée
+  const PurgeSchema = z.object({
+    scope: z.enum(['expired', 'analytics', 'votes', 'community', 'appeals', 'logs', 'bans', 'all']).optional(),
+    scopes: z.array(z.enum(['expired', 'analytics', 'votes', 'community', 'appeals', 'logs', 'bans', 'all'])).optional()
+  });
+
+  fastify.post('/api/admin/data/purge', async (request, reply) => {
+    const admin = await getAuthAdmin(request);
+    if (!admin) return reply.status(401).send({ status: 'unauthorized' });
+    if (!hasPermission(admin, 'settings')) return reply.status(403).send({ status: 'forbidden' });
+
+    const parse = PurgeSchema.safeParse(request.body);
+    if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Périmètre de purge invalide.' });
+
+    const requestedScopes: string[] = parse.data.scopes && parse.data.scopes.length > 0
+      ? parse.data.scopes
+      : (parse.data.scope ? [parse.data.scope] : []);
+
+    if (requestedScopes.length === 0) {
+      return reply.status(400).send({ status: 'error', message: 'Aucun périmètre de purge spécifié.' });
+    }
+
+    const now = Date.now();
+    const cutoffsSql = {
+      analytics: new Date(now - 395 * 86400 * 1000).toISOString().replace('T', ' ').substring(0, 19),
+      logs: new Date(now - 180 * 86400 * 1000).toISOString().replace('T', ' ').substring(0, 19),
+      appeals: new Date(now - 540 * 86400 * 1000).toISOString().replace('T', ' ').substring(0, 19),
+      community: new Date(now - 365 * 86400 * 1000).toISOString().replace('T', ' ').substring(0, 19)
+    };
+
+    const isAll = requestedScopes.includes('all');
+    const hasScope = (s: string) => isAll || requestedScopes.includes(s);
+
+    const executedActions: string[] = [];
+
+    if (requestedScopes.includes('expired')) {
+      await Promise.all([
+        rawAll(sql`DELETE FROM page_views WHERE substr(created_at, 1, 19) < ${cutoffsSql.analytics}`),
+        rawAll(sql`DELETE FROM analytics_events WHERE substr(created_at, 1, 19) < ${cutoffsSql.analytics}`),
+        rawAll(sql`DELETE FROM admin_login_logs WHERE substr(created_at, 1, 19) < ${cutoffsSql.logs}`),
+        rawAll(sql`DELETE FROM security_notifications WHERE substr(created_at, 1, 19) < ${cutoffsSql.logs}`),
+        rawAll(sql`DELETE FROM ban_appeals WHERE substr(created_at, 1, 19) < ${cutoffsSql.appeals}`),
+        rawAll(sql`DELETE FROM chat_messages WHERE substr(created_at, 1, 19) < ${cutoffsSql.appeals}`),
+        rawAll(sql`DELETE FROM roadmap_votes WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`),
+        rawAll(sql`DELETE FROM feature_suggestions WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`),
+        rawAll(sql`DELETE FROM community_proposals WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`)
+      ]);
+      executedActions.push('Données expirées RGPD purgées');
+    }
+
+    if (hasScope('analytics')) {
+      await db.delete(pageViews);
+      await db.delete(analyticsEvents);
+      executedActions.push('Statistiques de fréquentation réinitialisées');
+    }
+
+    if (hasScope('votes')) {
+      await db.delete(roadmapVotes);
+      await rawAll(sql`UPDATE roadmap_features SET votes_count = 0`);
+      executedActions.push('Votes roadmap réinitialisés à 0 (fonctionnalités conservées)');
+    }
+
+    if (hasScope('community')) {
+      await db.delete(communityProposals);
+      await db.delete(featureSuggestions);
+      executedActions.push('Boîte à idées et compléments communautaires réinitialisés');
+    }
+
+    if (hasScope('appeals')) {
+      await db.delete(banAppeals);
+      await db.delete(chatMessages);
+      executedActions.push('Recours et fils de messagerie réinitialisés');
+    }
+
+    if (hasScope('logs')) {
+      await db.delete(adminLoginLogs);
+      await db.delete(securityNotifications);
+      executedActions.push('Journaux d audit et notifications de sécurité effacés');
+    }
+
+    if (hasScope('bans')) {
+      await db.delete(bannedIps);
+      executedActions.push('Liste des adresses IP sanctionnées réinitialisée');
+    }
+
+    // PROTECTION ABSOLUE DU CONTENU VISIBLE DU SITE :
+    // roadmapFeatures, roadmapMilestones, faqItems, arcadeGames, showcasePlugins,
+    // showcaseThemes, siteContent, siteContentI18n, adminUsers NE SONT JAMAIS SUPPRIMÉS.
+
+    return reply.send({
+      status: 'ok',
+      message: `Purge effectuée avec succès : ${executedActions.join(', ')}. Le contenu du site et vos accès administrateurs sont intégralement préservés.`,
+      scopes_executed: executedActions
+    });
+  });
 };
+
 

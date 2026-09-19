@@ -1,6 +1,6 @@
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import { db } from '../../db/client.js';
+import { db, rawAll } from '../../db/client.js';
 import {
   bannedIps,
   chatMessages,
@@ -9,6 +9,16 @@ import {
   analyticsEvents
 } from '../../db/schema.js';
 import { eq, desc, and, count, sql } from 'drizzle-orm';
+import { getAnonVoteToken } from '../roadmap/roadmap.routes.js';
+
+function getClientIp(request: FastifyRequest): string {
+  const forwarded = request.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string' && forwarded.length > 0) {
+    const first = forwarded.split(',')[0].trim();
+    if (first) return first;
+  }
+  return request.ip || '127.0.0.1';
+}
 
 function anonymizeIp(ip: string): string {
   if (!ip) return '0.0.0.0';
@@ -67,15 +77,16 @@ const TrackSchema = z.object({
   referrer: z.string().optional()
 });
 
-const ConsentSchema = z.object({
-  choice: z.enum(['consent_accepted', 'consent_refused']),
-  page: z.string().default('/')
+const ConsentStatSchema = z.object({
+  choice: z.string().default('consent_accepted'),
+  transition: z.string().optional().default('initial'),
+  page: z.string().optional().default('/')
 });
 
 export const publicRoutes: FastifyPluginAsync = async (fastify) => {
   // 1. Statut de sanction de l'IP appelante
   fastify.get('/api/user/ban-status', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
     const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)))[0];
 
     if (!ban) {
@@ -104,7 +115,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 2. Fil de discussion visiteur <-> admin
   fastify.get('/api/user/chat', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
     const msgs = await db
       .select()
       .from(chatMessages)
@@ -127,7 +138,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 3. Envoi d'un message visiteur
   fastify.post('/api/user/chat/send', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
     const parse = ChatSendSchema.safeParse(request.body);
     if (!parse.success) {
       return reply.status(400).send({ status: 'error', message: parse.error.issues[0]?.message || 'Données invalides' });
@@ -146,7 +157,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 4. Dépôt de recours de débannissement
   fastify.post('/api/ban/appeal', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
     const parse = BanAppealSchema.safeParse(request.body);
     if (!parse.success) {
       return reply.status(400).send({ status: 'error', message: parse.error.issues[0]?.message || 'Données invalides' });
@@ -168,7 +179,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 5. Télémétrie éthique (Page Views, clics, durées)
   fastify.post('/api/track', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
     const userAgent = request.headers['user-agent'] || '';
     const { os, browser, device } = parseUserAgent(userAgent);
     const anonIp = anonymizeIp(clientIp);
@@ -179,6 +190,7 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
     }
 
     const { event_type, target, page, session_id, meta, referrer } = parse.data;
+    const durationSeconds = Number(meta?.duration_seconds || 0) || 0;
 
     if (event_type === 'page_view') {
       await db.insert(pageViews)
@@ -192,6 +204,33 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
           device,
           durationSeconds: 0
         });
+    } else if (event_type === 'page_duration') {
+      if (durationSeconds > 0 && session_id && session_id !== 'anon') {
+        // Mettre à jour la durée de la vue de page correspondante
+        try {
+          await db.update(pageViews)
+            .set({ durationSeconds })
+            .where(and(
+              eq(pageViews.sessionId, session_id),
+              eq(pageViews.page, page)
+            ));
+        } catch {
+          // Ignorer en cas de concurrence
+        }
+      }
+      await db.insert(analyticsEvents)
+        .values({
+          eventType: event_type,
+          target,
+          page,
+          sessionId: session_id,
+          metaJson: meta ? JSON.stringify(meta) : null,
+          ipAddress: anonIp,
+          os,
+          browser,
+          device,
+          durationSeconds
+        });
     } else {
       await db.insert(analyticsEvents)
         .values({
@@ -203,7 +242,8 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
           ipAddress: anonIp,
           os,
           browser,
-          device
+          device,
+          durationSeconds: durationSeconds > 0 ? durationSeconds : 0
         });
     }
 
@@ -211,32 +251,268 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
   });
 
   // 6. Enregistrement du consentement cookies RGPD
-  fastify.post('/api/consent', async (request, reply) => {
-    const parse = ConsentSchema.safeParse(request.body);
+  const recordConsentChoice = async (request: FastifyRequest, reply: any) => {
+    const parse = ConsentStatSchema.safeParse(request.body);
     if (!parse.success) {
       return reply.status(400).send({ status: 'error' });
     }
 
+    const { choice, transition, page } = parse.data;
+    const clientIp = getClientIp(request);
+    const anonIp = anonymizeIp(clientIp);
+
     await db.insert(analyticsEvents)
       .values({
         eventType: 'consent',
-        target: parse.data.choice,
-        page: parse.data.page,
+        target: choice,
+        page: page || '/',
         sessionId: 'anon',
+        metaJson: JSON.stringify({ transition }),
         ipAddress: 'ANON'
       });
 
-    return reply.status(200).send({ status: 'consent_stat_recorded' });
+    // RGPD / Respect du droit de retrait : Si l'utilisateur refuse ou révoque son consentement
+    if (choice === 'consent_refused' || transition === 'accepted_to_refused') {
+      try {
+        // 1. Purge / anonymisation totale des empreintes IP passées dans les analytics
+        await rawAll(sql`
+          UPDATE page_views 
+          SET ip_address = '0.0.0.0', session_id = 'anon' 
+          WHERE ip_address = ${clientIp} OR ip_address = ${anonIp}
+        `);
+        await rawAll(sql`
+          UPDATE analytics_events 
+          SET ip_address = '0.0.0.0', session_id = 'anon' 
+          WHERE ip_address = ${clientIp} OR ip_address = ${anonIp}
+        `);
+
+        // 2. Anonymisation des votes : Remplacement de l'IP brute par un token pseudonyme à sens unique
+        // Cela préserve le décompte global et empêche le multi-vote tout en supprimant l'adresse IP
+        const anonToken = getAnonVoteToken(clientIp);
+        await rawAll(sql`
+          UPDATE roadmap_votes 
+          SET ip_address = ${anonToken} 
+          WHERE ip_address = ${clientIp}
+        `);
+
+        // 3. Anonymisation de l'IP dans les propositions et suggestions
+        await rawAll(sql`
+          UPDATE community_proposals 
+          SET ip_address = '0.0.0.0' 
+          WHERE ip_address = ${clientIp}
+        `);
+        await rawAll(sql`
+          UPDATE feature_suggestions 
+          SET ip_address = '0.0.0.0' 
+          WHERE ip_address = ${clientIp}
+        `);
+      } catch (err) {
+        request.log.error(err, 'Erreur lors de l anonymisation des traces IP suite au refus');
+      }
+    }
+
+    return reply.status(200).send({
+      status: 'consent_stat_recorded',
+      anonymized: (choice === 'consent_refused' || transition === 'accepted_to_refused')
+    });
+  };
+
+  fastify.post('/api/consent', async (request, reply) => {
+    return recordConsentChoice(request, reply);
   });
 
-  // 7. Résumé analytique public / admin
+  fastify.post('/api/track/consent-stat', async (request, reply) => {
+    return recordConsentChoice(request, reply);
+  });
+
+  // 7. Résumé analytique public / admin complet
   fastify.get('/api/analytics/summary', async (_request, reply) => {
+    // 1. Totaux généraux
     const [viewsCount] = await db.select({ val: count() }).from(pageViews);
     const [eventsCount] = await db.select({ val: count() }).from(analyticsEvents);
 
+    const totalViews = Number(viewsCount?.val || 0);
+    const totalEvents = Number(eventsCount?.val || 0);
+
+    // 2. Visiteurs uniques réels (déduplication par visitor_id permanent ou IP)
+    const rawSessionsAndIps = await rawAll<{ session_id: string | null; ip_address: string | null }>(sql`
+      SELECT session_id, ip_address FROM page_views WHERE session_id IS NOT NULL AND session_id != ''
+    `);
+    const uniqueVisitorKeys = new Set<string>();
+    for (const r of rawSessionsAndIps) {
+      const s = r.session_id || '';
+      const ip = r.ip_address || '';
+      if (s.startsWith('v_') && s.includes('.')) {
+        uniqueVisitorKeys.add(s.split('.')[0]);
+      } else if (ip && ip !== '0.0.0.0' && ip !== 'ANON') {
+        uniqueVisitorKeys.add(ip);
+      } else if (s && s !== 'anon') {
+        uniqueVisitorKeys.add(s);
+      }
+    }
+    const uniqueVisitors = uniqueVisitorKeys.size > 0 ? uniqueVisitorKeys.size : (totalViews > 0 ? 1 : 0);
+
+    // 3. Téléchargements
+    const [dlClicksRow] = await rawAll<{ c: string | number }>(sql`
+      SELECT COUNT(*) as c FROM analytics_events 
+      WHERE event_type = 'download' OR target = 'download_button' OR target LIKE '%download%' OR target LIKE '%télécharger%'
+    `);
+    const [dlSessionsRow] = await rawAll<{ c: string | number }>(sql`
+      SELECT COUNT(DISTINCT session_id) as c FROM analytics_events 
+      WHERE (event_type = 'download' OR target = 'download_button' OR target LIKE '%download%' OR target LIKE '%télécharger%')
+        AND session_id IS NOT NULL AND session_id != '' AND session_id != 'anon'
+    `);
+    const downloadClicks = Number(dlClicksRow?.c || 0);
+    const downloadUniqueSessions = Number(dlSessionsRow?.c || 0);
+    const avgDownloadsPerSession = downloadUniqueSessions > 0
+      ? (downloadClicks / downloadUniqueSessions).toFixed(1)
+      : (downloadClicks > 0 ? downloadClicks.toFixed(1) : '0.0');
+
+    // 4. Durées de visite moyennes (session & page)
+    const [avgSessionRow] = await rawAll<{ avg_d: string | number | null }>(sql`
+      SELECT AVG(total_duration) as avg_d FROM (
+        SELECT session_id, SUM(duration_seconds) as total_duration 
+        FROM page_views 
+        WHERE duration_seconds > 0 AND session_id IS NOT NULL AND session_id != '' AND session_id != 'anon'
+        GROUP BY session_id
+      ) AS sess_dur
+    `);
+    const [avgPageRow] = await rawAll<{ avg_d: string | number | null }>(sql`
+      SELECT AVG(duration_seconds) as avg_d FROM page_views 
+      WHERE duration_seconds > 0
+    `);
+    const avgSessionDuration = Math.round(Number(avgSessionRow?.avg_d || 0));
+    const avgPageDuration = Math.round(Number(avgPageRow?.avg_d || 0));
+
+    // 5. Consentement ePrivacy
+    const [consentAccRow] = await rawAll<{ c: string | number }>(sql`
+      SELECT COUNT(*) as c FROM analytics_events 
+      WHERE event_type = 'consent' AND (target = 'consent_accepted' OR target = 'accepted')
+    `);
+    const [consentRefRow] = await rawAll<{ c: string | number }>(sql`
+      SELECT COUNT(*) as c FROM analytics_events 
+      WHERE event_type = 'consent' AND (target = 'consent_refused' OR target = 'refused')
+    `);
+    const [consentRevokedRow] = await rawAll<{ c: string | number }>(sql`
+      SELECT COUNT(*) as c FROM analytics_events 
+      WHERE event_type = 'consent' AND meta_json LIKE '%accepted_to_refused%'
+    `);
+    const [consentGrantedRow] = await rawAll<{ c: string | number }>(sql`
+      SELECT COUNT(*) as c FROM analytics_events 
+      WHERE event_type = 'consent' AND meta_json LIKE '%refused_to_accepted%'
+    `);
+    const consentAccepted = Number(consentAccRow?.c || 0);
+    const consentRefused = Number(consentRefRow?.c || 0);
+    const totalConsentDecisions = consentAccepted + consentRefused;
+    const consentRate = totalConsentDecisions > 0
+      ? Math.round((consentAccepted / totalConsentDecisions) * 1000) / 10
+      : 100.0;
+    const consentRevoked = Number(consentRevokedRow?.c || 0);
+    const consentGrantedAfter = Number(consentGrantedRow?.c || 0);
+
+    // 6. Répartition par page
+    const pagesBreakdownRaw = await rawAll<{
+      page: string;
+      views_count: string | number;
+      visitors_count: string | number;
+      avg_duration: string | number | null;
+    }>(sql`
+      SELECT 
+        page, 
+        COUNT(*) as views_count, 
+        COUNT(DISTINCT session_id) as visitors_count, 
+        COALESCE(AVG(CASE WHEN duration_seconds > 0 THEN duration_seconds ELSE NULL END), 0) as avg_duration
+      FROM page_views
+      WHERE page IS NOT NULL AND page != ''
+      GROUP BY page
+      ORDER BY views_count DESC
+      LIMIT 20
+    `);
+    const pagesBreakdown = pagesBreakdownRaw.map(p => ({
+      page: p.page,
+      views_count: Number(p.views_count || 0),
+      visitors_count: Number(p.visitors_count || 0),
+      avg_duration: Math.round(Number(p.avg_duration || 0))
+    }));
+
+    // 7. Statistiques Systèmes d'exploitation
+    const osStatsRaw = await rawAll<{ os: string; count: string | number }>(sql`
+      SELECT os, COUNT(*) as count 
+      FROM page_views 
+      WHERE os IS NOT NULL AND os != '' AND os != 'Inconnu'
+      GROUP BY os 
+      ORDER BY count DESC 
+      LIMIT 10
+    `);
+    const osStats = osStatsRaw.map(o => ({ os: o.os, count: Number(o.count || 0) }));
+
+    // 8. Statistiques Navigateurs
+    const browserStatsRaw = await rawAll<{ browser: string; count: string | number }>(sql`
+      SELECT browser, COUNT(*) as count 
+      FROM page_views 
+      WHERE browser IS NOT NULL AND browser != '' AND browser != 'Inconnu'
+      GROUP BY browser 
+      ORDER BY count DESC 
+      LIMIT 10
+    `);
+    const browserStats = browserStatsRaw.map(b => ({ browser: b.browser, count: Number(b.count || 0) }));
+
+    // 9. Statistiques Appareils
+    const deviceStatsRaw = await rawAll<{ device: string; count: string | number }>(sql`
+      SELECT device, COUNT(*) as count 
+      FROM page_views 
+      WHERE device IS NOT NULL AND device != ''
+      GROUP BY device 
+      ORDER BY count DESC 
+      LIMIT 10
+    `);
+    const deviceStats = deviceStatsRaw.map(d => ({ device: d.device, count: Number(d.count || 0) }));
+
+    // 10. Top clics & événements
+    const topClicksRaw = await rawAll<{ target: string; count: string | number }>(sql`
+      SELECT target, COUNT(*) as count 
+      FROM analytics_events 
+      WHERE event_type = 'click' AND target IS NOT NULL AND target != ''
+      GROUP BY target 
+      ORDER BY count DESC 
+      LIMIT 10
+    `);
+    const topClicks = topClicksRaw.map(t => ({ target: t.target, count: Number(t.count || 0) }));
+
+    // 11. Événements récents
+    const recentEventsRaw = await rawAll<{
+      event_type: string;
+      target: string;
+      page: string;
+      created_at: string;
+    }>(sql`
+      SELECT event_type, target, page, created_at 
+      FROM analytics_events 
+      ORDER BY id DESC 
+      LIMIT 20
+    `);
+
     return reply.status(200).send({
-      total_views: viewsCount?.val || 0,
-      total_events: eventsCount?.val || 0,
+      status: 'ok',
+      total_views: totalViews,
+      total_events: totalEvents,
+      unique_visitors: uniqueVisitors,
+      download_clicks: downloadClicks,
+      download_unique_sessions: downloadUniqueSessions,
+      avg_downloads_per_session: avgDownloadsPerSession,
+      avg_session_duration: avgSessionDuration,
+      avg_page_duration: avgPageDuration,
+      consent_accepted: consentAccepted,
+      consent_refused: consentRefused,
+      consent_rate: consentRate,
+      consent_revoked: consentRevoked,
+      consent_granted_after: consentGrantedAfter,
+      pages_breakdown: pagesBreakdown,
+      os_stats: osStats,
+      browser_stats: browserStats,
+      device_stats: deviceStats,
+      top_clicks: topClicks,
+      recent_events: recentEventsRaw,
       timestamp: new Date().toISOString()
     });
   });
