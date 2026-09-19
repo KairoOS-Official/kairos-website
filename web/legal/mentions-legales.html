@@ -137,26 +137,51 @@
             <div class="w-10 h-10 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-xl">dns</span>
             </div>
-            <h2 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="2. Hosting Provider" data-fr="2. Hébergement de l'Infrastructure">
+            <h2 class="text-lg sm:text-xl font-bold text-heading font-display" data-en="2. Hosting Providers" data-fr="2. Hébergement de l'Infrastructure">
               2. Hébergement de l'Infrastructure
             </h2>
           </div>
-          <p class="text-xs sm:text-sm text-body leading-relaxed" data-en="The servers, APIs, and infrastructure powering the KaïroOS website are hosted by:" data-fr="Les serveurs et l'infrastructure assurant la mise en ligne du site web et des APIs sont hébergés par :">
-            Les serveurs et l'infrastructure assurant la mise en ligne du site web et des APIs sont hébergés par :
+          <p class="text-xs sm:text-sm text-body leading-relaxed" data-en="The servers, APIs, and database powering the KaïroOS platform are hosted within the European Union across certified cloud infrastructures:" data-fr="Les serveurs d'application, les APIs et la base de données assurant le fonctionnement du projet KaïroOS sont hébergés au sein de l'Union Européenne via des infrastructures cloud sécurisées :">
+            Les serveurs d'application, les APIs et la base de données assurant le fonctionnement du projet KaïroOS sont hébergés au sein de l'Union Européenne via des infrastructures cloud sécurisées :
           </p>
-          <div class="text-xs font-mono bg-slate-50/80 p-5 rounded-2xl border border-slate-200/70 space-y-3">
-            <div>
-              <span class="text-muted block mb-1">Raison Sociale de l'Hébergeur :</span>
-              <strong class="text-slate-900 font-semibold text-sm">Serveur Dédié / Cloud Autonome (VPS Linux)</strong>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-              <div>
-                <span class="text-muted block mb-1">Localisation / Datacenter :</span>
-                <span class="text-slate-900 font-semibold">Union Européenne / France</span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+            <!-- Hébergeur Web & API (Render) -->
+            <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/70 space-y-2">
+              <div class="flex items-center justify-between">
+                <strong class="text-slate-900 font-semibold text-sm">Serveur Web & API</strong>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-100 text-brand-700">Render</span>
               </div>
               <div>
-                <span class="text-muted block mb-1">Infrastructure :</span>
-                <span class="text-slate-900 font-semibold">Environnement privé et sécurisé</span>
+                <span class="text-muted block mb-0.5">Société :</span>
+                <span class="text-slate-900 font-semibold">Render Services, Inc.</span>
+              </div>
+              <div>
+                <span class="text-muted block mb-0.5">Localisation Datacenter :</span>
+                <span class="text-emerald-700 font-semibold">Francfort, Allemagne (Union Européenne)</span>
+              </div>
+              <div>
+                <span class="text-muted block mb-0.5">Siège & Site Web :</span>
+                <span class="text-slate-600">San Francisco, CA, USA · <a href="https://render.com" target="_blank" rel="noopener" class="text-brand-600 hover:underline">render.com</a></span>
+              </div>
+            </div>
+
+            <!-- Hébergeur Base de Données (Supabase) -->
+            <div class="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/70 space-y-2">
+              <div class="flex items-center justify-between">
+                <strong class="text-slate-900 font-semibold text-sm">Base de Données PostgreSQL</strong>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Supabase</span>
+              </div>
+              <div>
+                <span class="text-muted block mb-0.5">Société :</span>
+                <span class="text-slate-900 font-semibold">Supabase, Inc.</span>
+              </div>
+              <div>
+                <span class="text-muted block mb-0.5">Localisation Datacenter :</span>
+                <span class="text-emerald-700 font-semibold">Dublin, Irlande (Union Européenne)</span>
+              </div>
+              <div>
+                <span class="text-muted block mb-0.5">Infrastructure & Site Web :</span>
+                <span class="text-slate-600">AWS eu-west-1 · <a href="https://supabase.com" target="_blank" rel="noopener" class="text-brand-600 hover:underline">supabase.com</a></span>
               </div>
             </div>
           </div>
