@@ -44,14 +44,35 @@
   }
 
   function sendEvent(eventType, target, meta = {}) {
-    // Ne rien envoyer si l'utilisateur n'a pas donné son consentement
-    if (!getConsent()) {
-      return;
+    const hasConsent = getConsent();
+
+    // Si pas de consentement : seule la vue de page 100% anonyme (exemptée CNIL) est transmise
+    if (!hasConsent && eventType !== 'page_view') {
+      return; // Aucun clic, aucun temps actif, aucun tracking comportemental
     }
 
-    const vid = getVisitorId() || 'v_anon';
-    const sid = getSessionId() || 's_anon';
-    const compositeSession = vid + '.' + sid;
+    let vid = 'v_anon';
+    let sid = 's_anon';
+
+    if (hasConsent) {
+      vid = getVisitorId() || 'v_anon';
+      sid = getSessionId() || 's_anon';
+    } else {
+      // Mesure d'audience anonyme CNIL : identifiant de session volatile sans persistance inter-visites
+      try {
+        let anonSid = sessionStorage.getItem('kairo_anon_sid');
+        if (!anonSid) {
+          anonSid = 'anon_s_' + Math.random().toString(36).substring(2, 10);
+          sessionStorage.setItem('kairo_anon_sid', anonSid);
+        }
+        sid = anonSid;
+        vid = 'anon_visitor';
+      } catch(e) {
+        sid = 'anon_session';
+      }
+    }
+
+    const compositeSession = hasConsent ? (vid + '.' + sid) : sid;
 
     const payload = JSON.stringify({
       event_type: eventType,
@@ -59,7 +80,7 @@
       page: window.location.pathname || '/',
       session_id: compositeSession,
       referrer: document.referrer ? document.referrer.split('?')[0] : '',
-      meta: Object.assign({ visitor_id: vid }, meta)
+      meta: hasConsent ? Object.assign({ visitor_id: vid }, meta) : { anonymous: true, consent: false }
     });
 
     if (navigator.sendBeacon) {
@@ -134,10 +155,8 @@
   window.addEventListener('pagehide', sendPageDuration);
   window.addEventListener('beforeunload', sendPageDuration);
 
-  // Si le consentement est déjà accordé, enregistrer la page vue
-  if (getConsent()) {
-    sendEvent('page_view', window.location.pathname || '/');
-  }
+  // Enregistrement initial de la page vue (mesure d'audience anonyme CNIL par défaut si non consenti)
+  sendEvent('page_view', window.location.pathname || '/');
 
   // Écouter l'événement de mise à jour du consentement
   window.addEventListener('kairo_consent_updated', function(e) {

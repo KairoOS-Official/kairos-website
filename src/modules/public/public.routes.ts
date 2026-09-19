@@ -9,6 +9,7 @@ import {
   analyticsEvents
 } from '../../db/schema.js';
 import { eq, desc, and, count, sql } from 'drizzle-orm';
+import { getAnonVoteToken } from '../roadmap/roadmap.routes.js';
 
 function getClientIp(request: FastifyRequest): string {
   const forwarded = request.headers['x-forwarded-for'];
@@ -250,13 +251,15 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
   });
 
   // 6. Enregistrement du consentement cookies RGPD
-  const recordConsentChoice = async (body: unknown, reply: any) => {
-    const parse = ConsentStatSchema.safeParse(body);
+  const recordConsentChoice = async (request: FastifyRequest, reply: any) => {
+    const parse = ConsentStatSchema.safeParse(request.body);
     if (!parse.success) {
       return reply.status(400).send({ status: 'error' });
     }
 
     const { choice, transition, page } = parse.data;
+    const clientIp = getClientIp(request);
+    const anonIp = anonymizeIp(clientIp);
 
     await db.insert(analyticsEvents)
       .values({
@@ -268,15 +271,58 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
         ipAddress: 'ANON'
       });
 
-    return reply.status(200).send({ status: 'consent_stat_recorded' });
+    // RGPD / Respect du droit de retrait : Si l'utilisateur refuse ou révoque son consentement
+    if (choice === 'consent_refused' || transition === 'accepted_to_refused') {
+      try {
+        // 1. Purge / anonymisation totale des empreintes IP passées dans les analytics
+        await rawAll(sql`
+          UPDATE page_views 
+          SET ip_address = '0.0.0.0', session_id = 'anon' 
+          WHERE ip_address = ${clientIp} OR ip_address = ${anonIp}
+        `);
+        await rawAll(sql`
+          UPDATE analytics_events 
+          SET ip_address = '0.0.0.0', session_id = 'anon' 
+          WHERE ip_address = ${clientIp} OR ip_address = ${anonIp}
+        `);
+
+        // 2. Anonymisation des votes : Remplacement de l'IP brute par un token pseudonyme à sens unique
+        // Cela préserve le décompte global et empêche le multi-vote tout en supprimant l'adresse IP
+        const anonToken = getAnonVoteToken(clientIp);
+        await rawAll(sql`
+          UPDATE roadmap_votes 
+          SET ip_address = ${anonToken} 
+          WHERE ip_address = ${clientIp}
+        `);
+
+        // 3. Anonymisation de l'IP dans les propositions et suggestions
+        await rawAll(sql`
+          UPDATE community_proposals 
+          SET ip_address = '0.0.0.0' 
+          WHERE ip_address = ${clientIp}
+        `);
+        await rawAll(sql`
+          UPDATE feature_suggestions 
+          SET ip_address = '0.0.0.0' 
+          WHERE ip_address = ${clientIp}
+        `);
+      } catch (err) {
+        request.log.error(err, 'Erreur lors de l anonymisation des traces IP suite au refus');
+      }
+    }
+
+    return reply.status(200).send({
+      status: 'consent_stat_recorded',
+      anonymized: (choice === 'consent_refused' || transition === 'accepted_to_refused')
+    });
   };
 
   fastify.post('/api/consent', async (request, reply) => {
-    return recordConsentChoice(request.body, reply);
+    return recordConsentChoice(request, reply);
   });
 
   fastify.post('/api/track/consent-stat', async (request, reply) => {
-    return recordConsentChoice(request.body, reply);
+    return recordConsentChoice(request, reply);
   });
 
   // 7. Résumé analytique public / admin complet

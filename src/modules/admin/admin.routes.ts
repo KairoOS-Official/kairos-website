@@ -1333,9 +1333,10 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     });
   });
 
-  // 4. POST /api/admin/data/purge : Purge sélective ou réinitialisation intégrale
+  // 4. POST /api/admin/data/purge : Purge sélective ou réinitialisation ciblée
   const PurgeSchema = z.object({
-    scope: z.enum(['expired', 'analytics', 'community', 'appeals', 'logs', 'all'])
+    scope: z.enum(['expired', 'analytics', 'votes', 'community', 'appeals', 'logs', 'bans', 'all']).optional(),
+    scopes: z.array(z.enum(['expired', 'analytics', 'votes', 'community', 'appeals', 'logs', 'bans', 'all'])).optional()
   });
 
   fastify.post('/api/admin/data/purge', async (request, reply) => {
@@ -1346,7 +1347,14 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     const parse = PurgeSchema.safeParse(request.body);
     if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Périmètre de purge invalide.' });
 
-    const scope = parse.data.scope;
+    const requestedScopes: string[] = parse.data.scopes && parse.data.scopes.length > 0
+      ? parse.data.scopes
+      : (parse.data.scope ? [parse.data.scope] : []);
+
+    if (requestedScopes.length === 0) {
+      return reply.status(400).send({ status: 'error', message: 'Aucun périmètre de purge spécifié.' });
+    }
+
     const now = Date.now();
     const cutoffsSql = {
       analytics: new Date(now - 395 * 86400 * 1000).toISOString().replace('T', ' ').substring(0, 19),
@@ -1355,7 +1363,12 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
       community: new Date(now - 365 * 86400 * 1000).toISOString().replace('T', ' ').substring(0, 19)
     };
 
-    if (scope === 'expired') {
+    const isAll = requestedScopes.includes('all');
+    const hasScope = (s: string) => isAll || requestedScopes.includes(s);
+
+    const executedActions: string[] = [];
+
+    if (requestedScopes.includes('expired')) {
       await Promise.all([
         rawAll(sql`DELETE FROM page_views WHERE substr(created_at, 1, 19) < ${cutoffsSql.analytics}`),
         rawAll(sql`DELETE FROM analytics_events WHERE substr(created_at, 1, 19) < ${cutoffsSql.analytics}`),
@@ -1367,58 +1380,53 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         rawAll(sql`DELETE FROM feature_suggestions WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`),
         rawAll(sql`DELETE FROM community_proposals WHERE substr(created_at, 1, 19) < ${cutoffsSql.community}`)
       ]);
-      return reply.send({ status: 'ok', message: 'Toutes les données antérieures aux limites légales RGPD ont été purgées avec succès.' });
+      executedActions.push('Données expirées RGPD purgées');
     }
 
-    if (scope === 'analytics') {
+    if (hasScope('analytics')) {
       await db.delete(pageViews);
       await db.delete(analyticsEvents);
-      return reply.send({ status: 'ok', message: 'Statistiques de fréquentation et clics réinitialisés.' });
+      executedActions.push('Statistiques de fréquentation réinitialisées');
     }
 
-    if (scope === 'community') {
+    if (hasScope('votes')) {
       await db.delete(roadmapVotes);
-      await db.delete(featureSuggestions);
-      await db.delete(communityProposals);
       await rawAll(sql`UPDATE roadmap_features SET votes_count = 0`);
-      return reply.send({ status: 'ok', message: 'Votes, suggestions et boîtes à idées réinitialisés.' });
+      executedActions.push('Votes roadmap réinitialisés à 0 (fonctionnalités conservées)');
     }
 
-    if (scope === 'appeals') {
+    if (hasScope('community')) {
+      await db.delete(communityProposals);
+      await db.delete(featureSuggestions);
+      executedActions.push('Boîte à idées et compléments communautaires réinitialisés');
+    }
+
+    if (hasScope('appeals')) {
       await db.delete(banAppeals);
       await db.delete(chatMessages);
-      return reply.send({ status: 'ok', message: 'Recours et messageries réinitialisés.' });
+      executedActions.push('Recours et fils de messagerie réinitialisés');
     }
 
-    if (scope === 'logs') {
+    if (hasScope('logs')) {
       await db.delete(adminLoginLogs);
       await db.delete(securityNotifications);
-      return reply.send({ status: 'ok', message: 'Journaux d audit de connexion et notifications effacés.' });
+      executedActions.push('Journaux d audit et notifications de sécurité effacés');
     }
 
-    if (scope === 'all') {
-      // Hard Reset / Réinitialisation Intégrale de la plateforme
-      // SÉCURITÉ CRITIQUE : Préserver admin_users et admin_security_config pour ne jamais bloquer l'administrateur
-      await Promise.all([
-        db.delete(pageViews),
-        db.delete(analyticsEvents),
-        db.delete(roadmapVotes),
-        db.delete(featureSuggestions),
-        db.delete(communityProposals),
-        db.delete(chatMessages),
-        db.delete(banAppeals),
-        db.delete(adminLoginLogs),
-        db.delete(securityNotifications),
-        db.delete(bannedIps)
-      ]);
-      await rawAll(sql`UPDATE roadmap_features SET votes_count = 0`);
-      return reply.send({
-        status: 'ok',
-        message: 'Réinitialisation intégrale effectuée avec succès ! Les comptes administrateurs et configurations de sécurité ont été préservés.'
-      });
+    if (hasScope('bans')) {
+      await db.delete(bannedIps);
+      executedActions.push('Liste des adresses IP sanctionnées réinitialisée');
     }
 
-    return reply.status(400).send({ status: 'error', message: 'Périmètre inconnu' });
+    // PROTECTION ABSOLUE DU CONTENU VISIBLE DU SITE :
+    // roadmapFeatures, roadmapMilestones, faqItems, arcadeGames, showcasePlugins,
+    // showcaseThemes, siteContent, siteContentI18n, adminUsers NE SONT JAMAIS SUPPRIMÉS.
+
+    return reply.send({
+      status: 'ok',
+      message: `Purge effectuée avec succès : ${executedActions.join(', ')}. Le contenu du site et vos accès administrateurs sont intégralement préservés.`,
+      scopes_executed: executedActions
+    });
   });
 };
 

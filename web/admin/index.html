@@ -1393,17 +1393,17 @@
     </div>
   </div>
 
-  <!-- MODALE SÉCURISÉE RÉINITIALISATION COMPLÈTE (HARD RESET) -->
+  <!-- MODALE SÉCURISÉE RÉINITIALISATION SÉLECTIVE OU COMPLÈTE -->
   <div id="modal-hard-reset" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-rose-200 space-y-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-rose-200 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-2xl">warning</span>
+            <span class="material-symbols-outlined text-2xl">delete_sweep</span>
           </div>
           <div>
-            <h3 class="font-display font-bold text-lg text-rose-900">Tout Supprimer Définitivement</h3>
-            <span class="text-xs text-rose-600 font-mono font-bold">Action Irréversible (Hard Reset)</span>
+            <h3 class="font-display font-bold text-lg text-rose-900">Purge Sélective & Réinitialisation</h3>
+            <span class="text-xs text-rose-600 font-mono font-bold">Sélectionnez les éléments à purger</span>
           </div>
         </div>
         <button id="btn-close-hard-reset-modal" type="button" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer">
@@ -1411,20 +1411,72 @@
         </button>
       </div>
 
-      <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-2">
-        <p>
-          Cette action va <strong>effacer la totalité des données d'usage</strong> :
+      <!-- PROTECTION DU CONTENU VISIBLE DU SITE -->
+      <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs space-y-1">
+        <div class="flex items-center gap-1.5 font-bold font-display text-emerald-800">
+          <span class="material-symbols-outlined text-base text-emerald-600">verified_user</span>
+          <span>Protection absolue des données du site</span>
+        </div>
+        <p class="text-[11px] leading-relaxed text-emerald-800">
+          Les données visibles du site (<strong>Fonctionnalités Roadmap</strong>, <strong>Jalons</strong>, <strong>FAQ</strong>, <strong>Jeux d'arcade</strong>, <strong>Plugins & Thèmes</strong>, <strong>Textes</strong>, ainsi que vos <strong>comptes administrateurs</strong>) sont <u>strictement intouchables</u> et ne seront jamais supprimées.
         </p>
-        <ul class="list-disc list-inside space-y-0.5 text-[11px] font-mono">
-          <li>Statistiques et sessions de visite (page views, clics, durées)</li>
-          <li>Votes roadmap, suggestions et idées de la communauté</li>
-          <li>Recours de sanction et conversations directes</li>
-          <li>Journaux d'audit et historique des alertes de sécurité</li>
-          <li>Liste des adresses IP sanctionnées</li>
-        </ul>
-        <p class="text-[11px] text-emerald-800 font-sans font-semibold bg-emerald-50 border border-emerald-200 rounded-xl p-2">
-          🛡️ <strong>Sécurité garantie :</strong> Vos comptes administrateurs et configurations d'accès ne seront <u>pas supprimés</u>. Vous conserverez immédiatement votre session active.
-        </p>
+      </div>
+
+      <!-- SÉLECTEUR DE PÉRIMÈTRE -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+          <span>Données dynamiques à réinitialiser :</span>
+          <div class="flex items-center gap-2 font-normal text-[11px]">
+            <button type="button" id="btn-purge-select-all" class="text-indigo-600 hover:underline cursor-pointer">Tout cocher</button>
+            <span>·</span>
+            <button type="button" id="btn-purge-deselect-all" class="text-slate-500 hover:underline cursor-pointer">Tout décocher</button>
+          </div>
+        </div>
+
+        <div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs font-sans">
+          <label class="flex items-start gap-2.5 cursor-pointer hover:text-slate-900">
+            <input type="checkbox" name="purge_scope" value="analytics" checked class="mt-0.5 w-4 h-4 rounded text-rose-600 cursor-pointer">
+            <div>
+              <strong class="text-slate-800">Statistiques d'audience & Pages vues</strong>
+              <div class="text-[10px] text-slate-500 font-mono">Pages vues, clics, sessions et durées de visite</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-2.5 cursor-pointer hover:text-slate-900">
+            <input type="checkbox" name="purge_scope" value="votes" checked class="mt-0.5 w-4 h-4 rounded text-rose-600 cursor-pointer">
+            <div>
+              <strong class="text-slate-800">Votes Roadmap</strong>
+              <div class="text-[10px] text-slate-500 font-mono">Remet les compteurs de votes à 0 (sans toucher aux fonctionnalités)</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-2.5 cursor-pointer hover:text-slate-900">
+            <input type="checkbox" name="purge_scope" value="community" checked class="mt-0.5 w-4 h-4 rounded text-rose-600 cursor-pointer">
+            <div>
+              <strong class="text-slate-800">Boîte à idées & Suggestions</strong>
+              <div class="text-[10px] text-slate-500 font-mono">Propositions communautaires et compléments soumis</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-2.5 cursor-pointer hover:text-slate-900">
+            <input type="checkbox" name="purge_scope" value="appeals" checked class="mt-0.5 w-4 h-4 rounded text-rose-600 cursor-pointer">
+            <div>
+              <strong class="text-slate-800">Recours & Messages chat</strong>
+              <div class="text-[10px] text-slate-500 font-mono">Demandes de contestation de sanction et conversations</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-2.5 cursor-pointer hover:text-slate-900">
+            <input type="checkbox" name="purge_scope" value="logs" checked class="mt-0.5 w-4 h-4 rounded text-rose-600 cursor-pointer">
+            <div>
+              <strong class="text-slate-800">Journaux d'audit & Alertes</strong>
+              <div class="text-[10px] text-slate-500 font-mono">Historique des connexions admin et notifications de sécurité</div>
+            </div>
+          </label>
+          <label class="flex items-start gap-2.5 cursor-pointer hover:text-slate-900">
+            <input type="checkbox" name="purge_scope" value="bans" checked class="mt-0.5 w-4 h-4 rounded text-rose-600 cursor-pointer">
+            <div>
+              <strong class="text-slate-800">Adresses IP sanctionnées</strong>
+              <div class="text-[10px] text-slate-500 font-mono">Débannit l'ensemble des adresses IP actuellement bloquées</div>
+            </div>
+          </label>
+        </div>
       </div>
 
       <div class="space-y-2">
@@ -1439,8 +1491,8 @@
           Annuler
         </button>
         <button id="btn-confirm-hard-reset-action" type="button" disabled class="px-5 py-2.5 rounded-xl bg-rose-600 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed hover:bg-rose-700 text-white text-xs font-bold shadow transition-all cursor-pointer flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-sm">delete_forever</span>
-          <span>Confirmer la suppression intégrale</span>
+          <span class="material-symbols-outlined text-sm">delete_sweep</span>
+          <span>Confirmer la suppression sélective</span>
         </button>
       </div>
     </div>
@@ -2587,8 +2639,8 @@
         list.innerHTML = '';
         const faq = allContent.faq || [];
         faq.forEach(f => {
-          const q = currentEditLang === 'fr' ? f.question_fr : f.question_en;
-          const a = currentEditLang === 'fr' ? f.answer_fr : f.answer_en;
+          const q = (currentEditLang === 'fr' ? (f.question_fr || f.questionFr) : (f.question_en || f.questionEn)) || f.question_fr || f.questionFr || f.question_en || f.questionEn || 'Question sans titre';
+          const a = (currentEditLang === 'fr' ? (f.answer_fr || f.answerFr) : (f.answer_en || f.answerEn)) || f.answer_fr || f.answerFr || f.answer_en || f.answerEn || '';
 
           const div = document.createElement('div');
           div.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4';
@@ -2631,24 +2683,29 @@
       }
 
       function openFaqForm(f = null) {
+        const qFr = f ? (f.question_fr || f.questionFr || '') : '';
+        const qEn = f ? (f.question_en || f.questionEn || '') : '';
+        const aFr = f ? (f.answer_fr || f.answerFr || '') : '';
+        const aEn = f ? (f.answer_en || f.answerEn || '') : '';
+
         const html = `
           <form class="space-y-4">
             <input type="hidden" name="id" value="${f ? f.id : ''}">
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Question (Français)</label>
-              <input type="text" name="question_fr" required value="${f ? (f.question_fr || '') : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              <input type="text" name="question_fr" required value="${qFr}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Question (English)</label>
-              <input type="text" name="question_en" required value="${f ? (f.question_en || '') : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              <input type="text" name="question_en" required value="${qEn}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Réponse (Français)</label>
-              <textarea name="answer_fr" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">${f ? (f.answer_fr || '') : ''}</textarea>
+              <textarea name="answer_fr" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">${aFr}</textarea>
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Réponse (English)</label>
-              <textarea name="answer_en" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">${f ? (f.answer_en || '') : ''}</textarea>
+              <textarea name="answer_en" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">${aEn}</textarea>
             </div>
             <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
               <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer la FAQ</button>
@@ -2855,17 +2912,21 @@
         if (!list) return;
         list.innerHTML = '';
         (allContent.milestones || []).forEach(m => {
-          const title = currentEditLang === 'fr' ? m.title_fr : m.title_en;
-          const desc = currentEditLang === 'fr' ? m.desc_fr : m.desc_en;
+          const title = (currentEditLang === 'fr' ? (m.title_fr || m.titleFr) : (m.title_en || m.titleEn)) || m.title_fr || m.titleFr || m.title_en || m.titleEn || 'Jalon';
+          const desc = (currentEditLang === 'fr' ? (m.desc_fr || m.descFr) : (m.desc_en || m.descEn)) || m.desc_fr || m.descFr || m.desc_en || m.descEn || '';
+          const version = m.version || 'v1.0.0';
+          const statusBadge = m.status_badge || m.statusBadge || 'EN COURS';
+          const dateText = m.date_text || m.dateText || '';
+          const progressPercent = m.progress_percent ?? m.progressPercent ?? 0;
 
           const div = document.createElement('div');
           div.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col md:flex-row items-start md:items-center justify-between gap-4';
           div.innerHTML = `
             <div class="flex-1 space-y-1">
               <div class="flex items-center gap-2">
-                <span class="font-mono font-extrabold text-brand-600 text-sm">${m.version}</span>
-                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-mono font-bold">${m.status_badge}</span>
-                <span class="text-xs text-muted font-mono">${m.date_text}</span>
+                <span class="font-mono font-extrabold text-brand-600 text-sm">${version}</span>
+                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-mono font-bold">${statusBadge}</span>
+                <span class="text-xs text-muted font-mono">${dateText}</span>
               </div>
               <h4 class="font-display font-bold text-base text-heading">${title}</h4>
               <p class="text-xs text-muted leading-relaxed">${desc}</p>
@@ -2874,10 +2935,10 @@
               <div class="w-32">
                 <div class="flex justify-between text-[11px] font-mono mb-1">
                   <span>Progression</span>
-                  <strong>${m.progress_percent}%</strong>
+                  <strong>${progressPercent}%</strong>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                  <div class="bg-brand-600 h-2 rounded-full" style="width: ${m.progress_percent}%"></div>
+                  <div class="bg-brand-600 h-2 rounded-full" style="width: ${progressPercent}%"></div>
                 </div>
               </div>
               <button class="btn-edit-milestone px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1 cursor-pointer" data-id="${m.id}">
@@ -2913,43 +2974,52 @@
       }
 
       function openMilestoneForm(m = null) {
+        const versionVal = m ? (m.version || '') : 'v1.1.0';
+        const dateVal = m ? (m.date_text || m.dateText || '') : 'T1 2027';
+        const titleFrVal = m ? (m.title_fr || m.titleFr || '') : '';
+        const titleEnVal = m ? (m.title_en || m.titleEn || '') : '';
+        const descFrVal = m ? (m.desc_fr || m.descFr || '') : '';
+        const descEnVal = m ? (m.desc_en || m.descEn || '') : '';
+        const progVal = m ? (m.progress_percent ?? m.progressPercent ?? 25) : 25;
+        const badgeVal = m ? (m.status_badge || m.statusBadge || 'EN COURS') : 'EN COURS';
+
         const html = `
           <form class="space-y-4">
             <input type="hidden" name="id" value="${m ? m.id : ''}">
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Version</label>
-                <input type="text" name="version" required value="${m ? m.version : 'v1.1.0'}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+                <input type="text" name="version" required value="${versionVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
               </div>
               <div>
                 <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Échéance</label>
-                <input type="text" name="date_text" required value="${m ? m.date_text : 'T1 2027'}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+                <input type="text" name="date_text" required value="${dateVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Titre (Français)</label>
-              <input type="text" name="title_fr" required value="${m ? m.title_fr : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              <input type="text" name="title_fr" required value="${titleFrVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Titre (English)</label>
-              <input type="text" name="title_en" required value="${m ? m.title_en : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              <input type="text" name="title_en" required value="${titleEnVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
-              <textarea name="desc_fr" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${m ? m.desc_fr : ''}</textarea>
+              <textarea name="desc_fr" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${descFrVal}</textarea>
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
-              <textarea name="desc_en" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${m ? m.desc_en : ''}</textarea>
+              <textarea name="desc_en" rows="3" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${descEnVal}</textarea>
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Avancement (%)</label>
-                <input type="number" min="0" max="100" name="progress_percent" value="${m ? m.progress_percent : 25}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+                <input type="number" min="0" max="100" name="progress_percent" value="${progVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Statut Badge</label>
-                <input type="text" name="status_badge" value="${m ? m.status_badge : 'EN COURS'}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+                <input type="text" name="status_badge" value="${badgeVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
             <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
@@ -2979,18 +3049,21 @@
         if (!list) return;
         list.innerHTML = '';
         (allContent.features || []).forEach(f => {
-          const title = currentEditLang === 'fr' ? f.title_fr : f.title_en;
-          const desc = currentEditLang === 'fr' ? f.desc_fr : f.desc_en;
+          const title = (currentEditLang === 'fr' ? (f.title_fr || f.titleFr) : (f.title_en || f.titleEn)) || f.title_fr || f.titleFr || f.title_en || f.titleEn || 'Fonctionnalité sans titre';
+          const desc = (currentEditLang === 'fr' ? (f.desc_fr || f.descFr) : (f.desc_en || f.descEn)) || f.desc_fr || f.descFr || f.desc_en || f.descEn || '';
+          const tag = f.tag || 'PROJET';
+          const votesCount = f.votes_count ?? f.votesCount ?? 0;
+          const cleanTitle = (title || '').replace(/"/g, '&quot;');
 
           const card = document.createElement('div');
           card.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col justify-between';
           card.innerHTML = `
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold uppercase">${f.tag || 'PROJET'}</span>
-                <button type="button" class="btn-inspect-feature-votes px-2.5 py-1 rounded-full bg-brand-50 hover:bg-brand-100 text-brand-700 font-mono text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-xs" data-id="${f.id}" data-title="${title.replace(/"/g, '&quot;')}" data-tag="${f.tag || 'PROJET'}" title="Cliquer pour voir la liste des IPs ayant voté">
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-mono text-[10px] font-bold uppercase">${tag}</span>
+                <button type="button" class="btn-inspect-feature-votes px-2.5 py-1 rounded-full bg-brand-50 hover:bg-brand-100 text-brand-700 font-mono text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-xs" data-id="${f.id}" data-title="${cleanTitle}" data-tag="${tag}" title="Cliquer pour voir la liste des IPs ayant voté">
                   <span class="material-symbols-outlined text-xs">how_to_vote</span>
-                  <span>${f.votes_count || 0} votes</span>
+                  <span>${votesCount} votes</span>
                   <span class="material-symbols-outlined text-xs text-brand-400">visibility</span>
                 </button>
               </div>
@@ -3062,38 +3135,46 @@
       }
 
       function openFeatureForm(f = null) {
+        const tagVal = f ? (f.tag || 'GÉNÉRAL') : 'GAMEPLAY';
+        const sortVal = f ? (f.sort_order ?? f.sortOrder ?? 0) : 1;
+        const votesVal = f ? (f.votes_count ?? f.votesCount ?? 0) : 0;
+        const titleFrVal = f ? (f.title_fr || f.titleFr || '') : '';
+        const titleEnVal = f ? (f.title_en || f.titleEn || '') : '';
+        const descFrVal = f ? (f.desc_fr || f.descFr || '') : '';
+        const descEnVal = f ? (f.desc_en || f.descEn || '') : '';
+
         const html = `
           <form class="space-y-4">
             <input type="hidden" name="id" value="${f ? f.id : ''}">
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Catégorie / Tag</label>
-                <input type="text" name="tag" required value="${f ? (f.tag || 'GÉNÉRAL') : 'GAMEPLAY'}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+                <input type="text" name="tag" required value="${tagVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Ordre d'affichage</label>
-                <input type="number" name="sort_order" value="${f ? (f.sort_order || 0) : 1}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+                <input type="number" name="sort_order" value="${sortVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
               </div>
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Compteur de votes (Modification manuelle / Validation)</label>
-              <input type="number" name="votes_count" value="${f ? (f.votes_count || 0) : 0}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              <input type="number" name="votes_count" value="${votesVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Intitulé (Français)</label>
-              <input type="text" name="title_fr" required value="${f ? (f.title_fr || '') : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              <input type="text" name="title_fr" required value="${titleFrVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Intitulé (English)</label>
-              <input type="text" name="title_en" required value="${f ? (f.title_en || '') : ''}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              <input type="text" name="title_en" required value="${titleEnVal}" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
-              <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${f ? (f.desc_fr || '') : ''}</textarea>
+              <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${descFrVal}</textarea>
             </div>
             <div>
               <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
-              <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${f ? (f.desc_en || '') : ''}</textarea>
+              <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs">${descEnVal}</textarea>
             </div>
             <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
               <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer la fonctionnalité</button>
@@ -5393,20 +5474,27 @@
         });
       }
 
-      function purgeDataScope(scope) {
+      function purgeDataScope(scopeOrScopes) {
+        const payload = Array.isArray(scopeOrScopes)
+          ? { scopes: scopeOrScopes }
+          : { scope: scopeOrScopes };
+
         fetch('/api/admin/data/purge', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-          body: JSON.stringify({ scope: scope })
+          body: JSON.stringify(payload)
         })
         .then(res => res.json())
         .then(data => {
           toast(data.message || 'Action exécutée.');
           loadDataRetention();
-          if (scope === 'analytics' || scope === 'all') loadAnalytics();
-          if (scope === 'community' || scope === 'all') loadCommunity();
-          if (scope === 'appeals' || scope === 'all') { loadAppeals(); loadUsers(); }
-          if (scope === 'logs' || scope === 'all') loadAuditLogs();
+          loadAnalytics();
+          loadCommunity();
+          loadAppeals();
+          loadUsers();
+          loadAuditLogs();
+          loadAllData();
+          if (typeof loadVotesAudit === 'function') loadVotesAudit();
         });
       }
 
@@ -5575,6 +5663,19 @@
         btnCancelHardReset.addEventListener('click', closeHardResetModal);
       }
 
+      const btnPurgeSelectAll = document.getElementById('btn-purge-select-all');
+      const btnPurgeDeselectAll = document.getElementById('btn-purge-deselect-all');
+      if (btnPurgeSelectAll) {
+        btnPurgeSelectAll.addEventListener('click', () => {
+          document.querySelectorAll('input[name="purge_scope"]').forEach(cb => cb.checked = true);
+        });
+      }
+      if (btnPurgeDeselectAll) {
+        btnPurgeDeselectAll.addEventListener('click', () => {
+          document.querySelectorAll('input[name="purge_scope"]').forEach(cb => cb.checked = false);
+        });
+      }
+
       if (inpConfirmHardReset && btnConfirmHardResetAction) {
         inpConfirmHardReset.addEventListener('input', () => {
           const val = inpConfirmHardReset.value.trim().toUpperCase();
@@ -5583,8 +5684,13 @@
 
         btnConfirmHardResetAction.addEventListener('click', () => {
           if (btnConfirmHardResetAction.disabled) return;
+          const checkedBoxes = Array.from(document.querySelectorAll('input[name="purge_scope"]:checked')).map(cb => cb.value);
+          if (checkedBoxes.length === 0) {
+            alert('Veuillez cocher au moins une catégorie de données à réinitialiser.');
+            return;
+          }
           closeHardResetModal();
-          purgeDataScope('all');
+          purgeDataScope(checkedBoxes);
         });
       }
 
