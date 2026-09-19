@@ -1,5 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { buildServer } from './server.js';
+import { db } from './db/client.js';
+import { adminUsers } from './db/schema.js';
+import { eq } from 'drizzle-orm';
 
 describe('Fastify Endpoints Integration Tests', () => {
   const server = buildServer();
@@ -84,6 +87,22 @@ describe('Fastify Endpoints Integration Tests', () => {
     expect(res.headers).toHaveProperty('vary');
   });
 
+  const testAdminToken = 'test_token_upload_admin_secret_123';
+
+  beforeAll(async () => {
+    const existing = (await db.select().from(adminUsers).limit(1))[0];
+    if (existing) {
+      await db.update(adminUsers).set({ token: testAdminToken }).where(eq(adminUsers.id, existing.id));
+    } else {
+      await db.insert(adminUsers).values({
+        username: 'testadmin',
+        passwordHash: 'testhash',
+        token: testAdminToken,
+        role: 'superadmin'
+      });
+    }
+  });
+
   it('POST /api/upload rejects non-admin requests', async () => {
     const res = await server.inject({
       method: 'POST',
@@ -91,6 +110,114 @@ describe('Fastify Endpoints Integration Tests', () => {
       payload: { file_name: 'exploit.sh', file_data: 'dGVzdA==' }
     });
     expect(res.statusCode).toBe(401);
+  });
+
+  it('POST /api/upload accepts valid image base64 from admin, strips metadata and returns optimized image URL', async () => {
+    const validPng = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/upload',
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + testAdminToken
+      },
+      payload: {
+        file_name: 'hero_test.png',
+        file_data: validPng
+      }
+    });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('ok');
+    expect(body.url).toContain('assets/img/uploads/');
+    expect(body.mime).toBe('image/png');
+    expect(body.width).toBe(1);
+    expect(body.height).toBe(1);
+  });
+
+  it('POST /api/upload accepts valid multipart image upload from admin', async () => {
+    const validPngBuffer = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
+    const boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW';
+    const multipartBody = Buffer.concat([
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="sample.png"\r\nContent-Type: image/png\r\n\r\n`),
+      validPngBuffer,
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ]);
+
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/upload',
+      headers: {
+        'content-type': `multipart/form-data; boundary=${boundary}`,
+        'authorization': 'Bearer ' + testAdminToken
+      },
+      payload: multipartBody
+    });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('ok');
+    expect(body.url).toContain('assets/img/uploads/');
+    expect(body.mime).toBe('image/png');
+  });
+
+  it('POST /api/upload rejects fake image (text/script masquerading as PNG)', async () => {
+    const fakeData = Buffer.from('echo "malicious bash script"').toString('base64');
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/upload',
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + testAdminToken
+      },
+      payload: {
+        file_name: 'exploit.png',
+        file_data: fakeData
+      }
+    });
+    expect(res.statusCode).toBe(400);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('error');
+    expect(body.message).toContain('non autorisé');
+  });
+
+  it('POST /api/upload rejects unsafe SVG containing <script> tags', async () => {
+    const unsafeSvg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>').toString('base64');
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/upload',
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + testAdminToken
+      },
+      payload: {
+        file_name: 'xss.svg',
+        file_data: unsafeSvg
+      }
+    });
+    expect(res.statusCode).toBe(400);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('error');
+    expect(body.message).toContain('non sécurisé');
+  });
+
+  it('POST /api/upload accepts clean and safe SVG', async () => {
+    const safeSvg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="purple"/></svg>').toString('base64');
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/upload',
+      headers: {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ' + testAdminToken
+      },
+      payload: {
+        file_name: 'icon.svg',
+        file_data: safeSvg
+      }
+    });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('ok');
+    expect(body.mime).toBe('image/svg+xml');
   });
 
   it('GET / serves index.html with 200', async () => {

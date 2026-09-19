@@ -44,7 +44,9 @@ web/src/**/*.d.ts
 web/src/**/*.js
 
 # Scratch and build caches
-
-# Scratch and build caches
 scratch/
 .system_generated/
+
+# Uploads directory
+web/assets/img/uploads/*
+!web/assets/img/uploads/.gitkeep

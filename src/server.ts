@@ -12,6 +12,7 @@ import helmet from '@fastify/helmet';
 import compress from '@fastify/compress';
 import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
+import multipart from '@fastify/multipart';
 import path from 'node:path';
 import fs from 'node:fs';
 
@@ -55,6 +56,13 @@ export function buildServer(): FastifyInstance {
 
   server.register(cookie, {
     secret: process.env.SESSION_SECRET || 'kairo_local_session_cookie_key'
+  });
+
+  server.register(multipart, {
+    limits: {
+      fileSize: 15 * 1024 * 1024, // 15MB max file size
+      files: 1
+    }
   });
 
   // Health Endpoint

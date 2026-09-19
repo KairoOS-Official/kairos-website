@@ -1532,6 +1532,47 @@
       return false;
     }
 
+    window.uploadImageHelper = function(inputEl, targetInputId, previewImgId) {
+      if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
+      var file = inputEl.files[0];
+      var token = localStorage.getItem('kairo_admin_token') || '';
+      var formData = new FormData();
+      formData.append('file', file);
+
+      var headers = {};
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      if (typeof toast === 'function') toast('Téléversement et optimisation en cours...');
+
+      fetch('/api/upload', {
+        method: 'POST',
+        headers: headers,
+        body: formData
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.status === 'ok') {
+          var targetInput = document.getElementById(targetInputId);
+          var previewImg = document.getElementById(previewImgId);
+          if (targetInput) {
+            targetInput.value = data.url;
+            targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+          if (previewImg) {
+            previewImg.src = data.url;
+          }
+          var dim = (data.width && data.height) ? ' (' + data.width + 'x' + data.height + 'px)' : '';
+          if (typeof toast === 'function') toast('Fichier téléversé & optimisé' + dim + ' !');
+        } else {
+          if (typeof toast === 'function') toast('Erreur téléversement : ' + (data.message || 'échec'));
+        }
+      })
+      .catch(function(err) {
+        if (typeof toast === 'function') toast('Erreur réseau lors du téléversement.');
+        console.error(err);
+      });
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
       let authToken = localStorage.getItem('kairo_admin_token');
       let currentEditLang = 'fr';
@@ -2272,26 +2313,35 @@
         studioQuickFile.addEventListener('change', () => {
           const file = studioQuickFile.files[0];
           if (!file) return;
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            fetch('/api/upload', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-              body: JSON.stringify({ file_data: e.target.result, file_name: file.name })
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.status === 'ok') {
-                studioUploadPreviewBox.classList.remove('hidden');
-                studioUploadPreviewImg.src = data.url;
-                studioUploadPath.textContent = data.url;
-                toast('Image téléversée avec succès : ' + data.url);
-              } else {
-                toast('Erreur upload : ' + (data.message || 'échec'));
-              }
-            });
-          };
-          reader.readAsDataURL(file);
+
+          toast('Téléversement et optimisation de l\'image...');
+          const formData = new FormData();
+          formData.append('file', file);
+
+          const headers = {};
+          if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+
+          fetch('/api/upload', {
+            method: 'POST',
+            headers: headers,
+            body: formData
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'ok') {
+              studioUploadPreviewBox.classList.remove('hidden');
+              studioUploadPreviewImg.src = data.url;
+              studioUploadPath.textContent = data.url;
+              const metaInfo = (data.width && data.height) ? ` (${data.width}x${data.height}px)` : '';
+              toast('Image optimisée & téléversée' + metaInfo + ' : ' + data.url);
+            } else {
+              toast('Erreur upload : ' + (data.message || 'échec'));
+            }
+          })
+          .catch(err => {
+            toast('Erreur réseau lors du téléversement.');
+            console.error(err);
+          });
         });
       }
 

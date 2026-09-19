@@ -28,8 +28,37 @@ import {
 } from '../../db/schema.js';
 import { eq, desc, asc, and, sql } from 'drizzle-orm';
 import { hashPassword } from '../auth/auth.service.js';
+import sharp from 'sharp';
+import { fileTypeFromBuffer } from 'file-type';
 
 const UPLOAD_DIR = path.resolve(process.cwd(), 'web/assets/img/uploads');
+
+function isSafeSvg(buffer: Buffer): { safe: boolean; reason?: string } {
+  const content = buffer.toString('utf-8').trim();
+  if (!content.includes('<svg') || (!content.startsWith('<') && !content.startsWith('<?xml'))) {
+    return { safe: false, reason: 'Format SVG non reconnu' };
+  }
+  const dangerousPatterns = [
+    /<script/i,
+    /javascript:/i,
+    /data:text\/html/i,
+    /<foreignobject/i,
+    /<iframe/i,
+    /<embed/i,
+    /<object/i,
+    /onload\s*=/i,
+    /onerror\s*=/i,
+    /onclick\s*=/i,
+    /onmouseover\s*=/i,
+    /onfocus\s*=/i
+  ];
+  for (const pattern of dangerousPatterns) {
+    if (pattern.test(content)) {
+      return { safe: false, reason: 'Contenu SVG non sécurisé : balises de script ou gestionnaires d\'événements interdits' };
+    }
+  }
+  return { safe: true };
+}
 
 async function getAuthAdmin(request: FastifyRequest) {
   const cookieToken = request.cookies['kairo_admin_session'];
@@ -752,37 +781,106 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
     const admin = await getAuthAdmin(request);
     if (!admin) return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
 
-    const parse = UploadSchema.safeParse(request.body);
-    if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Fichier requis' });
+    let buffer: Buffer;
+    let originalName = 'upload.png';
 
-    const { file_data, file_name } = parse.data;
-    const cleanData = file_data.includes(',') ? file_data.split(',')[1] : file_data;
-    const buffer = Buffer.from(cleanData, 'base64');
+    if (request.isMultipart()) {
+      const file = await request.file();
+      if (!file) {
+        return reply.status(400).send({ status: 'error', message: 'Fichier requis' });
+      }
+      buffer = await file.toBuffer();
+      originalName = file.filename || 'upload.png';
+    } else {
+      const parse = UploadSchema.safeParse(request.body);
+      if (!parse.success) return reply.status(400).send({ status: 'error', message: 'Fichier requis' });
 
-    // Security Hardening: Max 10MB per file
-    if (buffer.length > 10 * 1024 * 1024) {
-      return reply.status(400).send({ status: 'error', message: 'Fichier trop volumineux (max 10MB)' });
+      const { file_data, file_name } = parse.data;
+      const cleanData = file_data.includes(',') ? file_data.split(',')[1]! : file_data;
+      buffer = Buffer.from(cleanData, 'base64');
+      originalName = file_name || 'upload.png';
     }
 
-    // Allowed extensions check (images and audio assets)
-    const allowedExts = ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif', '.ico', '.mp3', '.wav', '.ogg'];
-    const ext = path.extname(file_name).toLowerCase();
-    if (!allowedExts.includes(ext)) {
-      return reply.status(400).send({ status: 'error', message: 'Type de fichier non autorisé.' });
+    if (buffer.length === 0) {
+      return reply.status(400).send({ status: 'error', message: 'Fichier vide' });
+    }
+    if (buffer.length > 15 * 1024 * 1024) {
+      return reply.status(400).send({ status: 'error', message: 'Fichier trop volumineux (max 15MB)' });
+    }
+
+    const detected = await fileTypeFromBuffer(buffer);
+    const ext = path.extname(originalName).toLowerCase();
+
+    let finalMime = detected?.mime;
+    let finalExt = detected ? `.${detected.ext}` : ext;
+    let finalBuffer = buffer;
+    let imgMeta: { width?: number; height?: number } | undefined;
+
+    const allowedMimes = [
+      'image/png',
+      'image/jpeg',
+      'image/webp',
+      'image/gif',
+      'image/x-icon',
+      'image/vnd.microsoft.icon',
+      'audio/mpeg',
+      'audio/wav',
+      'audio/ogg',
+      'audio/x-wav'
+    ];
+
+    if (ext === '.svg' || finalMime === 'image/svg+xml') {
+      const svgCheck = isSafeSvg(buffer);
+      if (!svgCheck.safe) {
+        return reply.status(400).send({ status: 'error', message: svgCheck.reason || 'SVG non autorisé' });
+      }
+      finalMime = 'image/svg+xml';
+      finalExt = '.svg';
+    } else {
+      if (!detected || !allowedMimes.includes(detected.mime)) {
+        return reply.status(400).send({ status: 'error', message: 'Type de fichier non autorisé ou corrompu.' });
+      }
+
+      // Process and optimize images with Sharp
+      if (detected.mime.startsWith('image/') && !detected.mime.includes('icon')) {
+        try {
+          const image = sharp(buffer);
+          const metadata = await image.metadata();
+          if (!metadata.format) {
+            return reply.status(400).send({ status: 'error', message: 'Image non valide ou corrompue' });
+          }
+
+          image.rotate(); // auto-orient based on EXIF before stripping metadata
+          if ((metadata.width && metadata.width > 2560) || (metadata.height && metadata.height > 2560)) {
+            image.resize(2560, 2560, { fit: 'inside', withoutEnlargement: true });
+          }
+
+          finalBuffer = await image.toBuffer();
+          finalExt = `.${metadata.format}`;
+          imgMeta = { width: metadata.width, height: metadata.height };
+        } catch {
+          return reply.status(400).send({ status: 'error', message: 'Impossible de traiter l\'image (fichier corrompu)' });
+        }
+      }
     }
 
     if (!fs.existsSync(UPLOAD_DIR)) {
       fs.mkdirSync(UPLOAD_DIR, { recursive: true });
     }
 
-    const safeBaseName = path.basename(file_name).replace(/[^a-zA-Z0-9._-]/g, '_');
-    const safeName = (Math.floor(Date.now() / 1000) + '_' + crypto.randomBytes(4).toString('hex') + '_' + safeBaseName);
+    const safeBaseName = path.basename(originalName, path.extname(originalName)).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50) || 'upload';
+    const safeName = `${Math.floor(Date.now() / 1000)}_${crypto.randomBytes(4).toString('hex')}_${safeBaseName}${finalExt}`;
     const targetPath = path.join(UPLOAD_DIR, safeName);
-    fs.writeFileSync(targetPath, buffer);
+    fs.writeFileSync(targetPath, finalBuffer);
 
     return reply.status(200).send({
       status: 'ok',
-      url: ('assets/img/uploads/' + safeName)
+      url: `assets/img/uploads/${safeName}`,
+      file_name: safeName,
+      size: finalBuffer.length,
+      mime: finalMime,
+      width: imgMeta?.width,
+      height: imgMeta?.height
     });
   });
 
