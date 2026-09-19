@@ -1,4 +1,4 @@
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { db } from '../../db/client.js';
 import {
@@ -11,8 +11,17 @@ import {
 } from '../../db/schema.js';
 import { eq, desc, and, sql } from 'drizzle-orm';
 
+function getClientIp(request: FastifyRequest): string {
+  const forwarded = request.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string' && forwarded.length > 0) {
+    const first = forwarded.split(',')[0].trim();
+    if (first) return first;
+  }
+  return request.ip || '127.0.0.1';
+}
+
 const VoteSchema = z.object({
-  feature_id: z.number()
+  feature_id: z.coerce.number().int().positive('ID de fonctionnalité invalide')
 });
 
 const ProposalSchema = z.object({
@@ -24,7 +33,7 @@ const ProposalSchema = z.object({
 });
 
 const SuggestionSchema = z.object({
-  feature_id: z.number(),
+  feature_id: z.coerce.number().int().positive('ID de fonctionnalité invalide'),
   suggestion_text: z.string().min(1, 'Texte de suggestion requis'),
   author: z.string().default('Anonyme'),
   email: z.string().email('Email invalide').optional().or(z.literal(''))
@@ -33,24 +42,42 @@ const SuggestionSchema = z.object({
 export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
   // 1. Liste des fonctionnalités au vote avec statut has_voted pour l'IP
   fastify.get('/api/roadmap/features', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
 
     const features = await db.select().from(roadmapFeatures).orderBy(desc(roadmapFeatures.votesCount), roadmapFeatures.sortOrder);
 
     const featuresWithVotes = await Promise.all(features.map(async (feat: any) => {
+      const featId = Number(feat.id);
       const vote = (await db
         .select()
         .from(roadmapVotes)
-        .where(and(eq(roadmapVotes.featureId, feat.id), eq(roadmapVotes.ipAddress, clientIp))))[0];
+        .where(and(eq(roadmapVotes.featureId, featId), eq(roadmapVotes.ipAddress, clientIp))))[0];
 
       const suggestions = await db
         .select()
         .from(featureSuggestions)
-        .where(and(eq(featureSuggestions.featureId, feat.id), sql`status != 'rejected'`))
+        .where(and(eq(featureSuggestions.featureId, featId), sql`status != 'rejected'`))
         .orderBy(desc(featureSuggestions.id));
+
+      const vCount = Number(feat.votesCount ?? feat.votes_count ?? 0);
+      const sOrder = Number(feat.sortOrder ?? feat.sort_order ?? 0);
 
       return {
         ...feat,
+        id: featId,
+        titleFr: feat.titleFr,
+        titleEn: feat.titleEn,
+        descFr: feat.descFr,
+        descEn: feat.descEn,
+        title_fr: feat.titleFr || feat.title_fr,
+        title_en: feat.titleEn || feat.title_en,
+        desc_fr: feat.descFr || feat.desc_fr,
+        desc_en: feat.descEn || feat.desc_en,
+        tag: feat.tag,
+        votesCount: vCount,
+        votes_count: vCount,
+        sortOrder: sOrder,
+        sort_order: sOrder,
         has_voted: Boolean(vote),
         suggestions
       };
@@ -65,7 +92,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 2. Vote 1-clic par IP
   fastify.post('/api/roadmap/vote', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
     const userAgent = request.headers['user-agent'] || 'Unknown';
 
     // Vérifier si l'IP est bannie du vote
@@ -134,7 +161,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 3. Soumission d'une proposition communautaire (Boîte à idées)
   fastify.post('/api/roadmap/propose', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
 
     const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)))[0];
     if (ban && (ban.blockProposal || ban.blockAll)) {
@@ -170,7 +197,7 @@ export const roadmapRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 4. Soumission d'un complément d'idée sur une fonctionnalité existante
   fastify.post('/api/roadmap/features/suggest', async (request, reply) => {
-    const clientIp = request.ip || '127.0.0.1';
+    const clientIp = getClientIp(request);
 
     const ban = (await db.select().from(bannedIps).where(eq(bannedIps.ipAddress, clientIp)))[0];
     if (ban && (ban.blockSuggestion || ban.blockAll)) {

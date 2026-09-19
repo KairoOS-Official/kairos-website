@@ -57,20 +57,29 @@
   }
 
   let pageEnterTime = Date.now();
-  let durationSent = false;
+  let lastSentDuration = 0;
 
   function sendPageDuration() {
-    if (!getConsent() || durationSent) return;
+    if (!getConsent()) return;
     const durationSeconds = Math.max(1, Math.round((Date.now() - pageEnterTime) / 1000));
     // Limite raisonnable (ex: 2h max pour éviter les onglets laissés ouverts)
     if (durationSeconds > 7200) return;
+    if (durationSeconds <= lastSentDuration) return;
 
+    lastSentDuration = durationSeconds;
     sendEvent('page_duration', window.location.pathname || '/', {
       duration_seconds: durationSeconds
     });
   }
 
-  // Envoi périodique ou au départ de la page
+  // Envoi périodique régulier (heartbeat toutes les 15 secondes)
+  setInterval(function() {
+    if (document.visibilityState !== 'hidden') {
+      sendPageDuration();
+    }
+  }, 15000);
+
+  // Envoi au masquage et au départ de la page
   window.addEventListener('visibilitychange', function() {
     if (document.visibilityState === 'hidden') {
       sendPageDuration();

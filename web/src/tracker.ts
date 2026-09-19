@@ -43,3 +43,34 @@ export function trackPageView(): void {
 export function trackDownloadClick(): void {
   sendEvent('click', 'download_button');
 }
+
+let pageEnterTime = Date.now();
+let lastSentDuration = 0;
+
+export function sendPageDuration(): void {
+  if (!hasAnalyticsConsent()) return;
+  const durationSeconds = Math.max(1, Math.round((Date.now() - pageEnterTime) / 1000));
+  if (durationSeconds > 7200) return;
+  if (durationSeconds <= lastSentDuration) return;
+
+  lastSentDuration = durationSeconds;
+  sendEvent('page_duration', window.location.pathname || '/', {
+    duration_seconds: durationSeconds
+  });
+}
+
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    if (document.visibilityState !== 'hidden') {
+      sendPageDuration();
+    }
+  }, 15000);
+
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      sendPageDuration();
+    }
+  });
+  window.addEventListener('pagehide', sendPageDuration);
+  window.addEventListener('beforeunload', sendPageDuration);
+}

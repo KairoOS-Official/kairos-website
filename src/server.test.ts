@@ -149,5 +149,84 @@ describe('Fastify Endpoints Integration Tests', () => {
     expect(body.status).toBe('ok');
     expect(Array.isArray(body.messages)).toBe(true);
   });
+
+  it('GET /api/analytics/summary returns complete metrics for admin dashboard', async () => {
+    const res = await server.inject({ method: 'GET', url: '/api/analytics/summary' });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('ok');
+    expect(body).toHaveProperty('total_views');
+    expect(body).toHaveProperty('unique_visitors');
+    expect(body).toHaveProperty('avg_session_duration');
+    expect(body).toHaveProperty('avg_page_duration');
+    expect(body).toHaveProperty('pages_breakdown');
+    expect(body).toHaveProperty('download_clicks');
+    expect(body).toHaveProperty('download_unique_sessions');
+    expect(body).toHaveProperty('consent_accepted');
+    expect(body).toHaveProperty('consent_refused');
+    expect(body).toHaveProperty('consent_rate');
+    expect(Array.isArray(body.pages_breakdown)).toBe(true);
+  });
+
+  it('POST /api/track/consent-stat records consent choices', async () => {
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/track/consent-stat',
+      payload: {
+        choice: 'consent_accepted',
+        transition: 'initial',
+        page: '/'
+      }
+    });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('consent_stat_recorded');
+  });
+
+  it('POST /api/track updates page duration', async () => {
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/track',
+      payload: {
+        event_type: 'page_duration',
+        page: '/test-dur',
+        session_id: 'test_sess_dur',
+        meta: { duration_seconds: 45 }
+      }
+    });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('tracked');
+  });
+
+  it('POST /api/roadmap/vote accepts string number feature_id without validation error', async () => {
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/roadmap/vote',
+      payload: { feature_id: '1' }
+    });
+    expect([200, 400, 403]).toContain(res.statusCode);
+    const body = JSON.parse(res.payload);
+    if (res.statusCode === 400) {
+      expect(body.message).not.toContain('expected number, received string');
+    }
+  });
+
+  it('GET /api/roadmap/features provides both snake_case and camelCase fields', async () => {
+    const res = await server.inject({ method: 'GET', url: '/api/roadmap/features' });
+    expect(res.statusCode).toBe(200);
+    const body = JSON.parse(res.payload);
+    expect(body.status).toBe('ok');
+    if (body.features.length > 0) {
+      const feat = body.features[0];
+      expect(typeof feat.id).toBe('number');
+      expect(feat).toHaveProperty('title_fr');
+      expect(feat).toHaveProperty('desc_fr');
+      expect(feat).toHaveProperty('votes_count');
+      expect(feat).toHaveProperty('titleFr');
+      expect(feat).toHaveProperty('descFr');
+      expect(feat).toHaveProperty('votesCount');
+    }
+  });
 });
 

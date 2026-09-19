@@ -50,12 +50,12 @@ const UserDeleteSchema = z.object({
 });
 
 const AppealDeleteSchema = z.object({
-  appeal_id: z.number(),
+  appeal_id: z.coerce.number(),
   hard: z.boolean().optional().default(false)
 });
 
 const VoteDeleteSchema = z.object({
-  feature_id: z.number(),
+  feature_id: z.coerce.number(),
   ip_address: z.string().min(1, 'IP requise')
 });
 
@@ -119,9 +119,10 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         SELECT ip_address FROM feature_suggestions WHERE ip_address IS NOT NULL AND ip_address != ''
         UNION
         SELECT ip_address FROM banned_ips WHERE ip_address IS NOT NULL AND ip_address != ''
-      )
+      ) AS all_ips
     `;
-    const distinctIps = (await rawAll<{ ip_address: string }>(allIpsQuery)).map(r => r.ip_address);
+    const rawIps = await rawAll<{ ip_address: string }>(allIpsQuery);
+    const distinctIps = Array.from(new Set(rawIps.map(r => r.ip_address).filter(Boolean)));
 
     const users = [];
     for (const ip of distinctIps) {
@@ -142,7 +143,7 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
           SELECT MAX(created_at) as ts FROM community_proposals WHERE ip_address = ${ip}
           UNION ALL
           SELECT MAX(created_at) as ts FROM feature_suggestions WHERE ip_address = ${ip}
-        )
+        ) AS sub
       `;
       const [lastSeenRow] = await rawAll<{ last_seen: string | null }>(lastSeenQuery);
 
@@ -173,14 +174,20 @@ export const adminRoutes: FastifyPluginAsync = async (fastify) => {
         ip_address: ip,
         total_connections: vCount + eCount,
         page_views: vCount,
+        total_page_views: vCount,
         events_count: eCount,
+        total_events: eCount,
         votes_count: voteRow?.c || 0,
         proposals_count: propRow?.c || 0,
         suggestions_count: sugRow?.c || 0,
         nickname,
         email,
+        known_authors: nickname ? [nickname] : [],
+        known_emails: email ? [email] : [],
         last_seen: lastSeenRow?.last_seen || null,
-        ban
+        is_banned: Boolean(ban),
+        ban,
+        ban_details: ban
       });
     }
 
