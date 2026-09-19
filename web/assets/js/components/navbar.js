@@ -12,15 +12,17 @@ class KairoNavbar extends HTMLElement {
   connectedCallback() {
         // Détermination de la racine relative
     const path = window.location.pathname;
+    const localeMatch = path.match(/^\/(fr|en)(?:\/|$)/);
+    const localePrefix = localeMatch ? `/${localeMatch[1]}` : '';
     const isSubPage = path.includes('/themes') || path.includes('/plugins') || path.includes('/roadmap') || path.includes('/legal') || path.includes('/pages/') || this.getAttribute('root') === '../';
     const root = isSubPage ? '../' : './';
     const active = this.getAttribute('active') || (isSubPage ? this.detectActivePage() : 'home');
 
     const fileSuffix = window.location.protocol === 'file:' ? 'index.html' : '';
-    const homeHref = window.location.protocol === 'file:' ? `${root}index.html` : `${root}`;
-    const themesHref = `${root}themes/${fileSuffix}`;
-    const pluginsHref = `${root}plugins/${fileSuffix}`;
-    const roadmapHref = `${root}roadmap/${fileSuffix}`;
+    const homeHref = window.location.protocol === 'file:' ? `${root}index.html` : `${localePrefix}/`;
+    const themesHref = window.location.protocol === 'file:' ? `${root}themes/${fileSuffix}` : `${localePrefix}/themes/`;
+    const pluginsHref = window.location.protocol === 'file:' ? `${root}plugins/${fileSuffix}` : `${localePrefix}/plugins/`;
+    const roadmapHref = window.location.protocol === 'file:' ? `${root}roadmap/${fileSuffix}` : `${localePrefix}/roadmap/`;
 
     const downloadHref = active === 'home' ? '#download' : 'https://github.com/KairoOS-Official/KairoOS/releases';
     const downloadTarget = active === 'home' ? '' : 'target="_blank" rel="noopener noreferrer"';

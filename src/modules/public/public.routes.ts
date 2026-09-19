@@ -288,19 +288,23 @@ export const publicRoutes: FastifyPluginAsync = async (fastify) => {
     const totalViews = Number(viewsCount?.val || 0);
     const totalEvents = Number(eventsCount?.val || 0);
 
-    // 2. Visiteurs uniques (via session_id ou ip anonymisée)
-    const [uniqueSessionsRow] = await rawAll<{ c: string | number }>(sql`
-      SELECT COUNT(DISTINCT session_id) as c FROM page_views 
-      WHERE session_id IS NOT NULL AND session_id != '' AND session_id != 'anon'
+    // 2. Visiteurs uniques réels (déduplication par visitor_id permanent ou IP)
+    const rawSessionsAndIps = await rawAll<{ session_id: string | null; ip_address: string | null }>(sql`
+      SELECT session_id, ip_address FROM page_views WHERE session_id IS NOT NULL AND session_id != ''
     `);
-    const [uniqueIpsRow] = await rawAll<{ c: string | number }>(sql`
-      SELECT COUNT(DISTINCT ip_address) as c FROM page_views 
-      WHERE ip_address IS NOT NULL AND ip_address != '' AND ip_address != '0.0.0.0' AND ip_address != 'ANON'
-    `);
-    const sessionCount = Number(uniqueSessionsRow?.c || 0);
-    const ipCount = Number(uniqueIpsRow?.c || 0);
-    let uniqueVisitors = Math.max(sessionCount, ipCount);
-    if (uniqueVisitors === 0 && totalViews > 0) uniqueVisitors = 1;
+    const uniqueVisitorKeys = new Set<string>();
+    for (const r of rawSessionsAndIps) {
+      const s = r.session_id || '';
+      const ip = r.ip_address || '';
+      if (s.startsWith('v_') && s.includes('.')) {
+        uniqueVisitorKeys.add(s.split('.')[0]);
+      } else if (ip && ip !== '0.0.0.0' && ip !== 'ANON') {
+        uniqueVisitorKeys.add(ip);
+      } else if (s && s !== 'anon') {
+        uniqueVisitorKeys.add(s);
+      }
+    }
+    const uniqueVisitors = uniqueVisitorKeys.size > 0 ? uniqueVisitorKeys.size : (totalViews > 0 ? 1 : 0);
 
     // 3. Téléchargements
     const [dlClicksRow] = await rawAll<{ c: string | number }>(sql`

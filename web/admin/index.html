@@ -1180,6 +1180,81 @@
               <div class="flex justify-between"><span>Version KaïroOS :</span> <strong class="text-brand-600">v0.1.0 Alpha</strong></div>
             </div>
           </div>
+
+          <!-- SECTION SAUVEGARDE, CHARGEMENT & RÉINITIALISATION GLOBALE (RGPD) -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-subtle space-y-4 md:col-span-2">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-indigo-600 text-xl">database</span>
+                  <h3 class="font-display font-bold text-base text-heading">Sauvegarde, Chargement & Réinitialisation Complète</h3>
+                </div>
+                <p class="text-xs text-muted">
+                  Gestion sécurisée des données de la plateforme conforme au RGPD. La sauvegarde exclut automatiquement tout élément périmé, le chargement purge les données expirées, et la réinitialisation efface l'ensemble des données dynamiques sans toucher à vos identifiants administrateurs.
+                </p>
+              </div>
+            </div>
+
+            <!-- Grille des 3 Actions Principales demandées -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              
+              <!-- 1. Bouton Sauvegarder & Télécharger -->
+              <div class="p-4 rounded-2xl border border-indigo-100 bg-indigo-50/40 flex flex-col justify-between space-y-3">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 text-indigo-900 font-display font-bold text-xs">
+                    <span class="material-symbols-outlined text-base text-indigo-600">download</span>
+                    <span>1. Exporter la Sauvegarde</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600 leading-relaxed">
+                    Génère et télécharge une archive JSON intégrale. <strong>Ne récupère pas</strong> les éléments expirés selon les durées légales RGPD.
+                  </p>
+                </div>
+                <button id="btn-backup-download" type="button" class="w-full py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-sm">save_alt</span>
+                  <span>Sauvegarder & DL (JSON)</span>
+                </button>
+              </div>
+
+              <!-- 2. Bouton Charger la Sauvegarde -->
+              <div class="p-4 rounded-2xl border border-emerald-100 bg-emerald-50/40 flex flex-col justify-between space-y-3">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 text-emerald-900 font-display font-bold text-xs">
+                    <span class="material-symbols-outlined text-base text-emerald-600">upload_file</span>
+                    <span>2. Charger une Sauvegarde</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600 leading-relaxed">
+                    Sélectionne un fichier JSON pour restaurer les données. <strong>Supprime immédiatement</strong> tous les éléments qui auraient dû être supprimés par le temps RGPD.
+                  </p>
+                </div>
+                <input type="file" id="input-restore-backup-file" accept=".json,application/json" class="hidden">
+                <button id="btn-restore-backup" type="button" class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-sm">folder_open</span>
+                  <span>Charger le fichier (Load)</span>
+                </button>
+              </div>
+
+              <!-- 3. Bouton Tout Supprimer (Hard Reset) -->
+              <div class="p-4 rounded-2xl border border-rose-100 bg-rose-50/40 flex flex-col justify-between space-y-3">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 text-rose-900 font-display font-bold text-xs">
+                    <span class="material-symbols-outlined text-base text-rose-600">delete_forever</span>
+                    <span>3. Tout Supprimer</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600 leading-relaxed">
+                    Efface <strong>absolument toutes</strong> les données dynamiques (analytics, clics, votes, idées, recours, logs, IPs). Vos comptes d'accès administrateurs sont préservés.
+                  </p>
+                </div>
+                <button id="btn-hard-reset-everything" type="button" class="w-full py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-sm">warning</span>
+                  <span>Tout supprimer de tout</span>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Indicateur de statut -->
+            <div id="data-management-status" class="hidden p-3 rounded-xl bg-slate-100 text-xs font-mono text-slate-800 flex items-center gap-2"></div>
+          </div>
         </div>
       </div>
 
@@ -1314,6 +1389,59 @@
           <span class="material-symbols-outlined text-sm">open_in_new</span>
           <span>Ouvrir sur GitHub</span>
         </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE SÉCURISÉE RÉINITIALISATION COMPLÈTE (HARD RESET) -->
+  <div id="modal-hard-reset" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-rose-200 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-2xl">warning</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-lg text-rose-900">Tout Supprimer Définitivement</h3>
+            <span class="text-xs text-rose-600 font-mono font-bold">Action Irréversible (Hard Reset)</span>
+          </div>
+        </div>
+        <button id="btn-close-hard-reset-modal" type="button" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-2">
+        <p>
+          Cette action va <strong>effacer la totalité des données d'usage</strong> :
+        </p>
+        <ul class="list-disc list-inside space-y-0.5 text-[11px] font-mono">
+          <li>Statistiques et sessions de visite (page views, clics, durées)</li>
+          <li>Votes roadmap, suggestions et idées de la communauté</li>
+          <li>Recours de sanction et conversations directes</li>
+          <li>Journaux d'audit et historique des alertes de sécurité</li>
+          <li>Liste des adresses IP sanctionnées</li>
+        </ul>
+        <p class="text-[11px] text-emerald-800 font-sans font-semibold bg-emerald-50 border border-emerald-200 rounded-xl p-2">
+          🛡️ <strong>Sécurité garantie :</strong> Vos comptes administrateurs et configurations d'accès ne seront <u>pas supprimés</u>. Vous conserverez immédiatement votre session active.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <label for="inp-confirm-hard-reset" class="block text-xs font-mono font-semibold text-slate-700">
+          Pour confirmer, veuillez saisir le mot <strong class="text-rose-600 font-bold font-mono">SUPPRIMER</strong> ci-dessous :
+        </label>
+        <input id="inp-confirm-hard-reset" type="text" placeholder="Tapez SUPPRIMER" autocomplete="off" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-sm focus:ring-2 focus:ring-rose-500 focus:outline-none uppercase">
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button id="btn-cancel-hard-reset" type="button" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer">
+          Annuler
+        </button>
+        <button id="btn-confirm-hard-reset-action" type="button" disabled class="px-5 py-2.5 rounded-xl bg-rose-600 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed hover:bg-rose-700 text-white text-xs font-bold shadow transition-all cursor-pointer flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">delete_forever</span>
+          <span>Confirmer la suppression intégrale</span>
+        </button>
       </div>
     </div>
   </div>
@@ -5298,6 +5426,165 @@
           if (confirm("ATTENTION : Vous êtes sur le point de supprimer TOUTES les données et statistiques enregistrées (analytics, vues, idées, votes, recours, journaux de sécurité).\n\nCette action est irréversible. Confirmez-vous la réinitialisation complète ?")) {
             purgeDataScope('all');
           }
+        });
+      }
+
+      // ========================================================
+      // 3 BOUTONS GESTION DES DONNÉES RGPD (SAVE & DL / LOAD / TOUT SUPPRIMER)
+      // ========================================================
+
+      // 1. Sauvegarder & Télécharger (Backup JSON RGPD sans éléments expirés)
+      const btnBackupDownload = document.getElementById('btn-backup-download');
+      if (btnBackupDownload) {
+        btnBackupDownload.addEventListener('click', () => {
+          btnBackupDownload.disabled = true;
+          const originalHtml = btnBackupDownload.innerHTML;
+          btnBackupDownload.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Génération...</span>';
+
+          fetch('/api/admin/data/backup', {
+            headers: { 'Authorization': 'Bearer ' + authToken }
+          })
+          .then(res => {
+            if (!res.ok) throw new Error('Erreur lors de la génération de la sauvegarde');
+            return res.blob();
+          })
+          .then(blob => {
+            const dateStr = new Date().toISOString().slice(0, 10);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `kairo-backup-${dateStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+            toast('Sauvegarde téléchargée avec succès (éléments périmés exclus selon RGPD) !');
+          })
+          .catch(err => {
+            console.error(err);
+            toast('Échec du téléchargement de la sauvegarde : ' + err.message);
+          })
+          .finally(() => {
+            btnBackupDownload.disabled = false;
+            btnBackupDownload.innerHTML = originalHtml;
+          });
+        });
+      }
+
+      // 2. Charger / Restaurer une Sauvegarde (Load JSON RGPD avec purge auto des expirés)
+      const btnRestoreBackup = document.getElementById('btn-restore-backup');
+      const inputRestoreBackupFile = document.getElementById('input-restore-backup-file');
+      if (btnRestoreBackup && inputRestoreBackupFile) {
+        btnRestoreBackup.addEventListener('click', () => {
+          inputRestoreBackupFile.value = '';
+          inputRestoreBackupFile.click();
+        });
+
+        inputRestoreBackupFile.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const jsonContent = JSON.parse(event.target.result);
+              if (!jsonContent || typeof jsonContent !== 'object') {
+                alert('Le fichier sélectionné ne contient pas un format JSON valide.');
+                return;
+              }
+
+              const confirmMsg = "Confirmez-vous le chargement et la restauration de cette sauvegarde ?\n\n" +
+                "NOTE RGPD : Tous les éléments expirés selon les règles légales (dans la base et dans le fichier) seront automatiquement éliminés.";
+              if (!confirm(confirmMsg)) return;
+
+              btnRestoreBackup.disabled = true;
+              const originalHtml = btnRestoreBackup.innerHTML;
+              btnRestoreBackup.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span><span>Restauration...</span>';
+
+              fetch('/api/admin/data/restore', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + authToken
+                },
+                body: JSON.stringify(jsonContent)
+              })
+              .then(res => res.json())
+              .then(data => {
+                if (data.status === 'ok') {
+                  toast(data.message);
+                  loadDataRetention();
+                  loadAnalytics();
+                  loadCommunity();
+                  loadAppeals();
+                  loadUsers();
+                  loadAuditLogs();
+                } else {
+                  alert('Erreur lors de la restauration : ' + (data.message || 'Échec'));
+                }
+              })
+              .catch(err => {
+                console.error(err);
+                alert('Erreur réseau lors de la restauration : ' + err.message);
+              })
+              .finally(() => {
+                btnRestoreBackup.disabled = false;
+                btnRestoreBackup.innerHTML = originalHtml;
+              });
+            } catch (err) {
+              alert('Fichier JSON illisible ou corrompu : ' + err.message);
+            }
+          };
+          reader.readAsText(file);
+        });
+      }
+
+      // 3. Tout Supprimer Définitivement (Modal Sécurisée Hard Reset)
+      const modalHardReset = document.getElementById('modal-hard-reset');
+      const btnHardResetEverything = document.getElementById('btn-hard-reset-everything');
+      const btnCloseHardResetModal = document.getElementById('btn-close-hard-reset-modal');
+      const btnCancelHardReset = document.getElementById('btn-cancel-hard-reset');
+      const inpConfirmHardReset = document.getElementById('inp-confirm-hard-reset');
+      const btnConfirmHardResetAction = document.getElementById('btn-confirm-hard-reset-action');
+
+      function openHardResetModal() {
+        if (!modalHardReset) return;
+        if (inpConfirmHardReset) {
+          inpConfirmHardReset.value = '';
+        }
+        if (btnConfirmHardResetAction) {
+          btnConfirmHardResetAction.disabled = true;
+        }
+        modalHardReset.classList.remove('hidden');
+        if (inpConfirmHardReset) inpConfirmHardReset.focus();
+      }
+
+      function closeHardResetModal() {
+        if (!modalHardReset) return;
+        modalHardReset.classList.add('hidden');
+      }
+
+      if (btnHardResetEverything) {
+        btnHardResetEverything.addEventListener('click', openHardResetModal);
+      }
+      if (btnCloseHardResetModal) {
+        btnCloseHardResetModal.addEventListener('click', closeHardResetModal);
+      }
+      if (btnCancelHardReset) {
+        btnCancelHardReset.addEventListener('click', closeHardResetModal);
+      }
+
+      if (inpConfirmHardReset && btnConfirmHardResetAction) {
+        inpConfirmHardReset.addEventListener('input', () => {
+          const val = inpConfirmHardReset.value.trim().toUpperCase();
+          btnConfirmHardResetAction.disabled = (val !== 'SUPPRIMER');
+        });
+
+        btnConfirmHardResetAction.addEventListener('click', () => {
+          if (btnConfirmHardResetAction.disabled) return;
+          closeHardResetModal();
+          purgeDataScope('all');
         });
       }
 

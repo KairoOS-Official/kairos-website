@@ -92,17 +92,19 @@
     if (window.location.protocol.startsWith('http')) {
       const origin = targetUrl.origin;
       const pathname = targetUrl.pathname;
+        const localeMatch = pathname.match(/^\/(fr|en)(?:\/|$)/);
+        const localePrefix = localeMatch ? `/${localeMatch[1]}` : '';
       const hash = targetUrl.hash || '';
       const search = targetUrl.search || '';
 
       if (pathname.includes('themes')) {
-        return `${origin}/themes${search}${hash}`;
+        return `${origin}${localePrefix}/themes${search}${hash}`;
       } else if (pathname.includes('plugins')) {
-        return `${origin}/plugins${search}${hash}`;
+        return `${origin}${localePrefix}/plugins${search}${hash}`;
       } else if (pathname.includes('roadmap')) {
-        return `${origin}/roadmap${search}${hash}`;
+        return `${origin}${localePrefix}/roadmap${search}${hash}`;
       } else {
-        return `${origin}/${search}${hash}`;
+        return `${origin}${localePrefix}/${search}${hash}`;
       }
     }
     return displayUrl;
@@ -438,7 +440,8 @@
 
     // Préchargement au survol ou contact tactile
     const handlePrefetchTrigger = (e) => {
-      const anchor = e.target.closest('a');
+      const target = e.target instanceof Element ? e.target : e.target.parentElement;
+      const anchor = target ? target.closest('a') : null;
       if (anchor && isInternalLink(anchor)) {
         const href = anchor.getAttribute('href');
         prefetchPage(href);
