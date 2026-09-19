@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently -n \"API,WEB\" -c \"cyan,magenta\" \"npm run dev:api\" \"npm run dev:web\"",
-    "dev:web": "vite",
+    "dev:web": "wait-on tcp:127.0.0.1:3000 && vite",
     "dev:api": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --root .",
-    "build": "tsc && vite build",
+    "build": "npm run build:api && npm run build:web",
     "build:api": "tsc",
-    "build:web": "vite build",
+    "build:web": "node scripts/build-web.mjs",
     "start": "tsx src/server.ts"
   },
   "devDependencies": {
@@ -31,7 +31,9 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.70.0",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vite-plugin-static-copy": "^4.1.1",
+    "vitest": "^5.0.1",
+    "wait-on": "^9.1.0"
   },
   "dependencies": {
     "@fastify/compress": "^9.2.0",

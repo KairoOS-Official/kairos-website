@@ -15,13 +15,13 @@ import {
 } from '../../db/schema.js';
 import { eq, desc, asc, sql } from 'drizzle-orm';
 
-export function getAuthenticatedAdmin(request: FastifyRequest) {
+export async function getAuthenticatedAdmin(request: FastifyRequest) {
   const cookieToken = request.cookies['kairo_admin_session'];
   const authHeader = request.headers.authorization?.replace('Bearer ', '').trim();
   const token = cookieToken || authHeader;
   if (!token) return null;
 
-  return db.select().from(adminUsers).where(eq(adminUsers.token, token)).get() || null;
+  return (await db.select().from(adminUsers).where(eq(adminUsers.token, token)))[0] || null;
 }
 
 const ContentUpdateSchema = z.object({
@@ -85,7 +85,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get<{ Querystring: { lang?: string } }>('/api/content', async (request, reply) => {
     const lang = request.query.lang === 'en' ? 'en' : 'fr';
 
-    const contentRows = db.select().from(siteContentI18n).where(eq(siteContentI18n.lang, lang)).all();
+    const contentRows = await db.select().from(siteContentI18n).where(eq(siteContentI18n.lang, lang));
     const content: Record<string, string> = {};
     for (const row of contentRows) {
       if (row.contentKey && row.contentValue !== null) {
@@ -93,33 +93,33 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    const gamesRaw = db.select().from(arcadeGames).orderBy(asc(arcadeGames.sortOrder)).all();
-    const games = gamesRaw.map((g) => ({
+    const gamesRaw = await db.select().from(arcadeGames).orderBy(asc(arcadeGames.sortOrder));
+    const games = gamesRaw.map((g: any) => ({
       ...g,
       desc: lang === 'en' ? (g.descEn || g.descFr || '') : (g.descFr || '')
     }));
 
-    const faqRaw = db.select().from(faqItems).orderBy(asc(faqItems.sortOrder)).all();
-    const faq = faqRaw.map((f) => ({
+    const faqRaw = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));
+    const faq = faqRaw.map((f: any) => ({
       ...f,
       question: lang === 'en' ? (f.questionEn || f.questionFr || '') : (f.questionFr || ''),
       answer: lang === 'en' ? (f.answerEn || f.answerFr || '') : (f.answerFr || '')
     }));
 
-    const pluginsRaw = db.select().from(showcasePlugins).orderBy(asc(showcasePlugins.sortOrder)).all();
-    const plugins = pluginsRaw.map((p) => ({
+    const pluginsRaw = await db.select().from(showcasePlugins).orderBy(asc(showcasePlugins.sortOrder));
+    const plugins = pluginsRaw.map((p: any) => ({
       ...p,
       desc: lang === 'en' ? (p.descEn || p.descFr || '') : (p.descFr || '')
     }));
 
-    const themesRaw = db.select().from(showcaseThemes).orderBy(asc(showcaseThemes.sortOrder)).all();
-    const themes = themesRaw.map((t) => ({
+    const themesRaw = await db.select().from(showcaseThemes).orderBy(asc(showcaseThemes.sortOrder));
+    const themes = themesRaw.map((t: any) => ({
       ...t,
       desc: lang === 'en' ? (t.descEn || t.descFr || '') : (t.descFr || '')
     }));
 
-    const milestonesRaw = db.select().from(roadmapMilestones).orderBy(asc(roadmapMilestones.sortOrder)).all();
-    const milestones = milestonesRaw.map((m) => ({
+    const milestonesRaw = await db.select().from(roadmapMilestones).orderBy(asc(roadmapMilestones.sortOrder));
+    const milestones = milestonesRaw.map((m: any) => ({
       ...m,
       title: lang === 'en' ? (m.titleEn || m.titleFr || '') : (m.titleFr || ''),
       desc: lang === 'en' ? (m.descEn || m.descFr || '') : (m.descFr || '')
@@ -139,7 +139,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 2. GET /api/content/all (Full catalog pour back-office admin)
   fastify.get('/api/content/all', async (_request, reply) => {
-    const contentRows = db.select().from(siteContentI18n).all();
+    const contentRows = await db.select().from(siteContentI18n);
     const contentI18n: Record<string, Record<string, string>> = {};
     for (const row of contentRows) {
       if (row.contentKey && row.lang) {
@@ -150,15 +150,15 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    const games = db.select().from(arcadeGames).orderBy(asc(arcadeGames.sortOrder)).all();
-    const faq = db.select().from(faqItems).orderBy(asc(faqItems.sortOrder)).all();
-    const plugins = db.select().from(showcasePlugins).orderBy(asc(showcasePlugins.sortOrder)).all();
-    const themes = db.select().from(showcaseThemes).orderBy(asc(showcaseThemes.sortOrder)).all();
-    const milestones = db.select().from(roadmapMilestones).orderBy(asc(roadmapMilestones.sortOrder)).all();
-    const features = db.select().from(roadmapFeatures).orderBy(desc(roadmapFeatures.votesCount), asc(roadmapFeatures.sortOrder)).all();
-    const proposals = db.select().from(communityProposals).orderBy(desc(communityProposals.id)).all();
+    const games = await db.select().from(arcadeGames).orderBy(asc(arcadeGames.sortOrder));
+    const faq = await db.select().from(faqItems).orderBy(asc(faqItems.sortOrder));
+    const plugins = await db.select().from(showcasePlugins).orderBy(asc(showcasePlugins.sortOrder));
+    const themes = await db.select().from(showcaseThemes).orderBy(asc(showcaseThemes.sortOrder));
+    const milestones = await db.select().from(roadmapMilestones).orderBy(asc(roadmapMilestones.sortOrder));
+    const features = await db.select().from(roadmapFeatures).orderBy(desc(roadmapFeatures.votesCount), asc(roadmapFeatures.sortOrder));
+    const proposals = await db.select().from(communityProposals).orderBy(desc(communityProposals.id));
 
-    const suggestions = db
+    const suggestions = await db
       .select({
         id: featureSuggestions.id,
         featureId: featureSuggestions.featureId,
@@ -173,8 +173,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       })
       .from(featureSuggestions)
       .leftJoin(roadmapFeatures, eq(featureSuggestions.featureId, roadmapFeatures.id))
-      .orderBy(desc(featureSuggestions.id))
-      .all();
+      .orderBy(desc(featureSuggestions.id));
 
     return reply.status(200).send({
       status: 'ok',
@@ -192,7 +191,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 3. POST /api/content/update (Mise à jour CMS des clés i18n)
   fastify.post('/api/content/update', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -206,7 +205,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
     for (const [key, val] of Object.entries(content)) {
       if (val && typeof val === 'object' && !Array.isArray(val)) {
         for (const [l, text] of Object.entries(val)) {
-          db.insert(siteContentI18n)
+          await db.insert(siteContentI18n)
             .values({
               contentKey: key,
               lang: l,
@@ -219,11 +218,10 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
                 contentValue: String(text),
                 updatedAt: sql`CURRENT_TIMESTAMP`
               }
-            })
-            .run();
+            });
         }
       } else if (lang) {
-        db.insert(siteContentI18n)
+        await db.insert(siteContentI18n)
           .values({
             contentKey: key,
             lang,
@@ -236,8 +234,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
               contentValue: String(val),
               updatedAt: sql`CURRENT_TIMESTAMP`
             }
-          })
-          .run();
+          });
       }
     }
 
@@ -246,7 +243,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 4. POST /api/games/save
   fastify.post('/api/games/save', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -257,7 +254,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
     const d = parse.data;
     if (d.id) {
-      db.update(arcadeGames)
+      await db.update(arcadeGames)
         .set({
           title: d.title,
           genre: d.genre,
@@ -268,10 +265,9 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
           bgImage: d.bg_image,
           sortOrder: d.sort_order
         })
-        .where(eq(arcadeGames.id, d.id))
-        .run();
+        .where(eq(arcadeGames.id, d.id));
     } else {
-      db.insert(arcadeGames)
+      await db.insert(arcadeGames)
         .values({
           title: d.title,
           genre: d.genre,
@@ -281,8 +277,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
           image: d.image,
           bgImage: d.bg_image,
           sortOrder: d.sort_order
-        })
-        .run();
+        });
     }
 
     return reply.status(200).send({ status: 'ok', message: 'Jeu enregistré' });
@@ -290,7 +285,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 5. POST /api/games/delete
   fastify.post('/api/games/delete', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -299,13 +294,13 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error', message: 'ID requis' });
     }
 
-    db.delete(arcadeGames).where(eq(arcadeGames.id, parse.data.id)).run();
+    await db.delete(arcadeGames).where(eq(arcadeGames.id, parse.data.id));
     return reply.status(200).send({ status: 'ok', message: 'Jeu supprimé' });
   });
 
   // 6. POST /api/faq/save
   fastify.post('/api/faq/save', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -316,7 +311,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
     const d = parse.data;
     if (d.id) {
-      db.update(faqItems)
+      await db.update(faqItems)
         .set({
           questionFr: d.question_fr,
           questionEn: d.question_en,
@@ -324,18 +319,16 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
           answerEn: d.answer_en,
           sortOrder: d.sort_order
         })
-        .where(eq(faqItems.id, d.id))
-        .run();
+        .where(eq(faqItems.id, d.id));
     } else {
-      db.insert(faqItems)
+      await db.insert(faqItems)
         .values({
           questionFr: d.question_fr,
           questionEn: d.question_en,
           answerFr: d.answer_fr,
           answerEn: d.answer_en,
           sortOrder: d.sort_order
-        })
-        .run();
+        });
     }
 
     return reply.status(200).send({ status: 'ok', message: 'Question FAQ enregistrée' });
@@ -343,7 +336,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 7. POST /api/faq/delete
   fastify.post('/api/faq/delete', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -352,13 +345,13 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error', message: 'ID requis' });
     }
 
-    db.delete(faqItems).where(eq(faqItems.id, parse.data.id)).run();
+    await db.delete(faqItems).where(eq(faqItems.id, parse.data.id));
     return reply.status(200).send({ status: 'ok', message: 'Question FAQ supprimée' });
   });
 
   // 8. POST /api/plugins/save
   fastify.post('/api/plugins/save', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -369,7 +362,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
     const d = parse.data;
     if (d.id) {
-      db.update(showcasePlugins)
+      await db.update(showcasePlugins)
         .set({
           name: d.name,
           descFr: d.desc_fr,
@@ -381,10 +374,9 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
           installs: d.installs,
           sortOrder: d.sort_order
         })
-        .where(eq(showcasePlugins.id, d.id))
-        .run();
+        .where(eq(showcasePlugins.id, d.id));
     } else {
-      db.insert(showcasePlugins)
+      await db.insert(showcasePlugins)
         .values({
           name: d.name,
           descFr: d.desc_fr,
@@ -395,8 +387,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
           author: d.author,
           installs: d.installs,
           sortOrder: d.sort_order
-        })
-        .run();
+        });
     }
 
     return reply.status(200).send({ status: 'ok', message: 'Plugin enregistré' });
@@ -404,7 +395,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 9. POST /api/plugins/delete
   fastify.post('/api/plugins/delete', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -413,13 +404,13 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error', message: 'ID requis' });
     }
 
-    db.delete(showcasePlugins).where(eq(showcasePlugins.id, parse.data.id)).run();
+    await db.delete(showcasePlugins).where(eq(showcasePlugins.id, parse.data.id));
     return reply.status(200).send({ status: 'ok', message: 'Plugin supprimé' });
   });
 
   // 10. POST /api/themes/save
   fastify.post('/api/themes/save', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -430,7 +421,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
     const d = parse.data;
     if (d.id) {
-      db.update(showcaseThemes)
+      await db.update(showcaseThemes)
         .set({
           name: d.name,
           descFr: d.desc_fr,
@@ -442,10 +433,9 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
           previewClass: d.preview_class,
           sortOrder: d.sort_order
         })
-        .where(eq(showcaseThemes.id, d.id))
-        .run();
+        .where(eq(showcaseThemes.id, d.id));
     } else {
-      db.insert(showcaseThemes)
+      await db.insert(showcaseThemes)
         .values({
           name: d.name,
           descFr: d.desc_fr,
@@ -456,8 +446,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
           installs: d.installs,
           previewClass: d.preview_class,
           sortOrder: d.sort_order
-        })
-        .run();
+        });
     }
 
     return reply.status(200).send({ status: 'ok', message: 'Thème enregistré' });
@@ -465,7 +454,7 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
 
   // 11. POST /api/themes/delete
   fastify.post('/api/themes/delete', async (request, reply) => {
-    if (!getAuthenticatedAdmin(request)) {
+    if (!(await getAuthenticatedAdmin(request))) {
       return reply.status(401).send({ status: 'unauthorized', message: 'Accès refusé' });
     }
 
@@ -474,7 +463,9 @@ export const contentRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ status: 'error', message: 'ID requis' });
     }
 
-    db.delete(showcaseThemes).where(eq(showcaseThemes.id, parse.data.id)).run();
+    await db.delete(showcaseThemes).where(eq(showcaseThemes.id, parse.data.id));
     return reply.status(200).send({ status: 'ok', message: 'Thème supprimé' });
   });
 };
+
+

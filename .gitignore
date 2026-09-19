@@ -29,6 +29,9 @@ logs/
 .env.*
 !.env.example
 
+# Guides locaux contenant des étapes et paramètres de déploiement
+DEPLOIEMENT_RENDER_SUPABASE.local.md
+
 # Dependencies & Build output
 node_modules/
 dist/
@@ -40,10 +43,7 @@ src/**/*.js
 web/src/**/*.d.ts
 web/src/**/*.js
 
-# Administration page & private code (Do not publish)
-web/admin/
-web/src/AdminDashboardApp.*
-web/src/entries/admin.*
+# Scratch and build caches
 
 # Scratch and build caches
 scratch/
