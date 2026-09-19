@@ -37,6 +37,72 @@
   </script>
 
   <link rel="stylesheet" href="../assets/css/main.css">
+  <style>
+    .admin-tip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background-color: #e0e7ff;
+      color: #4338ca;
+      font-size: 10px;
+      font-family: monospace;
+      font-weight: 700;
+      cursor: help;
+      margin-left: 5px;
+      vertical-align: middle;
+      user-select: none;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+    .admin-tip:hover, .admin-tip.tip-active {
+      background-color: #4f46e5;
+      color: #ffffff;
+      transform: scale(1.15);
+    }
+    .admin-tip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-family: sans-serif;
+      font-weight: 400;
+      line-height: 1.35;
+      white-space: normal;
+      width: max-content;
+      max-width: 260px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 9999;
+    }
+    .admin-tip:hover::after, .admin-tip.tip-active::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .badge-wip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-family: monospace;
+      font-weight: 700;
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen">
 
@@ -162,40 +228,28 @@
         </div>
       </div>
 
-      <!-- Milieu de la Sidebar : Navigation par onglets verticaux -->
-      <nav class="p-3 flex-1 overflow-y-auto space-y-1">
+      <!-- Milieu de la Sidebar : Navigation par 5 grands pôles -->
+      <nav class="p-3 flex-1 overflow-y-auto space-y-1.5">
         <button class="nav-tab active w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-bold flex items-center gap-3 bg-slate-900 text-white transition-all cursor-pointer text-left shadow-xs" data-tab="analytics">
-          <span class="material-symbols-outlined text-lg">analytics</span>
-          <span class="flex-1">Analytics & Clics</span>
+          <span class="material-symbols-outlined text-lg text-indigo-400">dashboard</span>
+          <span class="flex-1">Tableau de Bord</span>
         </button>
         <button class="nav-tab w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-semibold flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-left" data-tab="content">
-          <span class="material-symbols-outlined text-lg">article</span>
-          <span class="flex-1">Studio & Pages</span>
-        </button>
-        <button class="nav-tab w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-semibold flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-left" data-tab="games">
-          <span class="material-symbols-outlined text-lg">sports_esports</span>
-          <span class="flex-1">Jeux Kiosque</span>
-        </button>
-        <button class="nav-tab w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-semibold flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-left" data-tab="faq">
-          <span class="material-symbols-outlined text-lg">quiz</span>
-          <span class="flex-1">Questions FAQ</span>
+          <span class="material-symbols-outlined text-lg text-sky-500">article</span>
+          <span class="flex-1">Édition & Studio</span>
         </button>
         <button class="nav-tab w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-semibold flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-left" data-tab="store">
-          <span class="material-symbols-outlined text-lg">extension</span>
-          <span class="flex-1">Plugins & Thèmes</span>
+          <span class="material-symbols-outlined text-lg text-amber-500">inventory_2</span>
+          <span class="flex-1">Catalogues & Contenus</span>
         </button>
         <button class="nav-tab w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-semibold flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-left" data-tab="users">
-          <span class="material-symbols-outlined text-lg text-indigo-600">group</span>
-          <span class="flex-1">Utilisateurs & IPs</span>
-          <span id="badge-nav-users-count" class="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold">0</span>
-        </button>
-        <button class="nav-tab w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-semibold flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-left" data-tab="roadmap">
-          <span class="material-symbols-outlined text-lg">timeline</span>
-          <span class="flex-1">Roadmap & Jalons</span>
+          <span class="material-symbols-outlined text-lg text-emerald-600">forum</span>
+          <span class="flex-1">Communauté & Votes</span>
+          <span id="badge-nav-users-count" class="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold">0</span>
         </button>
         <button class="nav-tab w-full px-3.5 py-2.5 rounded-xl text-xs font-display font-semibold flex items-center gap-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer text-left" data-tab="settings">
-          <span class="material-symbols-outlined text-lg">settings</span>
-          <span class="flex-1">Paramètres & Sécurité</span>
+          <span class="material-symbols-outlined text-lg text-rose-500">shield</span>
+          <span class="flex-1">Sécurité & Données</span>
         </button>
       </nav>
 
@@ -452,6 +506,59 @@
             </div>
           </div>
         </div>
+
+        <!-- ZONE EN TRAVAUX : GOOGLE ANALYTICS 4 & SEARCH CONSOLE (SEO) -->
+        <div class="p-6 rounded-3xl border-2 border-dashed border-amber-300 bg-amber-50/40 space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg shadow-xs shrink-0">
+                <span class="material-symbols-outlined text-xl text-amber-700">query_stats</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display font-bold text-base text-slate-900">Google Analytics 4 & Google Search Console (SEO)</h3>
+                  <span class="badge-wip">
+                    <span class="material-symbols-outlined text-xs">construction</span>
+                    <span>En Travaux</span>
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 mt-0.5">
+                  Connecteur pour Google Analytics 4 et suivi du référencement naturel sur les résultats de recherche Google.
+                </p>
+              </div>
+            </div>
+            <span class="text-[11px] font-mono text-amber-800 bg-amber-100/80 px-3 py-1 rounded-xl font-bold shrink-0">Prévu v1.1</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div class="p-4 rounded-2xl bg-white/80 border border-amber-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>ID de Mesure GA4</span>
+                <span class="text-amber-600 text-[10px] font-bold">Non configuré</span>
+              </div>
+              <input type="text" disabled placeholder="G-XXXXXXXXXX" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono bg-slate-50 cursor-not-allowed">
+              <div class="text-[10px] text-slate-500">Injectera le script officiel Google gtag.js en respectant le choix du bandeau ePrivacy/CNIL.</div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white/80 border border-amber-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>Google Search Console</span>
+                <span class="text-amber-600 text-[10px] font-bold">En attente</span>
+              </div>
+              <div class="text-xs font-mono text-slate-800 font-bold">Requêtes & Mots-Clés Organiques</div>
+              <div class="text-[10px] text-slate-500 leading-relaxed">Suivi des requêtes tapées par les internautes sur Google (« kairoos », « retro kiosk os », etc.).</div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white/80 border border-amber-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>Santé SEO & Balises OG</span>
+                <span class="text-emerald-700 text-[10px] font-bold">● 100/100 Prévu</span>
+              </div>
+              <div class="text-xs font-mono text-slate-800 font-bold">Sitemap & OpenGraph Discord/X</div>
+              <div class="text-[10px] text-slate-500 leading-relaxed">Audit automatisé des balises méta, du robots.txt et des cartes de partage sur les réseaux.</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ======================================================== -->
@@ -588,285 +695,229 @@
               <div id="preview-iframe-box" class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 transition-all duration-200 relative shrink-0">
                 <iframe id="preview-live-iframe" src="/" class="w-[1280px] h-[800px] border-none block"></iframe>
               </div>
+          </div>
+
+        </div>
+
+        <!-- ZONE EN TRAVAUX : GALERIE DE MÉDIAS & ÉDITEUR RICHE WYSIWYG -->
+        <div class="p-6 rounded-3xl border-2 border-dashed border-sky-300 bg-sky-50/40 space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-sky-100 text-sky-800 flex items-center justify-center font-bold text-lg shadow-xs shrink-0">
+                <span class="material-symbols-outlined text-xl text-sky-700">photo_library</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display font-bold text-base text-slate-900">Médiathèque Globale & Éditeur WYSIWYG</h3>
+                  <span class="badge-wip bg-sky-100 text-sky-900 border-sky-200">
+                    <span class="material-symbols-outlined text-xs">construction</span>
+                    <span>En Travaux</span>
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 mt-0.5">
+                  Gestionnaire centralisé de fichiers multimédias et futur éditeur de texte riche avec mise en forme intuitive.
+                </p>
+              </div>
+            </div>
+            <span class="text-[11px] font-mono text-sky-800 bg-sky-100/80 px-3 py-1 rounded-xl font-bold shrink-0">Prévu v1.1</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div class="p-4 rounded-2xl bg-white/80 border border-sky-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>📁 Explorateur & Galerie d'Images</span>
+                <span class="text-sky-600 text-[10px] font-bold">Sélection Rapide</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Permettra de sélectionner en 1 clic une image déjà stockée dans <code class="font-mono text-sky-900">uploads/</code> sans ré-upload, avec recherche par nom et filtre de dimensions.
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 border border-sky-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>✏️ Éditeur WYSIWYG / Markdown</span>
+                <span class="text-sky-600 text-[10px] font-bold">Mise en Forme</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Mise en forme directe du texte (gras, listes à puces, liens hypertextes, citations) sans balises HTML brutes grâce à un éditeur visuel intégré.
+              </p>
             </div>
           </div>
-
         </div>
       </div>
 
       <!-- ======================================================== -->
-      <!-- TAB 3 : JEUX KIOSQUE ARCADE (BILINGUE)                  -->
-      <!-- ======================================================== -->
-      <div id="tab-games" class="tab-panel hidden space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-display font-bold text-heading">Jeux du Kiosque d'Arcade</h2>
-            <p class="text-xs text-muted">Ajoutez, modifiez ou supprimez les jeux avec jaquettes et descriptions bilingues FR/EN.</p>
-          </div>
-          <button id="btn-add-game" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer">
-            <span class="material-symbols-outlined text-sm">add</span>
-            <span>+ Ajouter un jeu</span>
-          </button>
-        </div>
-
-        <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <div class="text-xs text-muted py-8 text-center col-span-full">Chargement des jeux...</div>
-        </div>
-      </div>
-
-      <!-- ======================================================== -->
-      <!-- TAB 4 : FAQ BILINGUE                                    -->
-      <!-- ======================================================== -->
-      <div id="tab-faq" class="tab-panel hidden space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-display font-bold text-heading">Foire Aux Questions (FAQ)</h2>
-            <p class="text-xs text-muted">Éditez les questions et réponses en français et anglais.</p>
-          </div>
-          <button id="btn-add-faq" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer">
-            <span class="material-symbols-outlined text-sm">add</span>
-            <span>+ Ajouter une question</span>
-          </button>
-        </div>
-
-        <div id="faq-list" class="space-y-4">
-          <div class="text-xs text-muted py-8 text-center">Chargement de la FAQ...</div>
-        </div>
-      </div>
-
-      <!-- ======================================================== -->
-      <!-- TAB 5 : PLUGINS & THÈMES STORE                          -->
+      <!-- TAB 3 : CATALOGUES & CONTENUS (STORE, JEUX, FAQ)        -->
       <!-- ======================================================== -->
       <div id="tab-store" class="tab-panel hidden space-y-6">
-        <div>
-          <h2 class="text-xl font-display font-bold text-heading">Catalogue & Vitrine des Plugins & Thèmes</h2>
-          <p class="text-xs text-muted">Gérez les extensions officielles et les créations communautaires mises en avant sur le site.</p>
-        </div>
-
-        <!-- Sous-onglets Plugins vs Thèmes -->
-        <div class="flex gap-2 border-b border-slate-200 pb-2">
-          <button id="subtab-plugins-btn" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs">Plugins Officiels & Communauté</button>
-          <button id="subtab-themes-btn" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs">Thèmes & Ambiance</button>
-        </div>
-
-        <div id="store-plugins-panel" class="space-y-4">
-          <div class="flex justify-between items-center">
-            <h3 class="font-display font-bold text-sm text-heading">Plugins affichés sur /plugins</h3>
-            <button id="btn-add-plugin" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs">+ Nouveau plugin</button>
-          </div>
-          <div id="plugins-store-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </div>
-
-        <div id="store-themes-panel" class="space-y-4 hidden">
-          <div class="flex justify-between items-center">
-            <h3 class="font-display font-bold text-sm text-heading">Thèmes affichés sur /themes</h3>
-            <button id="btn-add-theme" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs">+ Nouveau thème</button>
-          </div>
-          <div id="themes-store-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-        </div>
-      </div>
-
-      <!-- ======================================================== -->
-      <!-- ======================================================== -->
-      <!-- TAB 5b : UTILISATEURS, VISITEURS & CONTRÔLE DES IPS     -->
-      <!-- ======================================================== -->
-      <div id="tab-users" class="tab-panel hidden space-y-6">
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          <div>
-            <h2 class="text-xl font-display font-bold text-heading flex items-center gap-2">
-              <span class="material-symbols-outlined text-indigo-600">group</span>
-              <span>Gestion des Utilisateurs & Visiteurs (IPs)</span>
-            </h2>
-            <p class="text-xs text-muted">Vue consolidée par adresse IP : fréquence de connexion, votes enregistrés, propositions d'idées soumises et contrôle des sanctions.</p>
-          </div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <button id="btn-refresh-users" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 cursor-pointer">
-              <span class="material-symbols-outlined text-xs">sync</span>
-              <span>Actualiser</span>
-            </button>
-            <button id="btn-users-new-ban" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
-              <span class="material-symbols-outlined text-xs">gavel</span>
-              <span>+ Bannir / Restreindre une IP</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- 4 Cartes de Statistiques Utilisateurs -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-xl">fingerprint</span>
-            </div>
-            <div>
-              <div class="text-[11px] font-mono text-muted uppercase">Visiteurs Uniques</div>
-              <div id="stat-users-total" class="text-xl font-display font-bold text-heading">0</div>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-xl">how_to_vote</span>
-            </div>
-            <div>
-              <div class="text-[11px] font-mono text-muted uppercase">Avec Votes Actifs</div>
-              <div id="stat-users-voters" class="text-xl font-display font-bold text-heading">0</div>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-xl">lightbulb</span>
-            </div>
-            <div>
-              <div class="text-[11px] font-mono text-muted uppercase">Contributeurs d'Idées</div>
-              <div id="stat-users-contributors" class="text-xl font-display font-bold text-heading">0</div>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-xl">block</span>
-            </div>
-            <div>
-              <div class="text-[11px] font-mono text-muted uppercase">IPs Sous Sanction</div>
-              <div id="stat-users-banned" class="text-xl font-display font-bold text-rose-600">0</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Barre de recherche & Filtres -->
-        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div class="relative w-full sm:w-80">
-            <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-sm">search</span>
-            <input type="text" id="inp-search-users" placeholder="Rechercher une IP, pseudo ou email..." class="w-full pl-9 pr-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:border-brand-500">
-          </div>
-          <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
-            <button class="filter-users-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white cursor-pointer" data-filter="all">Tous</button>
-            <button class="filter-users-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer" data-filter="voters">Avec Votes</button>
-            <button class="filter-users-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer" data-filter="ideas">Avec Idées</button>
-            <button class="filter-users-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer" data-filter="banned">Sous Sanction</button>
-          </div>
-        </div>
-
-        <!-- Tableau Consolidé des Utilisateurs / IPs -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs font-sans border-collapse">
-              <thead>
-                <tr class="border-b border-slate-100 bg-slate-50 text-slate-500 font-mono uppercase text-[11px]">
-                  <th class="py-3 px-4 font-bold text-slate-900">Adresse IP & Identité</th>
-                  <th class="py-3 px-4">Connexions & Vues</th>
-                  <th class="py-3 px-4">Votes Émis</th>
-                  <th class="py-3 px-4">Idées & Compléments</th>
-                  <th class="py-3 px-4">Statut Sanctions</th>
-                  <th class="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="users-tbody" class="divide-y divide-slate-100 text-slate-700 font-sans">
-                <tr><td colspan="6" class="py-8 text-center text-muted font-mono">Chargement des utilisateurs...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Section 1 : RECOURS ET CONTESTATIONS AUX BANS -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
-          <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50/50">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-base">
-                ⚖️
-              </div>
-              <div>
-                <h3 class="text-sm font-display font-bold text-heading flex items-center gap-2">
-                  <span>Recours & Oppositions aux Bannissements</span>
-                  <span id="badge-appeals-count" class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-mono text-[10px] font-bold">0</span>
-                </h3>
-                <p class="text-[11px] text-muted">Contestations soumises par les visiteurs bloqués qui demandent la réhabilitation de leur IP.</p>
-              </div>
-            </div>
-            <button id="btn-refresh-appeals" type="button" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors shadow-xs">
-              <span class="material-symbols-outlined text-xs">sync</span>
-              <span>Actualiser les recours</span>
-            </button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs font-sans border-collapse">
-              <thead>
-                <tr class="border-b border-slate-100 bg-slate-50 text-slate-500 font-mono uppercase text-[10px]">
-                  <th class="py-2.5 px-4 font-bold text-slate-900">Date du Recours</th>
-                  <th class="py-2.5 px-4">Adresse IP</th>
-                  <th class="py-2.5 px-4">Email de contact</th>
-                  <th class="py-2.5 px-4">Motif & Explication du visiteur</th>
-                  <th class="py-2.5 px-4">Statut</th>
-                  <th class="py-2.5 px-4 text-right">Décision Admin</th>
-                </tr>
-              </thead>
-              <tbody id="appeals-tbody" class="divide-y divide-slate-100 text-slate-700 font-sans">
-                <tr><td colspan="6" class="py-6 text-center text-muted font-mono">Chargement des recours...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Section 2 : REGISTRE ACTIF DES BANNISSEMENTS & RESTRICTIONS -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
-          <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50/50">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-base">
-                🚫
-              </div>
-              <div>
-                <h3 class="text-sm font-display font-bold text-heading flex items-center gap-2">
-                  <span>Adresses IP Sous Sanctions Actives</span>
-                  <span id="badge-bans-count" class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[10px] font-bold">0</span>
-                </h3>
-                <p class="text-[11px] text-muted">Contrôle des blacklists totales (Code 403) et des blocages ciblés (Votes, Idées).</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <button id="btn-refresh-bans" type="button" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors shadow-xs">
-                <span class="material-symbols-outlined text-xs">sync</span>
-                <span>Actualiser les bans</span>
-              </button>
-              <button id="btn-open-ban-modal" type="button" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 shadow-xs cursor-pointer transition-colors">
-                <span class="material-symbols-outlined text-xs">add</span>
-                <span>Bannir une IP</span>
-              </button>
-            </div>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs font-sans border-collapse">
-              <thead>
-                <tr class="border-b border-slate-100 bg-slate-50 text-slate-500 font-mono uppercase text-[10px]">
-                  <th class="py-2.5 px-4 font-bold text-slate-900">Adresse IP</th>
-                  <th class="py-2.5 px-4">Type Sanction</th>
-                  <th class="py-2.5 px-4">Périmètre Bloqué</th>
-                  <th class="py-2.5 px-4">Motif de Sanction</th>
-                  <th class="py-2.5 px-4">Date de Sanction</th>
-                  <th class="py-2.5 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="bans-tbody" class="divide-y divide-slate-100 text-slate-700 font-sans">
-                <tr><td colspan="6" class="py-6 text-center text-muted font-mono">Chargement des sanctions...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 6 : ROADMAP, VOTES & AUDIT IP                       -->
-      <!-- ======================================================== -->
-      <div id="tab-roadmap" class="tab-panel hidden space-y-6">
-        <!-- En-tête Roadmap Épuré -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h2 class="text-xl font-display font-bold text-heading flex items-center gap-2">
-              <span class="material-symbols-outlined text-brand-600">timeline</span>
-              <span>Feuille de Route & Votes Communauté</span>
+              <span class="material-symbols-outlined text-purple-600">inventory_2</span>
+              <span>Catalogues & Vitrines Publiques</span>
+              <span class="admin-tip" data-tip="Centralise les extensions officielles et communautaires, la logithèque de jeux du kiosque et la base d'aide FAQ.">i</span>
             </h2>
-            <p class="text-xs text-muted">Gérez les versions majeures, les fonctionnalités soumises au vote et la boîte à idées communautaire.</p>
+            <p class="text-xs text-muted">Gérez les extensions (Plugins & Thèmes), les jeux vidéo d'arcade et les réponses de la Foire Aux Questions (FAQ).</p>
           </div>
-          
+        </div>
+
+        <!-- Sous-onglets 3 volets : Extensions / Jeux / FAQ -->
+        <div class="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl w-fit flex-wrap">
+          <button id="subtab-store-ext-btn" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs">
+            <span class="material-symbols-outlined text-xs">extension</span>
+            <span>Plugins & Thèmes</span>
+          </button>
+          <button id="subtab-store-games-btn" class="px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-xs">sports_esports</span>
+            <span>Jeux d'Arcade</span>
+            <span id="badge-nav-games-count" class="px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">0</span>
+          </button>
+          <button id="subtab-store-faq-btn" class="px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-xs">help</span>
+            <span>Foire Aux Questions</span>
+            <span id="badge-nav-faq-count" class="px-1.5 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">0</span>
+          </button>
+        </div>
+
+        <!-- 1. VOLET EXTENSIONS (PLUGINS & THÈMES) -->
+        <div id="store-extensions-panel" class="space-y-4">
+          <!-- Sous-onglets Plugins vs Thèmes -->
+          <div class="flex gap-2 border-b border-slate-200 pb-2">
+            <button id="subtab-plugins-btn" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs">Plugins Officiels & Communauté</button>
+            <button id="subtab-themes-btn" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs">Thèmes & Ambiance</button>
+          </div>
+
+          <div id="store-plugins-panel" class="space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="font-display font-bold text-sm text-heading flex items-center gap-1.5">
+                <span>Plugins affichés sur /plugins</span>
+                <span class="admin-tip" data-tip="Extensions logicielles enrichissant le système KaïroOS (émulateurs, widgets, overlays).">i</span>
+              </h3>
+              <button id="btn-add-plugin" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs cursor-pointer">+ Nouveau plugin</button>
+            </div>
+            <div id="plugins-store-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+
+          <div id="store-themes-panel" class="space-y-4 hidden">
+            <div class="flex justify-between items-center">
+              <h3 class="font-display font-bold text-sm text-heading flex items-center gap-1.5">
+                <span>Thèmes affichés sur /themes</span>
+                <span class="admin-tip" data-tip="Habillages graphiques, sons d'ambiance et typographies personnalisés pour l'interface de salon.">i</span>
+              </h3>
+              <button id="btn-add-theme" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs cursor-pointer">+ Nouveau thème</button>
+            </div>
+            <div id="themes-store-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+          </div>
+        </div>
+
+        <!-- 2. VOLET JEUX ARCADE -->
+        <div id="store-games-panel" class="space-y-4 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-display font-bold text-sm text-heading flex items-center gap-1.5">
+                <span>Jeux du Kiosque d'Arcade</span>
+                <span class="admin-tip" data-tip="Jeux rétro et indépendants pré-embarqués dans le mode kiosque avec jaquettes et métadonnées FR/EN.">i</span>
+              </h3>
+              <p class="text-xs text-muted">Ajoutez, modifiez ou supprimez les jeux avec jaquettes et descriptions bilingues FR/EN.</p>
+            </div>
+            <button id="btn-add-game" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-sm">add</span>
+              <span>+ Ajouter un jeu</span>
+            </button>
+          </div>
+          <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="text-xs text-muted py-8 text-center col-span-full">Chargement des jeux...</div>
+          </div>
+        </div>
+
+        <!-- 3. VOLET FAQ -->
+        <div id="store-faq-panel" class="space-y-4 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-display font-bold text-sm text-heading flex items-center gap-1.5">
+                <span>Foire Aux Questions (FAQ)</span>
+                <span class="admin-tip" data-tip="Base de connaissances affichée sur le site pour guider les utilisateurs et installateurs.">i</span>
+              </h3>
+              <p class="text-xs text-muted">Éditez les questions et réponses en français et anglais.</p>
+            </div>
+            <button id="btn-add-faq" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-display font-bold text-xs shadow flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-sm">add</span>
+              <span>+ Ajouter une question</span>
+            </button>
+          </div>
+          <div id="faq-list" class="space-y-4">
+            <div class="text-xs text-muted py-8 text-center">Chargement de la FAQ...</div>
+          </div>
+        </div>
+
+        <!-- ZONE EN TRAVAUX : GESTIONNAIRE DE VERSIONS & DÉPENDANCES KAÏROOS -->
+        <div class="p-6 rounded-3xl border-2 border-dashed border-purple-300 bg-purple-50/40 space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-lg shadow-xs shrink-0">
+                <span class="material-symbols-outlined text-xl text-purple-700">deployed_code</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display font-bold text-base text-slate-900">Gestionnaire de Versions & Dépendances KaïroOS</h3>
+                  <span class="badge-wip bg-purple-100 text-purple-900 border-purple-200">
+                    <span class="material-symbols-outlined text-xs">construction</span>
+                    <span>En Travaux</span>
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 mt-0.5">
+                  Dépôt de distribution de paquets certifiés, vérification de compatibilité noyau/GPU et déploiement de correctifs OTA.
+                </p>
+              </div>
+            </div>
+            <span class="text-[11px] font-mono text-purple-800 bg-purple-100/80 px-3 py-1 rounded-xl font-bold shrink-0">Prévu v1.2</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div class="p-4 rounded-2xl bg-white/80 border border-purple-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>📦 Dépôt Flathub / APT / AppImage</span>
+                <span class="text-purple-700 text-[10px] font-bold">Signature GPG</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Distribution vérifiée cryptographiquement des paquets binaires pour ordinateurs x86_64 et cartes ARM (Raspberry Pi, mini PC arcade).
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 border border-purple-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>🎮 Matrice Pilotes & GPU</span>
+                <span class="text-purple-700 text-[10px] font-bold">Mesa / Vulkan</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Catalogue de compatibilité matérielle par modèle de carte graphique (Intel UHD, AMD Radeon, NVIDIA) et profil d'émulation optimisé.
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 border border-purple-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>🔄 Mises à Jour A/B Seamless</span>
+                <span class="text-purple-700 text-[10px] font-bold">Auto-Rollback</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Partitionnement double avec bascule instantanée et retour en arrière automatique en cas d'échec de démarrage d'une mise à jour de l'OS.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 4 : COMMUNAUTÉ & VOTES (ROADMAP, IDÉES, BANS/IPS)   -->
+      <!-- ======================================================== -->
+      <div id="tab-users" class="tab-panel hidden space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 class="text-xl font-display font-bold text-heading flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-600">forum</span>
+              <span>Communauté, Roadmap & Modération</span>
+              <span class="admin-tip" data-tip="Gérez la feuille de route publique, les votes sur les fonctionnalités, la boîte à idées et la modération des visiteurs/IPs.">i</span>
+            </h2>
+            <p class="text-xs text-muted">Supervisez les jalons, les votes des joueurs, les propositions communautaires et le registre des sanctions IP.</p>
+          </div>
           <div class="flex items-center gap-2">
             <button id="btn-open-github-spec-modal" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-xs">description</span>
@@ -875,49 +926,70 @@
           </div>
         </div>
 
-        <!-- BARRE DE SOUS-ONGLETS ÉPURÉE (3 VOLETS CLAIRS) -->
-        <div class="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl w-fit">
-          <button id="subtab-milestones-btn" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
-            <span class="material-symbols-outlined text-xs">flag</span>
-            <span>Jalons & Versions</span>
+        <!-- Sous-onglets 3 volets : Roadmap & Votes / Boîte à Idées / Visiteurs & Sanctions -->
+        <div class="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl w-fit flex-wrap">
+          <button id="subtab-users-roadmap-btn" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs">
+            <span class="material-symbols-outlined text-xs">timeline</span>
+            <span>Jalons & Votes Roadmap</span>
           </button>
-          <button id="subtab-features-btn" class="px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
-            <span class="material-symbols-outlined text-xs">how_to_vote</span>
-            <span>Fonctionnalités au Vote</span>
-          </button>
-          <button id="subtab-community-btn" class="px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
-            <span class="material-symbols-outlined text-xs text-amber-500">forum</span>
+          <button id="subtab-users-ideas-btn" class="px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-xs text-amber-500">lightbulb</span>
             <span>Boîte à Idées & Compléments</span>
             <span id="badge-community-total" class="px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">0</span>
           </button>
+          <button id="subtab-users-visitors-btn" class="px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-xs text-indigo-600">fingerprint</span>
+            <span>Visiteurs, IPs & Sanctions</span>
+            <span id="badge-bans-summary" class="px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-bold">0</span>
+          </button>
         </div>
 
-        <!-- 1. VOLET JALONS & VERSIONS -->
-        <div id="roadmap-milestones-panel" class="space-y-4">
-          <div class="flex justify-between items-center">
-            <h3 class="font-display font-bold text-sm text-heading">Jalons Officiels de KaïroOS</h3>
-            <button id="btn-add-milestone" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs cursor-pointer">+ Nouveau jalon</button>
+        <!-- 1. VOLET JALONS & VOTES (ROADMAP) -->
+        <div id="users-roadmap-panel" class="space-y-6">
+          <!-- Sous-boutons Jalons vs Votes -->
+          <div class="flex items-center gap-2 p-1 bg-slate-100 rounded-2xl w-fit">
+            <button id="subtab-milestones-btn" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-xs">flag</span>
+              <span>Jalons & Versions</span>
+              <span class="admin-tip" data-tip="Grandes étapes majeures (Alpha, Bêta, Release) visibles sur la roadmap publique.">i</span>
+            </button>
+            <button id="subtab-features-btn" class="px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-xs">how_to_vote</span>
+              <span>Fonctionnalités au Vote</span>
+              <span class="admin-tip" data-tip="Fonctionnalités proposées au vote de la communauté des joueurs avec protection 1 vote par IP.">i</span>
+            </button>
           </div>
-          <div id="milestones-list" class="space-y-4"></div>
-        </div>
 
-        <!-- 2. VOLET FONCTIONNALITÉS AU VOTE (AVEC CLIC DIRECT SUR LES VOTES) -->
-        <div id="roadmap-features-panel" class="space-y-4 hidden">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-            <div>
-              <h3 class="font-display font-bold text-sm text-heading">Fonctionnalités au vote public</h3>
-              <p class="text-xs text-muted">Cliquez directement sur le compteur de votes d'une fonctionnalité pour inspecter la liste des adresses IP réelles et modérer les votes.</p>
+          <!-- Jalons -->
+          <div id="roadmap-milestones-panel" class="space-y-4">
+            <div class="flex justify-between items-center">
+              <h3 class="font-display font-bold text-sm text-heading">Jalons Officiels de KaïroOS</h3>
+              <button id="btn-add-milestone" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs cursor-pointer">+ Nouveau jalon</button>
             </div>
-            <button id="btn-add-feature" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs shrink-0 cursor-pointer">+ Nouvelle fonctionnalité</button>
+            <div id="milestones-list" class="space-y-4"></div>
           </div>
-          <div id="features-vote-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+          <!-- Fonctionnalités au vote -->
+          <div id="roadmap-features-panel" class="space-y-4 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div>
+                <h3 class="font-display font-bold text-sm text-heading">Fonctionnalités au vote public</h3>
+                <p class="text-xs text-muted">Cliquez directement sur le compteur de votes d'une fonctionnalité pour inspecter la liste des adresses IP réelles et modérer les votes.</p>
+              </div>
+              <button id="btn-add-feature" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs shrink-0 cursor-pointer">+ Nouvelle fonctionnalité</button>
+            </div>
+            <div id="features-vote-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
         </div>
 
-        <!-- 3. VOLET UNIFIÉ : BOÎTE À IDÉES & COMPLÉMENTS -->
-        <div id="roadmap-community-panel" class="space-y-4 hidden">
+        <!-- 2. VOLET BOÎTE À IDÉES & COMPLÉMENTS -->
+        <div id="users-ideas-panel" class="space-y-4 hidden">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
-              <h3 class="font-display font-bold text-sm text-heading">Modération Communautaire Unifiée</h3>
+              <h3 class="font-display font-bold text-sm text-heading flex items-center gap-1.5">
+                <span>Modération Communautaire Unifiée</span>
+                <span class="admin-tip" data-tip="Validez les propositions pour les convertir en fonctionnalités au vote, ou complétez la doc existante.">i</span>
+              </h3>
               <p class="text-xs text-muted">Validez les propositions d'idées pour les publier directement au vote, ou fusionnez les compléments suggérés par les joueurs.</p>
             </div>
             <div class="flex items-center gap-2">
@@ -949,6 +1021,247 @@
                   <tr><td colspan="5" class="py-8 text-center text-muted font-mono">Chargement de la communauté...</td></tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. VOLET VISITEURS, IPS & SANCTIONS -->
+        <div id="users-visitors-panel" class="space-y-6 hidden">
+          <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div>
+              <h3 class="font-display font-bold text-base text-heading flex items-center gap-2">
+                <span>Gestion des Visiteurs & Analyse par IP</span>
+                <span class="admin-tip" data-tip="Historique d'activité par empreinte IP (connexions, votes, soumissions) avec outils de modération ciblée.">i</span>
+              </h3>
+              <p class="text-xs text-muted">Vue consolidée par adresse IP : fréquence de connexion, votes enregistrés, propositions d'idées soumises et contrôle des sanctions.</p>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button id="btn-refresh-users" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 cursor-pointer">
+                <span class="material-symbols-outlined text-xs">sync</span>
+                <span>Actualiser</span>
+              </button>
+              <button id="btn-users-new-ban" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer">
+                <span class="material-symbols-outlined text-xs">gavel</span>
+                <span>+ Bannir / Restreindre une IP</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 Cartes de Statistiques Utilisateurs -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-xl">fingerprint</span>
+              </div>
+              <div>
+                <div class="text-[11px] font-mono text-muted uppercase">Visiteurs Uniques</div>
+                <div id="stat-users-total" class="text-xl font-display font-bold text-heading">0</div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-xl">how_to_vote</span>
+              </div>
+              <div>
+                <div class="text-[11px] font-mono text-muted uppercase">Avec Votes Actifs</div>
+                <div id="stat-users-voters" class="text-xl font-display font-bold text-heading">0</div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-xl">lightbulb</span>
+              </div>
+              <div>
+                <div class="text-[11px] font-mono text-muted uppercase">Contributeurs d'Idées</div>
+                <div id="stat-users-contributors" class="text-xl font-display font-bold text-heading">0</div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-subtle flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-xl">block</span>
+              </div>
+              <div>
+                <div class="text-[11px] font-mono text-muted uppercase">IPs Sous Sanction</div>
+                <div id="stat-users-banned" class="text-xl font-display font-bold text-rose-600">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barre de recherche & Filtres -->
+          <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="relative w-full sm:w-80">
+              <span class="material-symbols-outlined absolute left-3 top-2.5 text-slate-400 text-sm">search</span>
+              <input type="text" id="inp-search-users" placeholder="Rechercher une IP, pseudo ou email..." class="w-full pl-9 pr-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-medium focus:outline-none focus:border-brand-500">
+            </div>
+            <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
+              <button class="filter-users-btn active px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white cursor-pointer" data-filter="all">Tous</button>
+              <button class="filter-users-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer" data-filter="voters">Avec Votes</button>
+              <button class="filter-users-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer" data-filter="ideas">Avec Idées</button>
+              <button class="filter-users-btn px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer" data-filter="banned">Sous Sanction</button>
+            </div>
+          </div>
+
+          <!-- Tableau Consolidé des Utilisateurs / IPs -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs font-sans border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-100 bg-slate-50 text-slate-500 font-mono uppercase text-[11px]">
+                    <th class="py-3 px-4 font-bold text-slate-900">Adresse IP & Identité</th>
+                    <th class="py-3 px-4">Connexions & Vues</th>
+                    <th class="py-3 px-4">Votes Émis</th>
+                    <th class="py-3 px-4">Idées & Compléments</th>
+                    <th class="py-3 px-4">Statut Sanctions</th>
+                    <th class="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody" class="divide-y divide-slate-100 text-slate-700 font-sans">
+                  <tr><td colspan="6" class="py-8 text-center text-muted font-mono">Chargement des utilisateurs...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recours et Contestations -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50/50">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-base">
+                  ⚖️
+                </div>
+                <div>
+                  <h3 class="text-sm font-display font-bold text-heading flex items-center gap-2">
+                    <span>Recours & Oppositions aux Bannissements</span>
+                    <span id="badge-appeals-count" class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-mono text-[10px] font-bold">0</span>
+                    <span class="admin-tip" data-tip="Contestations soumises par les visiteurs bloqués via la page /banned demandant la réévaluation de leur IP.">i</span>
+                  </h3>
+                  <p class="text-[11px] text-muted">Contestations soumises par les visiteurs bloqués qui demandent la réhabilitation de leur IP.</p>
+                </div>
+              </div>
+              <button id="btn-refresh-appeals" type="button" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors shadow-xs">
+                <span class="material-symbols-outlined text-xs">sync</span>
+                <span>Actualiser les recours</span>
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs font-sans border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-100 bg-slate-50 text-slate-500 font-mono uppercase text-[10px]">
+                    <th class="py-2.5 px-4 font-bold text-slate-900">Date du Recours</th>
+                    <th class="py-2.5 px-4">Adresse IP</th>
+                    <th class="py-2.5 px-4">Email de contact</th>
+                    <th class="py-2.5 px-4">Motif & Explication du visiteur</th>
+                    <th class="py-2.5 px-4">Statut</th>
+                    <th class="py-2.5 px-4 text-right">Décision Admin</th>
+                  </tr>
+                </thead>
+                <tbody id="appeals-tbody" class="divide-y divide-slate-100 text-slate-700 font-sans">
+                  <tr><td colspan="6" class="py-6 text-center text-muted font-mono">Chargement des recours...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Registre Actif des Bannissements -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-50/50">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-base">
+                  🚫
+                </div>
+                <div>
+                  <h3 class="text-sm font-display font-bold text-heading flex items-center gap-2">
+                    <span>Adresses IP Sous Sanctions Actives</span>
+                    <span id="badge-bans-count" class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[10px] font-bold">0</span>
+                    <span class="admin-tip" data-tip="Blacklist générale (Code 403 Forbidden) ou restriction ciblée (interdiction de voter ou de proposer des idées).">i</span>
+                  </h3>
+                  <p class="text-[11px] text-muted">Contrôle des blacklists totales (Code 403) et des blocages ciblés (Votes, Idées).</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btn-refresh-bans" type="button" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 cursor-pointer transition-colors shadow-xs">
+                  <span class="material-symbols-outlined text-xs">sync</span>
+                  <span>Actualiser les bans</span>
+                </button>
+                <button id="btn-open-ban-modal" type="button" class="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 shadow-xs cursor-pointer transition-colors">
+                  <span class="material-symbols-outlined text-xs">add</span>
+                  <span>Bannir une IP</span>
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs font-sans border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-100 bg-slate-50 text-slate-500 font-mono uppercase text-[10px]">
+                    <th class="py-2.5 px-4 font-bold text-slate-900">Adresse IP</th>
+                    <th class="py-2.5 px-4">Type Sanction</th>
+                    <th class="py-2.5 px-4">Périmètre Bloqué</th>
+                    <th class="py-2.5 px-4">Motif de Sanction</th>
+                    <th class="py-2.5 px-4">Date de Sanction</th>
+                    <th class="py-2.5 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="bans-tbody" class="divide-y divide-slate-100 text-slate-700 font-sans">
+                  <tr><td colspan="6" class="py-6 text-center text-muted font-mono">Chargement des sanctions...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONE EN TRAVAUX : DÉTECTEUR ANTI-BOT & HONEYPOT AUTOMATIQUE -->
+        <div class="p-6 rounded-3xl border-2 border-dashed border-emerald-300 bg-emerald-50/40 space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg shadow-xs shrink-0">
+                <span class="material-symbols-outlined text-xl text-emerald-700">smart_toy</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display font-bold text-base text-slate-900">Détecteur Anti-Bot & Honeypot Automatique</h3>
+                  <span class="badge-wip bg-emerald-100 text-emerald-900 border-emerald-200">
+                    <span class="material-symbols-outlined text-xs">construction</span>
+                    <span>En Travaux</span>
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 mt-0.5">
+                  Bouclier heuristique contre les spambots de vote, pièges silencieux honeypot et scoring de réputation IP.
+                </p>
+              </div>
+            </div>
+            <span class="text-[11px] font-mono text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-xl font-bold shrink-0">Prévu v1.1</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div class="p-4 rounded-2xl bg-white/80 border border-emerald-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>🍯 Piège Silencieux Honeypot</span>
+                <span class="text-emerald-700 text-[10px] font-bold">Auto-Ban</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Champs invisibles CSS/JS dans les formulaires de vote. Tout bot qui le remplit est instantanément mis en quarantaine silencieuse.
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 border border-emerald-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>🛡️ Détection Headless & VPN</span>
+                <span class="text-emerald-700 text-[10px] font-bold">Fingerprinting</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Identification des navigateurs automatisés (Puppeteer, Selenium) et détection des proxies de vote de masse.
+              </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/80 border border-emerald-200/60 shadow-xs space-y-2 opacity-90">
+              <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                <span>📊 Score de Confiance IP</span>
+                <span class="text-emerald-700 text-[10px] font-bold">0-100% Score</span>
+              </div>
+              <p class="text-[11px] text-slate-500 leading-relaxed">
+                Calcul dynamique de l'authenticité de l'internaute : plus l'IP est ancienne et cohérente, plus son poids de vote est instantané.
+              </p>
             </div>
           </div>
         </div>
@@ -1378,6 +1691,60 @@
             <!-- Indicateur de statut -->
             <div id="data-management-status" class="hidden p-3 rounded-xl bg-slate-100 text-xs font-mono text-slate-800 flex items-center gap-2"></div>
           </div>
+
+          <!-- ZONE EN TRAVAUX : 2FA TOTP & TÂCHES PLANIFIÉES (CRON JOBS) -->
+          <div class="p-6 rounded-3xl border-2 border-dashed border-rose-300 bg-rose-50/40 space-y-4 md:col-span-2">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-lg shadow-xs shrink-0">
+                  <span class="material-symbols-outlined text-xl text-rose-700">lock_clock</span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-display font-bold text-base text-slate-900">Double Authentification (2FA TOTP) & Tâches Planifiées (Cron Jobs)</h3>
+                    <span class="badge-wip bg-rose-100 text-rose-900 border-rose-200">
+                      <span class="material-symbols-outlined text-xs">construction</span>
+                      <span>En Travaux</span>
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-600 mt-0.5">
+                    Sécurisation renforcée des accès administrateurs par application TOTP et automatisation récurrente des tâches de maintenance.
+                  </p>
+                </div>
+              </div>
+              <span class="text-[11px] font-mono text-rose-800 bg-rose-100/80 px-3 py-1 rounded-xl font-bold shrink-0">Prévu v1.2</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              <div class="p-4 rounded-2xl bg-white/80 border border-rose-200/60 shadow-xs space-y-2 opacity-90">
+                <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                  <span>🔐 2FA / TOTP Authenticator</span>
+                  <span class="text-rose-700 text-[10px] font-bold">QR Code</span>
+                </div>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                  Génération d'un secret TOTP scannable avec Google Authenticator ou Bitwarden, et codes de secours d'urgence chiffrés.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/80 border border-rose-200/60 shadow-xs space-y-2 opacity-90">
+                <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                  <span>⏱️ Cron Jobs Automatiques</span>
+                  <span class="text-rose-700 text-[10px] font-bold">Planificateur</span>
+                </div>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                  Exécution nocturne sans intervention humaine : purge automatique RGPD, vacuum SQLite et snapshot quotidien vers stockage cloud S3.
+                </p>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/80 border border-rose-200/60 shadow-xs space-y-2 opacity-90">
+                <div class="flex items-center justify-between text-xs font-mono font-bold text-slate-700">
+                  <span>🔔 Webhooks d'Alerte Discord</span>
+                  <span class="text-rose-700 text-[10px] font-bold">Temps Réel</span>
+                </div>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                  Envoi instantané d'une alerte sur un salon privé Discord en cas de tentative d'intrusion répétée ou de pic anormal de trafic.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1718,6 +2085,21 @@
         showLogin();
       }
 
+      function initTooltips() {
+        document.querySelectorAll('.admin-tip').forEach(el => {
+          el.setAttribute('tabindex', '0');
+          el.setAttribute('role', 'tooltip');
+          el.setAttribute('aria-label', el.getAttribute('data-tip') || '');
+          el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            el.classList.toggle('tip-active');
+          });
+        });
+        document.addEventListener('click', () => {
+          document.querySelectorAll('.admin-tip.tip-active').forEach(el => el.classList.remove('tip-active'));
+        });
+      }
+
       function showLogin() {
         loginContainer.classList.remove('hidden');
         dashboardContainer.classList.add('hidden');
@@ -1727,6 +2109,7 @@
         loginContainer.classList.add('hidden');
         dashboardContainer.classList.remove('hidden');
         loadAllData();
+        setTimeout(initTooltips, 200);
       }
 
       function applyUserPermissions(permissions = ['all'], username = 'admin', role = 'superadmin') {
@@ -1741,7 +2124,10 @@
 
         navTabs.forEach(tab => {
           const tabKey = tab.getAttribute('data-tab');
-          if (isSuperAdmin || permissions.includes(tabKey)) {
+          let hasAccess = isSuperAdmin || permissions.includes(tabKey);
+          if (tabKey === 'users' && (permissions.includes('users') || permissions.includes('roadmap'))) hasAccess = true;
+          if (tabKey === 'store' && (permissions.includes('store') || permissions.includes('content'))) hasAccess = true;
+          if (hasAccess) {
             tab.classList.remove('hidden');
             if (!firstVisibleTab) firstVisibleTab = tab;
           } else {
@@ -1968,19 +2354,34 @@
           const target = tab.getAttribute('data-tab');
           document.getElementById('tab-' + target).classList.remove('hidden');
 
-          if (target === 'analytics') loadAnalytics();
+          if (target === 'analytics') {
+            loadAnalytics();
+            loadSystemHealth();
+          }
           if (target === 'content') {
             renderPageContentForm(currentPageSelected);
             setTimeout(() => {
               if (currentViewportMode === 'desktop') applyDesktopScaling();
             }, 50);
           }
-          if (target === 'games') renderGames();
-          if (target === 'faq') renderFaq();
-          if (target === 'store') renderStore();
-          if (target === 'users') { loadUsers(); loadBans(); loadAppeals(); }
-          if (target === 'roadmap') renderRoadmap();
-          if (target === 'settings') { loadSecurityConfig(); loadAdmins(); loadAuditLogs(); loadDataRetention(); loadSystemHealth(); }
+          if (target === 'store') {
+            renderStore();
+            renderGames();
+            renderFaq();
+          }
+          if (target === 'users') {
+            loadUsers();
+            loadBans();
+            loadAppeals();
+            renderRoadmap();
+          }
+          if (target === 'settings') {
+            loadSecurityConfig();
+            loadAdmins();
+            loadAuditLogs();
+            loadDataRetention();
+            loadSystemHealth();
+          }
         });
       });
 
@@ -2735,6 +3136,7 @@
             }
           });
         });
+        if (typeof updateStoreBadges === 'function') updateStoreBadges();
       }
 
       function openGameForm(g = null) {
@@ -2854,6 +3256,7 @@
             }
           });
         });
+        if (typeof updateStoreBadges === 'function') updateStoreBadges();
       }
 
       function openFaqForm(f = null) {
@@ -2909,25 +3312,84 @@
 
       document.getElementById('btn-add-faq').addEventListener('click', () => openFaqForm());
 
-      // --- TAB 5 : STORE (PLUGINS & THÈMES) ---
+      // --- TAB 3 : CATALOGUES & CONTENUS (STORE, JEUX, FAQ) ---
+      const subtabStoreExtBtn = document.getElementById('subtab-store-ext-btn');
+      const subtabStoreGamesBtn = document.getElementById('subtab-store-games-btn');
+      const subtabStoreFaqBtn = document.getElementById('subtab-store-faq-btn');
+      const storeExtPanel = document.getElementById('store-extensions-panel');
+      const storeGamesPanel = document.getElementById('store-games-panel');
+      const storeFaqPanel = document.getElementById('store-faq-panel');
+
+      function switchStoreSubtab(target) {
+        [subtabStoreExtBtn, subtabStoreGamesBtn, subtabStoreFaqBtn].forEach(b => {
+          if (!b) return;
+          b.className = 'px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
+        });
+        [storeExtPanel, storeGamesPanel, storeFaqPanel].forEach(p => {
+          if (p) p.classList.add('hidden');
+        });
+
+        if (target === 'ext') {
+          if (subtabStoreExtBtn) {
+            subtabStoreExtBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
+          }
+          storeExtPanel?.classList.remove('hidden');
+          renderStore();
+        } else if (target === 'games') {
+          if (subtabStoreGamesBtn) {
+            subtabStoreGamesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
+          }
+          storeGamesPanel?.classList.remove('hidden');
+          renderGames();
+        } else if (target === 'faq') {
+          if (subtabStoreFaqBtn) {
+            subtabStoreFaqBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
+          }
+          storeFaqPanel?.classList.remove('hidden');
+          renderFaq();
+        }
+      }
+
+      if (subtabStoreExtBtn) subtabStoreExtBtn.addEventListener('click', () => switchStoreSubtab('ext'));
+      if (subtabStoreGamesBtn) subtabStoreGamesBtn.addEventListener('click', () => switchStoreSubtab('games'));
+      if (subtabStoreFaqBtn) subtabStoreFaqBtn.addEventListener('click', () => switchStoreSubtab('faq'));
+
+      // Sous-onglets Plugins vs Thèmes au sein des extensions
       const subtabPluginsBtn = document.getElementById('subtab-plugins-btn');
       const subtabThemesBtn = document.getElementById('subtab-themes-btn');
       const pluginsPanel = document.getElementById('store-plugins-panel');
       const themesPanel = document.getElementById('store-themes-panel');
 
-      subtabPluginsBtn.addEventListener('click', () => {
-        subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs';
-        subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs';
-        pluginsPanel.classList.remove('hidden');
-        themesPanel.classList.add('hidden');
-      });
+      if (subtabPluginsBtn) {
+        subtabPluginsBtn.addEventListener('click', () => {
+          subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs cursor-pointer';
+          subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs cursor-pointer';
+          pluginsPanel?.classList.remove('hidden');
+          themesPanel?.classList.add('hidden');
+        });
+      }
 
-      subtabThemesBtn.addEventListener('click', () => {
-        subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs';
-        subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs';
-        themesPanel.classList.remove('hidden');
-        pluginsPanel.classList.add('hidden');
-      });
+      if (subtabThemesBtn) {
+        subtabThemesBtn.addEventListener('click', () => {
+          subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs cursor-pointer';
+          subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs cursor-pointer';
+          themesPanel?.classList.remove('hidden');
+          pluginsPanel?.classList.add('hidden');
+        });
+      }
+
+      function updateStoreBadges() {
+        const pCount = (allContent.plugins || []).length;
+        const tCount = (allContent.themes || []).length;
+        const gCount = (allContent.games || []).length;
+        const fCount = (allContent.faq || []).length;
+        const navStoreBadge = document.getElementById('badge-nav-store-count');
+        if (navStoreBadge) navStoreBadge.textContent = pCount + tCount + gCount;
+        const gamesBadge = document.getElementById('badge-nav-games-count');
+        if (gamesBadge) gamesBadge.textContent = gCount;
+        const faqBadge = document.getElementById('badge-nav-faq-count');
+        if (faqBadge) faqBadge.textContent = fCount;
+      }
 
       function renderStore() {
         // Plugins
@@ -3001,6 +3463,7 @@
             }
           });
         });
+        if (typeof updateStoreBadges === 'function') updateStoreBadges();
       }
 
       // Ajout de Plugin
@@ -4189,6 +4652,13 @@
           currentBansList = bans;
           const countBadge = document.getElementById('badge-bans-count');
           if (countBadge) countBadge.textContent = bans.length;
+          const bansSummary = document.getElementById('badge-bans-summary');
+          if (bansSummary) bansSummary.textContent = bans.length;
+          const navUsersBadge = document.getElementById('badge-nav-users-count');
+          if (navUsersBadge) {
+            const ideasCount = parseInt(document.getElementById('badge-community-total')?.textContent || '0', 10);
+            navUsersBadge.textContent = ideasCount + bans.length;
+          }
 
           if (bans.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-muted font-mono">Aucune adresse IP actuellement bannie. Toutes les fonctionnalités sont ouvertes.</td></tr>';
@@ -4957,46 +5427,86 @@
       }
 
       // ========================================================
-      // SOUS-ONGLETS ROADMAP (3 VOLETS ÉPURÉS)
+      // SOUS-ONGLETS COMMUNAUTÉ & VOTES (ROADMAP, IDÉES, VISITEURS)
       // ========================================================
-      const subtabMilestonesBtn = document.getElementById('subtab-milestones-btn');
-      const subtabFeaturesBtn = document.getElementById('subtab-features-btn');
-      const subtabCommunityBtn = document.getElementById('subtab-community-btn');
+      const subtabUsersRoadmapBtn = document.getElementById('subtab-users-roadmap-btn');
+      const subtabUsersIdeasBtn = document.getElementById('subtab-users-ideas-btn');
+      const subtabUsersVisitorsBtn = document.getElementById('subtab-users-visitors-btn');
 
-      const panelMilestones = document.getElementById('roadmap-milestones-panel');
-      const panelFeatures = document.getElementById('roadmap-features-panel');
-      const panelCommunity = document.getElementById('roadmap-community-panel');
+      const usersRoadmapPanel = document.getElementById('users-roadmap-panel');
+      const usersIdeasPanel = document.getElementById('users-ideas-panel');
+      const usersVisitorsPanel = document.getElementById('users-visitors-panel');
 
-      function switchRoadmapSubtab(target) {
-        [subtabMilestonesBtn, subtabFeaturesBtn, subtabCommunityBtn].forEach(b => {
+      function switchUsersSubtab(target) {
+        [subtabUsersRoadmapBtn, subtabUsersIdeasBtn, subtabUsersVisitorsBtn].forEach(b => {
           if (!b) return;
           b.className = 'px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
         });
 
-        [panelMilestones, panelFeatures, panelCommunity].forEach(p => {
+        [usersRoadmapPanel, usersIdeasPanel, usersVisitorsPanel].forEach(p => {
+          if (p) p.classList.add('hidden');
+        });
+
+        if (target === 'roadmap') {
+          if (subtabUsersRoadmapBtn) {
+            subtabUsersRoadmapBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
+          }
+          usersRoadmapPanel?.classList.remove('hidden');
+          renderRoadmap();
+        } else if (target === 'ideas') {
+          if (subtabUsersIdeasBtn) {
+            subtabUsersIdeasBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
+          }
+          usersIdeasPanel?.classList.remove('hidden');
+          loadCommunity();
+        } else if (target === 'visitors') {
+          if (subtabUsersVisitorsBtn) {
+            subtabUsersVisitorsBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
+          }
+          usersVisitorsPanel?.classList.remove('hidden');
+          loadUsers();
+          loadBans();
+          loadAppeals();
+        }
+      }
+
+      if (subtabUsersRoadmapBtn) subtabUsersRoadmapBtn.addEventListener('click', () => switchUsersSubtab('roadmap'));
+      if (subtabUsersIdeasBtn) subtabUsersIdeasBtn.addEventListener('click', () => switchUsersSubtab('ideas'));
+      if (subtabUsersVisitorsBtn) subtabUsersVisitorsBtn.addEventListener('click', () => switchUsersSubtab('visitors'));
+
+      // SOUS-ONGLETS INTERNES ROADMAP : JALONS VS VOTES
+      const subtabMilestonesBtn = document.getElementById('subtab-milestones-btn');
+      const subtabFeaturesBtn = document.getElementById('subtab-features-btn');
+
+      const panelMilestones = document.getElementById('roadmap-milestones-panel');
+      const panelFeatures = document.getElementById('roadmap-features-panel');
+
+      function switchRoadmapSubtab(target) {
+        [subtabMilestonesBtn, subtabFeaturesBtn].forEach(b => {
+          if (!b) return;
+          b.className = 'px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
+        });
+
+        [panelMilestones, panelFeatures].forEach(p => {
           if (p) p.classList.add('hidden');
         });
 
         if (target === 'milestones') {
-          subtabMilestonesBtn?.classList.add('bg-slate-900', 'text-white');
-          subtabMilestonesBtn?.classList.remove('bg-transparent', 'text-slate-600');
+          if (subtabMilestonesBtn) {
+            subtabMilestonesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
+          }
           panelMilestones?.classList.remove('hidden');
         } else if (target === 'features') {
-          subtabFeaturesBtn?.classList.add('bg-slate-900', 'text-white');
-          subtabFeaturesBtn?.classList.remove('bg-transparent', 'text-slate-600');
+          if (subtabFeaturesBtn) {
+            subtabFeaturesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
+          }
           panelFeatures?.classList.remove('hidden');
           renderFeatures();
-        } else if (target === 'community') {
-          subtabCommunityBtn?.classList.add('bg-slate-900', 'text-white');
-          subtabCommunityBtn?.classList.remove('bg-transparent', 'text-slate-600');
-          panelCommunity?.classList.remove('hidden');
-          loadCommunity();
         }
       }
 
       if (subtabMilestonesBtn) subtabMilestonesBtn.addEventListener('click', () => switchRoadmapSubtab('milestones'));
       if (subtabFeaturesBtn) subtabFeaturesBtn.addEventListener('click', () => switchRoadmapSubtab('features'));
-      if (subtabCommunityBtn) subtabCommunityBtn.addEventListener('click', () => switchRoadmapSubtab('community'));
 
       // ========================================================
       // BOÎTE À IDÉES & COMPLÉMENTS UNIFIÉE
@@ -5022,6 +5532,11 @@
           const badgeTotal = document.getElementById('badge-community-total');
           const pendingCount = communityItems.filter(x => x.status === 'pending').length;
           if (badgeTotal) badgeTotal.textContent = pendingCount;
+          const navUsersBadge = document.getElementById('badge-nav-users-count');
+          if (navUsersBadge) {
+            const bansCount = parseInt(document.getElementById('badge-bans-count')?.textContent || '0', 10);
+            navUsersBadge.textContent = pendingCount + bansCount;
+          }
 
           renderCommunityTable();
         })
