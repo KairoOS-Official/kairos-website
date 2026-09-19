@@ -2064,9 +2064,25 @@
     };
 
     document.addEventListener('DOMContentLoaded', function() {
+      // --- ÉTATS GLOBAUX DU PANNEAU (HOISTÉS AU TOP DE DOMCONTENTLOADED) ---
       let authToken = localStorage.getItem('kairo_admin_token');
       let currentEditLang = 'fr';
       let allContent = {};
+      let currentPageSelected = 'home';
+      let isInspectorVisible = true;
+      let currentVotesAuditList = [];
+      let currentAppealsList = [];
+      let currentBansList = [];
+      let githubRoadmapMarkdown = '';
+      let allUsersData = [];
+      let currentUsersFilter = 'all';
+      let currentUserDetailData = null;
+      let communityItems = [];
+      let currentCommunityFilter = 'all';
+      let currentAdminsList = [];
+      let currentAuditLogs = [];
+      let currentAuditFilter = 'all';
+      let adminDataPollingInterval = null;
 
       const loginContainer = document.getElementById('login-container');
       const dashboardContainer = document.getElementById('dashboard-container');
@@ -2101,24 +2117,36 @@
       }
 
       function showLogin() {
-        loginContainer.classList.remove('hidden');
-        dashboardContainer.classList.add('hidden');
+        if (loginContainer) loginContainer.classList.remove('hidden');
+        if (dashboardContainer) dashboardContainer.classList.add('hidden');
       }
 
       function showDashboard(username) {
-        loginContainer.classList.add('hidden');
-        dashboardContainer.classList.remove('hidden');
+        if (loginContainer) loginContainer.classList.add('hidden');
+        if (dashboardContainer) dashboardContainer.classList.remove('hidden');
         loadAllData();
         setTimeout(initTooltips, 200);
       }
 
-      function applyUserPermissions(permissions = ['all'], username = 'admin', role = 'superadmin') {
+      function applyUserPermissions(rawPermissions = ['all'], username = 'admin', role = 'superadmin') {
+        let permissions = rawPermissions;
+        if (typeof permissions === 'string') {
+          try {
+            permissions = JSON.parse(permissions);
+          } catch(e) {
+            permissions = ['all'];
+          }
+        }
+        if (!Array.isArray(permissions) || permissions.length === 0) {
+          permissions = ['all'];
+        }
+
         const userDisplay = document.getElementById('current-username-display');
         const roleDisplay = document.getElementById('current-role-display');
         if (userDisplay) userDisplay.textContent = username;
-        if (roleDisplay) roleDisplay.textContent = role.toUpperCase();
+        if (roleDisplay) roleDisplay.textContent = (role || 'superadmin').toUpperCase();
 
-        const isSuperAdmin = permissions.includes('all');
+        const isSuperAdmin = permissions.includes('all') || role === 'superadmin';
         const navTabs = document.querySelectorAll('.nav-tab');
         let firstVisibleTab = null;
 
@@ -2127,6 +2155,7 @@
           let hasAccess = isSuperAdmin || permissions.includes(tabKey);
           if (tabKey === 'users' && (permissions.includes('users') || permissions.includes('roadmap'))) hasAccess = true;
           if (tabKey === 'store' && (permissions.includes('store') || permissions.includes('content'))) hasAccess = true;
+          if (tabKey === 'settings' && (permissions.includes('settings') || permissions.includes('security'))) hasAccess = true;
           if (hasAccess) {
             tab.classList.remove('hidden');
             if (!firstVisibleTab) firstVisibleTab = tab;
@@ -2144,9 +2173,12 @@
         .then(data => {
           if (data.authenticated) {
             const savedUser = JSON.parse(localStorage.getItem('kairo_admin_user') || '{}');
-            applyUserPermissions(savedUser.permissions || ['all'], savedUser.username || 'admin', savedUser.role || 'superadmin');
-            showDashboard();
-            // notifications
+            const currentUser = data.user || savedUser || {};
+            if (data.user) {
+              localStorage.setItem('kairo_admin_user', JSON.stringify(data.user));
+            }
+            applyUserPermissions(currentUser.permissions || ['all'], currentUser.username || 'admin', currentUser.role || 'superadmin');
+            showDashboard(currentUser.username || 'admin');
           } else {
             localStorage.removeItem('kairo_admin_token');
             localStorage.removeItem('kairo_admin_user');
@@ -2322,19 +2354,31 @@
         currentEditLang = lang;
         if (studioLangBadge) studioLangBadge.textContent = lang.toUpperCase();
         if (lang === 'fr') {
-          btnLangFr.classList.add('bg-white', 'shadow-xs', 'text-slate-900');
-          btnLangFr.classList.remove('text-slate-500');
-          btnLangEn.classList.remove('bg-white', 'shadow-xs', 'text-slate-900');
-          btnLangEn.classList.add('text-slate-500');
+          if (btnLangFr) {
+            btnLangFr.classList.add('bg-white', 'shadow-xs', 'text-slate-900');
+            btnLangFr.classList.remove('text-slate-500');
+          }
+          if (btnLangEn) {
+            btnLangEn.classList.remove('bg-white', 'shadow-xs', 'text-slate-900');
+            btnLangEn.classList.add('text-slate-500');
+          }
           if (editLangIndicator) editLangIndicator.innerText = 'FR';
         } else {
-          editLangIndicator.innerText = 'EN';
+          if (btnLangFr) {
+            btnLangFr.classList.remove('bg-white', 'shadow-xs', 'text-slate-900');
+            btnLangFr.classList.add('text-slate-500');
+          }
+          if (btnLangEn) {
+            btnLangEn.classList.add('bg-white', 'shadow-xs', 'text-slate-900');
+            btnLangEn.classList.remove('text-slate-500');
+          }
+          if (editLangIndicator) editLangIndicator.innerText = 'EN';
         }
         renderPageContentForm(currentPageSelected);
       }
 
-      btnLangFr.addEventListener('click', () => setAdminEditLang('fr'));
-      btnLangEn.addEventListener('click', () => setAdminEditLang('en'));
+      if (btnLangFr) btnLangFr.addEventListener('click', () => setAdminEditLang('fr'));
+      if (btnLangEn) btnLangEn.addEventListener('click', () => setAdminEditLang('en'));
 
       // Navigation par onglets principaux
       const tabs = document.querySelectorAll('.nav-tab');
@@ -2352,7 +2396,8 @@
           tab.classList.remove('text-slate-600');
 
           const target = tab.getAttribute('data-tab');
-          document.getElementById('tab-' + target).classList.remove('hidden');
+          const panel = document.getElementById('tab-' + target);
+          if (panel) panel.classList.remove('hidden');
 
           if (target === 'analytics') {
             loadAnalytics();
@@ -2365,14 +2410,17 @@
             }, 50);
           }
           if (target === 'store') {
+            switchStoreSubtab('ext');
             renderStore();
             renderGames();
             renderFaq();
           }
           if (target === 'users') {
+            switchUsersSubtab('roadmap');
             loadUsers();
             loadBans();
             loadAppeals();
+            loadCommunity();
             renderRoadmap();
           }
           if (target === 'settings') {
@@ -2386,8 +2434,6 @@
       });
 
       // 2. Chargement de toutes les données complètes
-      let adminDataPollingInterval = null;
-
       function loadAllData() {
         loadAnalytics();
         loadSecurityConfig();
@@ -2406,6 +2452,7 @@
             loadUsers();
             loadBans();
             loadAppeals();
+            loadCommunity();
             renderRoadmap();
           });
 
@@ -2419,9 +2466,7 @@
               loadUsers();
               loadBans();
               loadAppeals();
-            } else if (target === 'roadmap') {
               loadCommunity();
-              loadVotesAudit();
             } else if (target === 'analytics') {
               loadAnalytics();
             } else if (target === 'settings') {
@@ -2621,7 +2666,7 @@
       document.getElementById('btn-refresh-analytics').addEventListener('click', loadAnalytics);
 
       // --- TAB 2 : STUDIO VISUEL CANVA & CONTENU DES PAGES ---
-      let currentPageSelected = 'home';
+      currentPageSelected = 'home';
       const pageSelectBtns = document.querySelectorAll('.page-select-btn');
       const previewIframe = document.getElementById('preview-live-iframe');
       const previewIframeBox = document.getElementById('preview-iframe-box');
@@ -2652,7 +2697,7 @@
       const btnToggleInspectorLabel = document.getElementById('btn-toggle-inspector-label');
       const studioInspectorPanel = document.getElementById('studio-inspector-panel');
       const studioPreviewPanel = document.getElementById('studio-preview-panel');
-      let isInspectorVisible = true;
+      isInspectorVisible = true;
 
       if (btnToggleInspector && studioInspectorPanel && studioPreviewPanel) {
         btnToggleInspector.addEventListener('click', () => {
@@ -3069,9 +3114,15 @@
       const modalContainer = document.getElementById('modal-container');
       const modalTitle = document.getElementById('modal-title');
       const modalBody = document.getElementById('modal-body');
-      document.getElementById('btn-close-modal').addEventListener('click', () => modalContainer.classList.add('hidden'));
+      const btnCloseModal = document.getElementById('btn-close-modal');
+      if (btnCloseModal) {
+        btnCloseModal.addEventListener('click', () => {
+          if (modalContainer) modalContainer.classList.add('hidden');
+        });
+      }
 
       function openModal(title, formHtml, submitHandler) {
+        if (!modalContainer || !modalTitle || !modalBody) return;
         modalTitle.innerText = title;
         modalBody.innerHTML = formHtml;
         modalContainer.classList.remove('hidden');
@@ -3087,6 +3138,7 @@
       // --- TAB 3 : JEUX KIOSQUE ---
       function renderGames() {
         const grid = document.getElementById('games-grid');
+        if (!grid) return;
         grid.innerHTML = '';
         const games = allContent.games || [];
         games.forEach(g => {
@@ -3207,11 +3259,13 @@
         });
       }
 
-      document.getElementById('btn-add-game').addEventListener('click', () => openGameForm());
+      const btnAddGame = document.getElementById('btn-add-game');
+      if (btnAddGame) btnAddGame.addEventListener('click', () => openGameForm());
 
       // --- TAB 4 : FAQ BILINGUE ---
       function renderFaq() {
         const list = document.getElementById('faq-list');
+        if (!list) return;
         list.innerHTML = '';
         const faq = allContent.faq || [];
         faq.forEach(f => {
@@ -3304,23 +3358,24 @@
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
             body: JSON.stringify(payload)
           }).then(() => {
-            modalContainer.classList.add('hidden');
+            if (modalContainer) modalContainer.classList.add('hidden');
             loadAllData();
           });
         });
       }
 
-      document.getElementById('btn-add-faq').addEventListener('click', () => openFaqForm());
+      const btnAddFaq = document.getElementById('btn-add-faq');
+      if (btnAddFaq) btnAddFaq.addEventListener('click', () => openFaqForm());
 
       // --- TAB 3 : CATALOGUES & CONTENUS (STORE, JEUX, FAQ) ---
-      const subtabStoreExtBtn = document.getElementById('subtab-store-ext-btn');
-      const subtabStoreGamesBtn = document.getElementById('subtab-store-games-btn');
-      const subtabStoreFaqBtn = document.getElementById('subtab-store-faq-btn');
-      const storeExtPanel = document.getElementById('store-extensions-panel');
-      const storeGamesPanel = document.getElementById('store-games-panel');
-      const storeFaqPanel = document.getElementById('store-faq-panel');
-
       function switchStoreSubtab(target) {
+        const subtabStoreExtBtn = document.getElementById('subtab-store-ext-btn');
+        const subtabStoreGamesBtn = document.getElementById('subtab-store-games-btn');
+        const subtabStoreFaqBtn = document.getElementById('subtab-store-faq-btn');
+        const storeExtPanel = document.getElementById('store-extensions-panel');
+        const storeGamesPanel = document.getElementById('store-games-panel');
+        const storeFaqPanel = document.getElementById('store-faq-panel');
+
         [subtabStoreExtBtn, subtabStoreGamesBtn, subtabStoreFaqBtn].forEach(b => {
           if (!b) return;
           b.className = 'px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
@@ -3333,50 +3388,54 @@
           if (subtabStoreExtBtn) {
             subtabStoreExtBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
           }
-          storeExtPanel?.classList.remove('hidden');
+          if (storeExtPanel) storeExtPanel.classList.remove('hidden');
           renderStore();
         } else if (target === 'games') {
           if (subtabStoreGamesBtn) {
             subtabStoreGamesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
           }
-          storeGamesPanel?.classList.remove('hidden');
+          if (storeGamesPanel) storeGamesPanel.classList.remove('hidden');
           renderGames();
         } else if (target === 'faq') {
           if (subtabStoreFaqBtn) {
             subtabStoreFaqBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
           }
-          storeFaqPanel?.classList.remove('hidden');
+          if (storeFaqPanel) storeFaqPanel.classList.remove('hidden');
           renderFaq();
         }
       }
 
+      const subtabStoreExtBtn = document.getElementById('subtab-store-ext-btn');
+      const subtabStoreGamesBtn = document.getElementById('subtab-store-games-btn');
+      const subtabStoreFaqBtn = document.getElementById('subtab-store-faq-btn');
       if (subtabStoreExtBtn) subtabStoreExtBtn.addEventListener('click', () => switchStoreSubtab('ext'));
       if (subtabStoreGamesBtn) subtabStoreGamesBtn.addEventListener('click', () => switchStoreSubtab('games'));
       if (subtabStoreFaqBtn) subtabStoreFaqBtn.addEventListener('click', () => switchStoreSubtab('faq'));
 
       // Sous-onglets Plugins vs Thèmes au sein des extensions
+      function switchExtSubtab(type) {
+        const subtabPluginsBtn = document.getElementById('subtab-plugins-btn');
+        const subtabThemesBtn = document.getElementById('subtab-themes-btn');
+        const pluginsPanel = document.getElementById('store-plugins-panel');
+        const themesPanel = document.getElementById('store-themes-panel');
+
+        if (type === 'plugins') {
+          if (subtabPluginsBtn) subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs cursor-pointer';
+          if (subtabThemesBtn) subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs cursor-pointer';
+          if (pluginsPanel) pluginsPanel.classList.remove('hidden');
+          if (themesPanel) themesPanel.classList.add('hidden');
+        } else {
+          if (subtabThemesBtn) subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs cursor-pointer';
+          if (subtabPluginsBtn) subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs cursor-pointer';
+          if (themesPanel) themesPanel.classList.remove('hidden');
+          if (pluginsPanel) pluginsPanel.classList.add('hidden');
+        }
+      }
+
       const subtabPluginsBtn = document.getElementById('subtab-plugins-btn');
       const subtabThemesBtn = document.getElementById('subtab-themes-btn');
-      const pluginsPanel = document.getElementById('store-plugins-panel');
-      const themesPanel = document.getElementById('store-themes-panel');
-
-      if (subtabPluginsBtn) {
-        subtabPluginsBtn.addEventListener('click', () => {
-          subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs cursor-pointer';
-          subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs cursor-pointer';
-          pluginsPanel?.classList.remove('hidden');
-          themesPanel?.classList.add('hidden');
-        });
-      }
-
-      if (subtabThemesBtn) {
-        subtabThemesBtn.addEventListener('click', () => {
-          subtabThemesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs cursor-pointer';
-          subtabPluginsBtn.className = 'px-4 py-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-display font-bold text-xs cursor-pointer';
-          themesPanel?.classList.remove('hidden');
-          pluginsPanel?.classList.add('hidden');
-        });
-      }
+      if (subtabPluginsBtn) subtabPluginsBtn.addEventListener('click', () => switchExtSubtab('plugins'));
+      if (subtabThemesBtn) subtabThemesBtn.addEventListener('click', () => switchExtSubtab('themes'));
 
       function updateStoreBadges() {
         const pCount = (allContent.plugins || []).length;
@@ -3394,153 +3453,163 @@
       function renderStore() {
         // Plugins
         const pList = document.getElementById('plugins-store-list');
-        pList.innerHTML = '';
-        (allContent.plugins || []).forEach(p => {
-          const desc = currentEditLang === 'fr' ? p.desc_fr : p.desc_en;
-          const card = document.createElement('div');
-          card.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col justify-between';
-          card.innerHTML = `
-            <div>
-              <div class="flex justify-between items-start mb-2">
-                <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 font-mono text-[10px] font-bold">${p.badge}</span>
-                <span class="text-xs text-muted font-mono">${p.version}</span>
+        if (pList) {
+          pList.innerHTML = '';
+          (allContent.plugins || []).forEach(p => {
+            const desc = currentEditLang === 'fr' ? p.desc_fr : p.desc_en;
+            const card = document.createElement('div');
+            card.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col justify-between';
+            card.innerHTML = `
+              <div>
+                <div class="flex justify-between items-start mb-2">
+                  <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-700 font-mono text-[10px] font-bold">${p.badge}</span>
+                  <span class="text-xs text-muted font-mono">${p.version}</span>
+                </div>
+                <h4 class="font-display font-bold text-sm text-heading mb-1">${p.name}</h4>
+                <p class="text-xs text-body leading-relaxed mb-3">${desc}</p>
               </div>
-              <h4 class="font-display font-bold text-sm text-heading mb-1">${p.name}</h4>
-              <p class="text-xs text-body leading-relaxed mb-3">${desc}</p>
-            </div>
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
-              <span>${p.installs}</span>
-              <button class="btn-delete-plugin text-rose-600 hover:underline" data-id="${p.id}">Supprimer</button>
-            </div>
-          `;
-          pList.appendChild(card);
-        });
-
-        pList.querySelectorAll('.btn-delete-plugin').forEach(b => {
-          b.addEventListener('click', () => {
-            if (confirm('Supprimer ce plugin ?')) {
-              fetch('/api/plugins/delete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-                body: JSON.stringify({ id: b.getAttribute('data-id') })
-              }).then(() => loadAllData());
-            }
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+                <span>${p.installs}</span>
+                <button class="btn-delete-plugin text-rose-600 hover:underline" data-id="${p.id}">Supprimer</button>
+              </div>
+            `;
+            pList.appendChild(card);
           });
-        });
+
+          pList.querySelectorAll('.btn-delete-plugin').forEach(b => {
+            b.addEventListener('click', () => {
+              if (confirm('Supprimer ce plugin ?')) {
+                fetch('/api/plugins/delete', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                  body: JSON.stringify({ id: b.getAttribute('data-id') })
+                }).then(() => loadAllData());
+              }
+            });
+          });
+        }
 
         // Themes
         const tList = document.getElementById('themes-store-list');
-        tList.innerHTML = '';
-        (allContent.themes || []).forEach(t => {
-          const desc = currentEditLang === 'fr' ? t.desc_fr : t.desc_en;
-          const card = document.createElement('div');
-          card.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col justify-between';
-          card.innerHTML = `
-            <div>
-              <div class="flex justify-between items-start mb-2">
-                <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-mono text-[10px] font-bold">${t.badge}</span>
-                <span class="text-xs text-amber-500 font-bold font-mono">${t.rating}</span>
+        if (tList) {
+          tList.innerHTML = '';
+          (allContent.themes || []).forEach(t => {
+            const desc = currentEditLang === 'fr' ? t.desc_fr : t.desc_en;
+            const card = document.createElement('div');
+            card.className = 'bg-white p-5 rounded-2xl border border-slate-200/80 shadow-subtle flex flex-col justify-between';
+            card.innerHTML = `
+              <div>
+                <div class="flex justify-between items-start mb-2">
+                  <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 font-mono text-[10px] font-bold">${t.badge}</span>
+                  <span class="text-xs text-amber-500 font-bold font-mono">${t.rating}</span>
+                </div>
+                <h4 class="font-display font-bold text-sm text-heading mb-1">${t.name}</h4>
+                <p class="text-xs text-body leading-relaxed mb-3">${desc}</p>
               </div>
-              <h4 class="font-display font-bold text-sm text-heading mb-1">${t.name}</h4>
-              <p class="text-xs text-body leading-relaxed mb-3">${desc}</p>
-            </div>
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
-              <span>${t.installs}</span>
-              <button class="btn-delete-theme text-rose-600 hover:underline" data-id="${t.id}">Supprimer</button>
-            </div>
-          `;
-          tList.appendChild(card);
-        });
-
-        tList.querySelectorAll('.btn-delete-theme').forEach(b => {
-          b.addEventListener('click', () => {
-            if (confirm('Supprimer ce thème ?')) {
-              fetch('/api/themes/delete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-                body: JSON.stringify({ id: b.getAttribute('data-id') })
-              }).then(() => loadAllData());
-            }
+              <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
+                <span>${t.installs}</span>
+                <button class="btn-delete-theme text-rose-600 hover:underline" data-id="${t.id}">Supprimer</button>
+              </div>
+            `;
+            tList.appendChild(card);
           });
-        });
+
+          tList.querySelectorAll('.btn-delete-theme').forEach(b => {
+            b.addEventListener('click', () => {
+              if (confirm('Supprimer ce thème ?')) {
+                fetch('/api/themes/delete', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                  body: JSON.stringify({ id: b.getAttribute('data-id') })
+                }).then(() => loadAllData());
+              }
+            });
+          });
+        }
         if (typeof updateStoreBadges === 'function') updateStoreBadges();
       }
 
       // Ajout de Plugin
-      document.getElementById('btn-add-plugin').addEventListener('click', () => {
-        const html = `
-          <form class="space-y-4">
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Nom du Plugin</label>
-              <input type="text" name="name" required placeholder="Ex: Twitch Chat Overlay" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
-            </div>
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Catégorie</label>
-              <input type="text" name="category" required value="INTERFACE" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
-              <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
-            </div>
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
-              <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
-            </div>
-            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
-              <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le plugin</button>
-            </div>
-          </form>
-        `;
-        openModal('Ajouter un plugin au catalogue', html, (form) => {
-          const fd = new FormData(form);
-          fetch('/api/plugins/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-            body: JSON.stringify(Object.fromEntries(fd))
-          }).then(() => {
-            modalContainer.classList.add('hidden');
-            loadAllData();
+      const btnAddPlugin = document.getElementById('btn-add-plugin');
+      if (btnAddPlugin) {
+        btnAddPlugin.addEventListener('click', () => {
+          const html = `
+            <form class="space-y-4">
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Nom du Plugin</label>
+                <input type="text" name="name" required placeholder="Ex: Twitch Chat Overlay" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Catégorie</label>
+                <input type="text" name="category" required value="INTERFACE" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
+                <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
+                <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+              </div>
+              <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+                <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le plugin</button>
+              </div>
+            </form>
+          `;
+          openModal('Ajouter un plugin au catalogue', html, (form) => {
+            const fd = new FormData(form);
+            fetch('/api/plugins/save', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+              body: JSON.stringify(Object.fromEntries(fd))
+            }).then(() => {
+              if (modalContainer) modalContainer.classList.add('hidden');
+              loadAllData();
+            });
           });
         });
-      });
+      }
 
       // Ajout de Thème
-      document.getElementById('btn-add-theme').addEventListener('click', () => {
-        const html = `
-          <form class="space-y-4">
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Nom du Thème</label>
-              <input type="text" name="name" required placeholder="Ex: Synthwave 1984" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
-            </div>
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Badge</label>
-              <input type="text" name="badge" required value="RETRO" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
-              <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
-            </div>
-            <div>
-              <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
-              <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
-            </div>
-            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
-              <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le thème</button>
-            </div>
-          </form>
-        `;
-        openModal('Ajouter un thème au catalogue', html, (form) => {
-          const fd = new FormData(form);
-          fetch('/api/themes/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-            body: JSON.stringify(Object.fromEntries(fd))
-          }).then(() => {
-            modalContainer.classList.add('hidden');
-            loadAllData();
+      const btnAddTheme = document.getElementById('btn-add-theme');
+      if (btnAddTheme) {
+        btnAddTheme.addEventListener('click', () => {
+          const html = `
+            <form class="space-y-4">
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Nom du Thème</label>
+                <input type="text" name="name" required placeholder="Ex: Synthwave 1984" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm font-medium">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Badge</label>
+                <input type="text" name="badge" required value="RETRO" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (Français)</label>
+                <textarea name="desc_fr" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-semibold text-slate-600 uppercase mb-1">Description (English)</label>
+                <textarea name="desc_en" rows="2" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs"></textarea>
+              </div>
+              <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+                <button type="submit" class="px-5 py-2 rounded-xl bg-slate-900 text-xs font-bold text-white shadow">Enregistrer le thème</button>
+              </div>
+            </form>
+          `;
+          openModal('Ajouter un thème au catalogue', html, (form) => {
+            const fd = new FormData(form);
+            fetch('/api/themes/save', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+              body: JSON.stringify(Object.fromEntries(fd))
+            }).then(() => {
+              if (modalContainer) modalContainer.classList.add('hidden');
+              loadAllData();
+            });
           });
         });
-      });
+      }
 
 
       // 1. Rendu des Jalons
@@ -3835,7 +3904,7 @@
       if (btnAddFeature) btnAddFeature.addEventListener('click', () => openFeatureForm());
 
       // 3. Journal d'Audit des Votes & IPs Réelles
-      let currentVotesAuditList = [];
+      currentVotesAuditList = [];
 
       function loadVotesAudit() {
         const tbody = document.getElementById('votes-audit-tbody');
@@ -3882,6 +3951,8 @@
             }
           }
 
+          if (!tbody) return;
+
           if (data.status !== 'ok' || votes.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-muted font-mono">Aucun vote enregistré pour le moment.</td></tr>';
             return;
@@ -3903,14 +3974,13 @@
               <td class="py-3 px-4">
                 <span class="px-2 py-0.5 rounded text-[10px] bg-brand-50 text-brand-700 font-bold uppercase">${v.tag || 'GÉNÉRAL'}</span>
               </td>
-              <td class="py-3 px-4 text-slate-400 font-mono text-[11px] truncate max-w-[200px]" title="${v.user_agent || ''}">${v.user_agent || 'Inconnu'}</td>
-              <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
-                <button class="btn-quick-ban-vote px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] inline-flex items-center gap-1 cursor-pointer" data-ip="${v.ip_address}" title="Bannir cette IP">
-                  <span class="material-symbols-outlined text-xs">gavel</span>
-                  <span>Bannir IP</span>
+              <td class="py-3 px-4 font-sans text-slate-600 truncate max-w-xs">${v.user_agent || '-'}</td>
+              <td class="py-3 px-4 text-right whitespace-nowrap space-x-2">
+                <button class="btn-quick-ban-vote text-rose-600 hover:text-rose-800 p-1 rounded hover:bg-rose-50 cursor-pointer" data-ip="${v.ip_address}" title="Sanctionner / Bannir cette IP">
+                  <span class="material-symbols-outlined text-sm">block</span>
                 </button>
-                <button class="btn-delete-single-vote text-rose-600 hover:text-rose-800 p-1.5 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer" data-id="${v.id}" title="Supprimer ce vote">
-                  <span class="material-symbols-outlined text-[16px]">delete</span>
+                <button class="btn-delete-vote text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-slate-100 cursor-pointer" data-id="${v.id}" title="Supprimer ce vote">
+                  <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
               </td>
             `;
@@ -3918,10 +3988,10 @@
           });
 
           // Handlers de suppression unitaire
-          tbody.querySelectorAll('.btn-delete-single-vote').forEach(btn => {
-            btn.addEventListener('click', () => {
-              const voteId = btn.getAttribute('data-id');
-              if (confirm('Supprimer définitivement ce vote ? Le compteur de la fonctionnalité associée sera mis à jour.')) {
+          tbody.querySelectorAll('.btn-delete-vote').forEach(b => {
+            b.addEventListener('click', () => {
+              const voteId = b.getAttribute('data-id');
+              if (confirm('Supprimer ce vote ? Le compteur de la fonctionnalité sera automatiquement décrémenté.')) {
                 fetch('/api/roadmap/votes/delete', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
@@ -3941,7 +4011,7 @@
           });
         })
         .catch(err => {
-          tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-rose-500 font-mono">Erreur lors de la récupération des votes.</td></tr>';
+          if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-rose-500 font-mono">Erreur lors de la récupération des votes.</td></tr>';
         });
       }
 
@@ -4454,7 +4524,7 @@
       if (btnRefreshBans) btnRefreshBans.addEventListener('click', loadBans);
 
       // 3e. GESTION DES RECOURS & OPPOSITIONS AUX BANS
-      let currentAppealsList = [];
+      currentAppealsList = [];
 
       function loadAppeals() {
         const tbody = document.getElementById('appeals-tbody');
@@ -4635,7 +4705,7 @@
       if (btnRefreshAppeals) btnRefreshAppeals.addEventListener('click', loadAppeals);
 
 
-      let currentBansList = [];
+      currentBansList = [];
 
       function loadBans() {
         const tbody = document.getElementById('bans-tbody');
@@ -4763,7 +4833,7 @@
       });
 
       // 4. Référentiel GitHub Officiel (docs/ROADMAP.md)
-      let githubRoadmapMarkdown = '';
+      githubRoadmapMarkdown = '';
       function loadGitHubSpec() {
         const viewer = document.getElementById('github-roadmap-viewer');
         if (!viewer) return;
@@ -4796,34 +4866,40 @@
       }
 
       // --- TAB 7 : PARAMÈTRES & MOT DE PASSE ---
-      document.getElementById('password-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const newPwd = document.getElementById('inp-new-password').value;
-        const statusText = document.getElementById('pwd-save-status');
+      const pwdForm = document.getElementById('password-form');
+      if (pwdForm) {
+        pwdForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const newPwd = document.getElementById('inp-new-password')?.value || '';
+          const statusText = document.getElementById('pwd-save-status');
 
-        fetch('/api/admin/password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-          body: JSON.stringify({ new_password: newPwd })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'ok') {
-            statusText.classList.remove('hidden');
-            document.getElementById('inp-new-password').value = '';
-            setTimeout(() => statusText.classList.add('hidden'), 3000);
-          } else {
-            toast(data.message || 'Erreur');
-          }
+          fetch('/api/admin/password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+            body: JSON.stringify({ new_password: newPwd })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'ok') {
+              if (statusText) {
+                statusText.classList.remove('hidden');
+                setTimeout(() => statusText.classList.add('hidden'), 3000);
+              }
+              const inpPwd = document.getElementById('inp-new-password');
+              if (inpPwd) inpPwd.value = '';
+            } else {
+              toast(data.message || 'Erreur');
+            }
+          });
         });
-      });
+      }
 
 
       // ========================================================
       // LOGIQUE V5 : GESTION DES UTILISATEURS & VISITEURS (IPS)
       // ========================================================
-      let allUsersData = [];
-      let currentUsersFilter = 'all';
+      allUsersData = [];
+      currentUsersFilter = 'all';
 
       function loadUsers() {
         const tbody = document.getElementById('users-tbody');
@@ -5035,7 +5111,7 @@
       // ========================================================
       // MODALE FICHE PROFIL UTILISATEUR & AUDIT COMPLET
       // ========================================================
-      let currentUserDetailData = null;
+      currentUserDetailData = null;
 
       function openUserDetailModal(ip) {
         const modal = document.getElementById('modal-user-detail');
@@ -5314,8 +5390,8 @@
 
       // Envoi d'un message admin -> visiteur depuis la fiche profil
       const udChatForm = document.getElementById('ud-chat-form');
-      if (udChatForm && !udChatForm.dataset.bound) {
-        udChatForm.dataset.bound = '1';
+      if (udChatForm && !udChatForm.getAttribute('data-bound')) {
+        udChatForm.setAttribute('data-bound', '1');
         udChatForm.addEventListener('submit', (e) => {
           e.preventDefault();
           const ip = (document.getElementById('ud-ip-title')?.textContent || '').trim();
@@ -5429,15 +5505,14 @@
       // ========================================================
       // SOUS-ONGLETS COMMUNAUTÉ & VOTES (ROADMAP, IDÉES, VISITEURS)
       // ========================================================
-      const subtabUsersRoadmapBtn = document.getElementById('subtab-users-roadmap-btn');
-      const subtabUsersIdeasBtn = document.getElementById('subtab-users-ideas-btn');
-      const subtabUsersVisitorsBtn = document.getElementById('subtab-users-visitors-btn');
-
-      const usersRoadmapPanel = document.getElementById('users-roadmap-panel');
-      const usersIdeasPanel = document.getElementById('users-ideas-panel');
-      const usersVisitorsPanel = document.getElementById('users-visitors-panel');
-
       function switchUsersSubtab(target) {
+        const subtabUsersRoadmapBtn = document.getElementById('subtab-users-roadmap-btn');
+        const subtabUsersIdeasBtn = document.getElementById('subtab-users-ideas-btn');
+        const subtabUsersVisitorsBtn = document.getElementById('subtab-users-visitors-btn');
+        const usersRoadmapPanel = document.getElementById('users-roadmap-panel');
+        const usersIdeasPanel = document.getElementById('users-ideas-panel');
+        const usersVisitorsPanel = document.getElementById('users-visitors-panel');
+
         [subtabUsersRoadmapBtn, subtabUsersIdeasBtn, subtabUsersVisitorsBtn].forEach(b => {
           if (!b) return;
           b.className = 'px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
@@ -5451,37 +5526,39 @@
           if (subtabUsersRoadmapBtn) {
             subtabUsersRoadmapBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
           }
-          usersRoadmapPanel?.classList.remove('hidden');
+          if (usersRoadmapPanel) usersRoadmapPanel.classList.remove('hidden');
           renderRoadmap();
         } else if (target === 'ideas') {
           if (subtabUsersIdeasBtn) {
             subtabUsersIdeasBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
           }
-          usersIdeasPanel?.classList.remove('hidden');
+          if (usersIdeasPanel) usersIdeasPanel.classList.remove('hidden');
           loadCommunity();
         } else if (target === 'visitors') {
           if (subtabUsersVisitorsBtn) {
             subtabUsersVisitorsBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-xs';
           }
-          usersVisitorsPanel?.classList.remove('hidden');
+          if (usersVisitorsPanel) usersVisitorsPanel.classList.remove('hidden');
           loadUsers();
           loadBans();
           loadAppeals();
         }
       }
 
+      const subtabUsersRoadmapBtn = document.getElementById('subtab-users-roadmap-btn');
+      const subtabUsersIdeasBtn = document.getElementById('subtab-users-ideas-btn');
+      const subtabUsersVisitorsBtn = document.getElementById('subtab-users-visitors-btn');
       if (subtabUsersRoadmapBtn) subtabUsersRoadmapBtn.addEventListener('click', () => switchUsersSubtab('roadmap'));
       if (subtabUsersIdeasBtn) subtabUsersIdeasBtn.addEventListener('click', () => switchUsersSubtab('ideas'));
       if (subtabUsersVisitorsBtn) subtabUsersVisitorsBtn.addEventListener('click', () => switchUsersSubtab('visitors'));
 
       // SOUS-ONGLETS INTERNES ROADMAP : JALONS VS VOTES
-      const subtabMilestonesBtn = document.getElementById('subtab-milestones-btn');
-      const subtabFeaturesBtn = document.getElementById('subtab-features-btn');
-
-      const panelMilestones = document.getElementById('roadmap-milestones-panel');
-      const panelFeatures = document.getElementById('roadmap-features-panel');
-
       function switchRoadmapSubtab(target) {
+        const subtabMilestonesBtn = document.getElementById('subtab-milestones-btn');
+        const subtabFeaturesBtn = document.getElementById('subtab-features-btn');
+        const panelMilestones = document.getElementById('roadmap-milestones-panel');
+        const panelFeatures = document.getElementById('roadmap-features-panel');
+
         [subtabMilestonesBtn, subtabFeaturesBtn].forEach(b => {
           if (!b) return;
           b.className = 'px-4 py-2 rounded-xl bg-transparent text-slate-600 hover:text-slate-900 font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
@@ -5495,24 +5572,27 @@
           if (subtabMilestonesBtn) {
             subtabMilestonesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
           }
-          panelMilestones?.classList.remove('hidden');
+          if (panelMilestones) panelMilestones.classList.remove('hidden');
+          renderRoadmap();
         } else if (target === 'features') {
           if (subtabFeaturesBtn) {
             subtabFeaturesBtn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-white font-display font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer';
           }
-          panelFeatures?.classList.remove('hidden');
+          if (panelFeatures) panelFeatures.classList.remove('hidden');
           renderFeatures();
         }
       }
 
+      const subtabMilestonesBtn = document.getElementById('subtab-milestones-btn');
+      const subtabFeaturesBtn = document.getElementById('subtab-features-btn');
       if (subtabMilestonesBtn) subtabMilestonesBtn.addEventListener('click', () => switchRoadmapSubtab('milestones'));
       if (subtabFeaturesBtn) subtabFeaturesBtn.addEventListener('click', () => switchRoadmapSubtab('features'));
 
       // ========================================================
       // BOÎTE À IDÉES & COMPLÉMENTS UNIFIÉE
       // ========================================================
-      let communityItems = [];
-      let currentCommunityFilter = 'all';
+      communityItems = [];
+      currentCommunityFilter = 'all';
 
       function loadCommunity() {
         const tbody = document.getElementById('community-tbody');
@@ -5782,7 +5862,7 @@
       // ========================================================
       // GESTION DES COMPTES ADMINISTRATEURS (RBAC)
       // ========================================================
-      let currentAdminsList = [];
+      currentAdminsList = [];
 
       function loadAdmins() {
         const tbody = document.getElementById('admins-tbody');
@@ -5952,8 +6032,8 @@
       // ========================================================
       // JOURNAUX D'AUDIT DES CONNEXIONS ADMIN
       // ========================================================
-      let currentAuditLogs = [];
-      let currentAuditFilter = 'all';
+      currentAuditLogs = [];
+      currentAuditFilter = 'all';
 
       function loadAuditLogs() {
         const tbody = document.getElementById('audit-logs-tbody');
