@@ -14,8 +14,8 @@ const ROOT = path.resolve(__dirname, '..');
 const SRC  = path.join(ROOT, 'web');
 const DEST = path.join(ROOT, 'dist');
 
-// Dossiers/fichiers à exclure du dist (pages privées + code source)
-const EXCLUDE = new Set(['admin', 'src']);
+// Dossiers/fichiers à exclure du dist (code source TypeScript frontend)
+const EXCLUDE = new Set(['src']);
 
 function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });

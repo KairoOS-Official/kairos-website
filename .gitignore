@@ -43,10 +43,7 @@ src/**/*.js
 web/src/**/*.d.ts
 web/src/**/*.js
 
-# Administration page & private code (Do not publish)
-web/admin/
-web/src/AdminDashboardApp.*
-web/src/entries/admin.*
+# Scratch and build caches
 
 # Scratch and build caches
 scratch/
